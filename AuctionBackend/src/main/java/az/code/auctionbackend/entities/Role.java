@@ -1,0 +1,30 @@
+package az.code.auctionbackend.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+
+@Entity
+@Data
+@Builder
+@Table(name = "roles")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column
+    private String name;
+
+    @OneToMany()
+    private List<UserProfile> userProfileList;
+}
