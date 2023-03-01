@@ -17,5 +17,14 @@ public class UserProfile {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    private String name;
+
+    private String username;
+
+    private String password;
+
+    private String address;
+
+    private Double rating;
 
 }
