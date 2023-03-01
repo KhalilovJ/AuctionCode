@@ -4,6 +4,8 @@ package az.code.auctionbackend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Builder
@@ -26,4 +28,8 @@ public class Bid {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     private UserProfile user;
+
+    private double bid;
+
+    private LocalDate bidTime;
 }
