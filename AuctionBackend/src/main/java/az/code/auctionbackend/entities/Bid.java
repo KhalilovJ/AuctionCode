@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Table(name = "bids")
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bid {
