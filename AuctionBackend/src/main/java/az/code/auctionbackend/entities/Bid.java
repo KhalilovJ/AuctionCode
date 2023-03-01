@@ -1,35 +1,29 @@
 package az.code.auctionbackend.entities;
 
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Data
 @Builder
-@Table(name = "profiles")
+@Table(name = "bids")
 @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class Bid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String name;
 
-    private String username;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="lotId", nullable=false)
+    private Lot lot;
 
-    private String password;
-
-    private String address;
-
-    private Double rating;
-
-    @OneToMany(mappedBy = "user")
-    private List<Bid> bidList;
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private UserProfile user;
 }
