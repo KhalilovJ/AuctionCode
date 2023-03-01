@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Builder
 @Table(name = "lots")
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lot {

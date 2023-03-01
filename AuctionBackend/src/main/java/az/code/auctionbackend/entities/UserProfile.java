@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @Builder
 @Table(name = "profiles")
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
