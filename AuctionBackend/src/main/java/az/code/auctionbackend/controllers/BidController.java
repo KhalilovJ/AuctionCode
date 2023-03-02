@@ -3,7 +3,6 @@ package az.code.auctionbackend.controllers;
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.services.interfaces.BidService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
