@@ -1,4 +1,4 @@
-package az.code.auctionbackend.entities;
+package az.code.auctionbackend.entities.users;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,10 @@
-package az.code.auctionbackend.entities;
+package az.code.auctionbackend.entities.users;
 
+import az.code.auctionbackend.entities.auction.Bid;
+import az.code.auctionbackend.entities.finance.Account;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,6 +31,12 @@ public class UserProfile {
     private String address;
 
     private double rating;
+
+    @Value("false")
+    private boolean isBlocked;
+
+    @OneToOne
+    private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="roleId", nullable=false)

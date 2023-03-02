@@ -1,6 +1,6 @@
 package az.code.auctionbackend.services.interfaces;
 
-import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.entities.users.UserProfile;
 
 import java.util.List;
 
