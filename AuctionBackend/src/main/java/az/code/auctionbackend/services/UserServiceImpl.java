@@ -1,6 +1,6 @@
 package az.code.auctionbackend.services;
 
-import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.entities.users.UserProfile;
 import az.code.auctionbackend.repositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.UserService;
 import lombok.AllArgsConstructor;

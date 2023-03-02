@@ -1,4 +1,4 @@
-package az.code.auctionbackend.entities;
+package az.code.auctionbackend.entities.auction;
 
 
 import jakarta.persistence.*;

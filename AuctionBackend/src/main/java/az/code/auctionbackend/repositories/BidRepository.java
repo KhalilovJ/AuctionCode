@@ -1,6 +1,6 @@
 package az.code.auctionbackend.repositories;
 
-import az.code.auctionbackend.entities.Bid;
+import az.code.auctionbackend.entities.auction.Bid;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
