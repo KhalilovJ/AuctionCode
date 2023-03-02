@@ -26,7 +26,11 @@ public class UserProfile {
 
     private String address;
 
-    private Double rating;
+    private double rating;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="roleId", nullable=false)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Bid> bidList;

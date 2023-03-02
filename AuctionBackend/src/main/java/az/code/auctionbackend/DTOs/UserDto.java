@@ -1,5 +1,10 @@
-package az.code.auctionbackend.dto;
+package az.code.auctionbackend.DTOs;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class UserDto {
 
     private String name;
