@@ -45,4 +45,5 @@ public class UserProfile {
     @OneToMany(mappedBy = "user")
     private List<Bid> bidList;
 
+
 }
