@@ -31,6 +31,6 @@ public class Account {
 
     private boolean isActive;
 
-//    @OneToMany()
-//    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "account")
+    private List<Transaction> transactions;
 }
