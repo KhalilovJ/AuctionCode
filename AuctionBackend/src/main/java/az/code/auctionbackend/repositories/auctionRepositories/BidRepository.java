@@ -1,4 +1,4 @@
-package az.code.auctionbackend.repositories;
+package az.code.auctionbackend.repositories.auctionRepositories;
 
 import az.code.auctionbackend.entities.auction.Bid;
 import org.springframework.data.jpa.repository.JpaRepository;

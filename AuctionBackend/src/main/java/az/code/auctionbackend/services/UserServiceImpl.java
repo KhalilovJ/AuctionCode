@@ -1,7 +1,7 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.entities.users.UserProfile;
-import az.code.auctionbackend.repositories.UserRepository;
+import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
