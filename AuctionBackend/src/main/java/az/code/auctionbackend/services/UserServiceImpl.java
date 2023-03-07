@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -17,5 +18,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserProfile> getAllProfiles() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Optional<UserProfile> findProfileById(long id) {
+        return userRepository.findById(id);
     }
 }

@@ -33,7 +33,7 @@ public class LotController {
     @GetMapping("/closed")
     public ResponseEntity<List<Lot>> getAllClosedLots() {
 
-        return ResponseEntity.ok(lotService.findAllLots());
+        return ResponseEntity.ok(lotService.getAllLots());
     }
 
     /**

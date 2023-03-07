@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +21,12 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public List<Lot> findAllLots() {
+    public List<Lot> getAllLots() {
         return lotRepository.findAll();
+    }
+
+    @Override
+    public Optional<Lot> findLotById(long id) {
+        return lotRepository.findById(id);
     }
 }
