@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -44,5 +45,6 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "user")
     private List<Bid> bidList;
+
 
 }
