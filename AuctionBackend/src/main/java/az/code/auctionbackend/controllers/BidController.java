@@ -9,6 +9,8 @@ import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BidController {
 
+    @Autowired
+    private ApplicationContext context;
     private final BidService bidService;
 //private final LotService lotService;
 //private final UserService userService;
@@ -38,7 +42,7 @@ public class BidController {
     public ResponseEntity<BidDto> saveBid(@RequestBody BidDto bid) {
 
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(Bid.class, new BidCustomDeserializer());
+        simpleModule.addDeserializer(Bid.class, new BidCustomDeserializer(context));
         objectMapper.registerModule(simpleModule);
 
         //TODO fix bug

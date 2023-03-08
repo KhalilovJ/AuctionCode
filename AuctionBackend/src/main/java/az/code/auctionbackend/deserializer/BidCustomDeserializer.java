@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,14 @@ public class BidCustomDeserializer extends JsonDeserializer<Bid> {
     private static final long serialVersionUID = 4799573377613685478L;
 
     @Autowired
-    LotService lotService;
+    private LotService lotService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    public BidCustomDeserializer() {
+    public BidCustomDeserializer(final ApplicationContext contex) {
 //        this(null);
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+//        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        contex.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
     @Override
@@ -48,11 +50,11 @@ public class BidCustomDeserializer extends JsonDeserializer<Bid> {
         JsonNode customUser = jsonNode.get("userId");
 
         Lot lot = lotService.findLotById(customLot.asLong()).get();
-        UserProfile user = userService.findProfileById(customUser.asLong()).get();
+//        UserProfile user = userService.findProfileById(customUser.asLong()).get();
 
         return Bid.builder()
                 .bid(customBid.asDouble())
-                .user(user)
+//                .user(user)
                 .lot(lot)
                 .bidTime(LocalDate.now())
                 .build();

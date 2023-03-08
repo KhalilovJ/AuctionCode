@@ -1,6 +1,7 @@
 package az.code.auctionbackend.entities.auction;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,5 +42,6 @@ public class Lot {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "lot")
+    @JsonIgnore
     private List<Bid> bidHistory;
 }
