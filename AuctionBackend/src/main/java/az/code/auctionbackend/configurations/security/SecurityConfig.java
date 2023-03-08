@@ -1,5 +1,6 @@
 package az.code.auctionbackend.configurations.security;
 
+import az.code.auctionbackend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
@@ -42,5 +47,24 @@ public class SecurityConfig{
 //
 //
         return http.build();
+    }
+
+
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> {
+            return userRepository.findByUsername(username).map(user -> User.builder()
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .roles(user.getRole().getName())
+                    .roles("ADMIN")
+                    .build()).orElseThrow(() -> new UsernameNotFoundException("Not found"));
+        };
+    }
+
+    @Bean
+    public BCryptPasswordEncoder getBCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
