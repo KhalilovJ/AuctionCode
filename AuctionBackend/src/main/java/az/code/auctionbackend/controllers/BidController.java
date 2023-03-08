@@ -1,9 +1,13 @@
 package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
+import az.code.auctionbackend.deserializer.BidCustomDeserializer;
 import az.code.auctionbackend.entities.auction.Bid;
 import az.code.auctionbackend.services.interfaces.BidService;
+import az.code.auctionbackend.services.interfaces.LotService;
+import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +22,8 @@ import java.util.stream.Collectors;
 public class BidController {
 
     private final BidService bidService;
-
+//private final LotService lotService;
+//private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @GetMapping
@@ -30,12 +35,21 @@ public class BidController {
     }
 
     @PostMapping("/bid")
-    public ResponseEntity<BidDto> saveBid(@RequestBody Bid bid) {
+    public ResponseEntity<BidDto> saveBid(@RequestBody BidDto bid) {
+
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(Bid.class, new BidCustomDeserializer());
+        objectMapper.registerModule(simpleModule);
 
         //TODO fix bug
-        System.out.println(bid);
+
         bid.setBidTime(LocalDate.now());
-        bidService.saveBid(bid);
+        System.out.println(bid);
+
+        System.out.println(objectMapper.convertValue(bid, Bid.class));
+        bidService.saveBid(objectMapper.convertValue(bid, Bid.class));
+
+
         System.out.println(bidService.getAllBids());
         return null;
     }
