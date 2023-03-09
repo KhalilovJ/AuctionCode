@@ -8,6 +8,7 @@ import az.code.auctionbackend.services.interfaces.LotService;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +25,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BidController {
 
-    @Autowired
-    private ApplicationContext context;
+//    @Autowired
+//    private ApplicationContext context;
     private final BidService bidService;
 //private final LotService lotService;
 //private final UserService userService;
@@ -38,6 +40,7 @@ public class BidController {
                 .collect(Collectors.toList()));
     }
 
+//    @PostConstruct
 //    @PostMapping("/bid")
 //    public ResponseEntity<BidDto> saveBid(@RequestBody BidDto bid) {
 //
@@ -47,7 +50,7 @@ public class BidController {
 //
 //        //TODO fix bug
 //
-//        bid.setBidTime(LocalDate.now());
+//        bid.setBidTime(LocalDateTime.now());
 //        System.out.println(bid);
 //
 //        System.out.println(objectMapper.convertValue(bid, Bid.class));

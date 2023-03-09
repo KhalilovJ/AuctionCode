@@ -39,6 +39,7 @@ public class UserProfile {
     private boolean isBlocked;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @ToString.Exclude
     private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -48,6 +49,7 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
+    @ToString.Exclude
     private List<Bid> bidList;
 
     public String toString(){
@@ -60,5 +62,6 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "sender")
     @JsonIgnore
+    @ToString.Exclude
     private List<Transaction> transactionList;
 }

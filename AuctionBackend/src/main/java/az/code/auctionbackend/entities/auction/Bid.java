@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,7 +17,7 @@ import java.time.LocalDate;
 @Table(name = "bids")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bid {
+public class Bid implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,5 +37,5 @@ public class Bid {
 
     private double bid;
 
-    private LocalDate bidTime;
+    private LocalDateTime bidTime;
 }

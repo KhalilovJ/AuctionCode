@@ -1,11 +1,9 @@
 package az.code.auctionbackend.entities.finance;
 
 import az.code.auctionbackend.entities.users.UserProfile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.catalina.User;
 
 import java.util.List;
@@ -32,6 +30,7 @@ public class Account {
 
     private boolean isActive;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+    @ToString.Exclude
     private List<Transaction> transactions;
 }

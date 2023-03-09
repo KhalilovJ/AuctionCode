@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class BidServiceImpl implements BidService {
                 .lot(lotService.findLotById(bid.getLot().getId()).get())
                 .user(userService.findProfileById(bid.getUser().getId()).get())
                 .bid(bid.getBid())
-                .bidTime(LocalDate.now())
+                .bidTime(LocalDateTime.now())
                 .build());
 
     }

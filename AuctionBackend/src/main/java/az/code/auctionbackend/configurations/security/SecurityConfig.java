@@ -16,13 +16,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.formLogin().loginPage("/login").defaultSuccessUrl("/index" , true)
+        http.formLogin().loginPage("/login").defaultSuccessUrl("/index", true)
                 .and()
                 .logout().logoutSuccessUrl("/login");
 
@@ -64,7 +64,8 @@ public class SecurityConfig{
     }
 
     @Bean
-    public BCryptPasswordEncoder getBCryptPasswordEncoder(){
+    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

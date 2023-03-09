@@ -9,13 +9,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-@RestController
+@Controller
 @RequestMapping("/api/lots")
 @RequiredArgsConstructor
 public class LotController {
@@ -63,6 +65,12 @@ public class LotController {
 
         return (redisRepository.saveRedis(redisLot) == null) ? new ResponseEntity<>(null, HttpStatus.BAD_REQUEST)
                 : ResponseEntity.ok(objectMapper.convertValue(redisRepository.saveRedis(redisLot), Lot.class));
+    }
+
+    @PutMapping("/update-lot")
+    public ModelAndView update(@RequestBody RedisLot lot) {
+
+        return null;
     }
 
     // send details to winner

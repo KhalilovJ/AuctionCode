@@ -24,6 +24,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class
@@ -57,7 +58,7 @@ BidCustomDeserializer extends JsonDeserializer<Bid> {
                 .bid(customBid.asDouble())
                 .user(user)
                 .lot(lot)
-                .bidTime(LocalDate.now())
+                .bidTime(LocalDateTime.now())
                 .build();
     }
 }
