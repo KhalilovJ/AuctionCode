@@ -3,16 +3,18 @@ package az.code.auctionbackend.services;
 import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.finance.Account;
 import az.code.auctionbackend.entities.users.UserProfile;
-import az.code.auctionbackend.repositories.RoleRepository;
 import az.code.auctionbackend.repositories.UserRepo;
-import az.code.auctionbackend.repositories.UserRepository;
+import az.code.auctionbackend.repositories.usersRepositories.RoleRepository;
+import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -21,7 +23,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserRepo userRepo;
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepo;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -42,7 +45,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public void createUser(UserDto userDto){
-        Account account = Account.builder().isActive(true).balance(200).build();
 
         UserProfile user = UserProfile.builder().username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
@@ -50,8 +52,11 @@ public class UserServiceImpl implements UserService {
                 .address(userDto.getAddress())
                 .isBlocked(false)
                 .rating(5)
-                .account(account)
-                .role(roleRepository.findById(3l).orElse(null)).build();
+                .role(roleRepo.findById(3l).orElse(null)).build();
+
+        Account account = Account.builder().isActive(true).user(user).balance(200).build();
+
+        user.setAccount(account);
 
         userRepo.saveUser(user);
 
@@ -59,4 +64,13 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public Optional<UserProfile> findProfileById(long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<UserProfile> findByUsername(String username) {
+        return  userRepository.findByUsername(username);
+    }
 }

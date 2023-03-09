@@ -24,13 +24,14 @@ public class Account {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserProfile user;
 
     private double balance;
 
     private boolean isActive;
 
-//    @OneToMany()
-//    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "account")
+    private List<Transaction> transactions;
 }
