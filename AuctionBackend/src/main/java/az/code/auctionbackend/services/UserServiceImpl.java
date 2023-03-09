@@ -1,6 +1,7 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.UserDto;
+import az.code.auctionbackend.entities.finance.Account;
 import az.code.auctionbackend.entities.users.UserProfile;
 import az.code.auctionbackend.repositories.RoleRepository;
 import az.code.auctionbackend.repositories.UserRepo;
@@ -41,12 +42,15 @@ public class UserServiceImpl implements UserService {
     }
 
     public void createUser(UserDto userDto){
+        Account account = Account.builder().isActive(true).balance(200).build();
+
         UserProfile user = UserProfile.builder().username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .name(userDto.getName())
                 .address(userDto.getAddress())
                 .isBlocked(false)
                 .rating(5)
+                .account(account)
                 .role(roleRepository.findById(3l).orElse(null)).build();
 
         userRepo.saveUser(user);

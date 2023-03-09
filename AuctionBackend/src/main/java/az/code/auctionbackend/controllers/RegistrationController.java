@@ -50,11 +50,4 @@ public class RegistrationController {
 
     }
 
-
-
-    private boolean validateString(String string){
-        Pattern pattern = Pattern.compile("[A-Za-z_]");
-        Matcher matcher = pattern.matcher(string);
-        return matcher.matches();
-    }
 }

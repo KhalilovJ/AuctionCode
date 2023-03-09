@@ -36,7 +36,7 @@ public class UserProfile {
     @Value("false")
     private boolean isBlocked;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL)

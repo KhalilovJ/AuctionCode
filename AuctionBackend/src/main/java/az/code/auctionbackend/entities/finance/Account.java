@@ -24,7 +24,7 @@ public class Account {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private UserProfile user;
 
     private double balance;
