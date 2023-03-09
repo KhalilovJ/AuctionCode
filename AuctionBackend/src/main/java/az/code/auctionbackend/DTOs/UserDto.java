@@ -1,17 +1,32 @@
 package az.code.auctionbackend.DTOs;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Data
 @Builder
+@ToString
 public class UserDto {
 
-    public String name;
+    @NotEmpty
+    @NotNull
+    @Size(min = 3)
+    private String name;
 
-    public String username;
+    @NotEmpty
+    @NotNull
+    @Size(min = 3)
+    private String username;
 
-    public String password;
+    @NotEmpty
+    @NotNull
+    @ToString.Exclude
+    @Size(min = 5)
+    private String password;
 
-    public String address;
+    @NotEmpty
+    private String address;
+
 }

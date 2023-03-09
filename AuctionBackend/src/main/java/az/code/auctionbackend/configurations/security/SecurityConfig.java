@@ -1,17 +1,12 @@
 package az.code.auctionbackend.configurations.security;
 
-import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.UserServiceImpl;
-import az.code.auctionbackend.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Description;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +29,9 @@ public class SecurityConfig{
         http.authorizeHttpRequests()
                 .requestMatchers("/index").authenticated()
                 .requestMatchers("/login").permitAll()
+                .requestMatchers("/style/style.css").permitAll()
+                .requestMatchers("/registration").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 .anyRequest().authenticated();
 ////                .requestMatchers(HttpMethod.GET, "/test/open", "/test/open/**").permitAll()
 //                .requestMatchers(HttpMethod.GET, "/test/open", "/test/open/**").permitAll()

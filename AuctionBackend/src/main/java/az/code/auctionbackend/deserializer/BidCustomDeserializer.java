@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 
-public class BidCustomDeserializer extends JsonDeserializer<Bid> {
+public class
+BidCustomDeserializer extends JsonDeserializer<Bid> {
 
     private static final long serialVersionUID = 4799573377613685478L;
 

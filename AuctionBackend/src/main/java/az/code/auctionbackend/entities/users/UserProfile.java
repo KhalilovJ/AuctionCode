@@ -38,7 +38,7 @@ public class UserProfile {
     @Value("false")
     private boolean isBlocked;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -49,6 +49,14 @@ public class UserProfile {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Bid> bidList;
+
+    public String toString(){
+        return "User (id: " + id +
+                " Username: " + username +
+                " Name: " + name +
+                " Address: " + address +
+                " Rating: " + rating + " )";
+    }
 
     @OneToMany(mappedBy = "sender")
     @JsonIgnore
