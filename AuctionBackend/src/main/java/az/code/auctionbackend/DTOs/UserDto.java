@@ -7,11 +7,11 @@ import lombok.Data;
 @Builder
 public class UserDto {
 
-    private String name;
+    public String name;
 
-    private String username;
+    public String username;
 
-    private String password;
+    public String password;
 
-    private String address;
+    public String address;
 }

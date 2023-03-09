@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Builder
 public class BidDto {
 
-    double bid;
-    LocalDate bidTime;
+    public long lotId;
+    public long userId;
+    public double bid;
+    public LocalDate bidTime;
 }

@@ -1,4 +1,4 @@
-package az.code.auctionbackend.repositories;
+package az.code.auctionbackend.repositories.usersRepositories;
 
 import az.code.auctionbackend.entities.users.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +13,5 @@ public interface UserRepository extends JpaRepository<UserProfile, Long> {
     List<UserProfile> findAll();
 
 
-    Optional<UserProfile> findByUsername(String Username);
+    Optional<UserProfile> findByUsername(String username);
 }
