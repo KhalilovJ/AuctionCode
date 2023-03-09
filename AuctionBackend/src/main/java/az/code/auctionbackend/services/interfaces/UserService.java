@@ -10,4 +10,6 @@ public interface UserService {
     List<UserProfile> getAllProfiles();
 
     Optional<UserProfile> findProfileById(long id);
+
+    Optional<UserProfile> findByUsername(String username);
 }
