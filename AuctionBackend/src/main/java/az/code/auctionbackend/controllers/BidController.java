@@ -38,23 +38,23 @@ public class BidController {
                 .collect(Collectors.toList()));
     }
 
-    @PostMapping("/bid")
-    public ResponseEntity<BidDto> saveBid(@RequestBody BidDto bid) {
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(Bid.class, new BidCustomDeserializer(context));
-        objectMapper.registerModule(simpleModule);
-
-        //TODO fix bug
-
-        bid.setBidTime(LocalDate.now());
-        System.out.println(bid);
-
-        System.out.println(objectMapper.convertValue(bid, Bid.class));
-        bidService.saveBid(objectMapper.convertValue(bid, Bid.class));
-
-
-        System.out.println(bidService.getAllBids());
-        return null;
-    }
+//    @PostMapping("/bid")
+//    public ResponseEntity<BidDto> saveBid(@RequestBody BidDto bid) {
+//
+//        SimpleModule simpleModule = new SimpleModule();
+//        simpleModule.addDeserializer(Bid.class, new BidCustomDeserializer(context));
+//        objectMapper.registerModule(simpleModule);
+//
+//        //TODO fix bug
+//
+//        bid.setBidTime(LocalDate.now());
+//        System.out.println(bid);
+//
+//        System.out.println(objectMapper.convertValue(bid, Bid.class));
+//        bidService.saveBid(objectMapper.convertValue(bid, Bid.class));
+//
+//
+//        System.out.println(bidService.getAllBids());
+//        return null;
+//    }
 }

@@ -50,11 +50,11 @@ public class BidCustomDeserializer extends JsonDeserializer<Bid> {
         JsonNode customUser = jsonNode.get("userId");
 
         Lot lot = lotService.findLotById(customLot.asLong()).get();
-//        UserProfile user = userService.findProfileById(customUser.asLong()).get();
+        UserProfile user = userService.findProfileById(customUser.asLong()).get();
 
         return Bid.builder()
                 .bid(customBid.asDouble())
-//                .user(user)
+                .user(user)
                 .lot(lot)
                 .bidTime(LocalDate.now())
                 .build();

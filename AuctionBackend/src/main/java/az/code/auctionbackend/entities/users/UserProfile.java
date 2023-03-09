@@ -42,6 +42,7 @@ public class UserProfile {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="roleId", nullable=false)
+    @ToString.Exclude
     private Role role;
 
     @OneToMany(mappedBy = "user")
