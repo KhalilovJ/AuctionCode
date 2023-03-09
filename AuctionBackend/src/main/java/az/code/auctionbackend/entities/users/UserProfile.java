@@ -46,5 +46,12 @@ public class UserProfile {
     @OneToMany(mappedBy = "user")
     private List<Bid> bidList;
 
+    public String toString(){
+        return "User (id: " + id +
+                " Username: " + username +
+                " Name: " + name +
+                " Address: " + address +
+                " Rating: " + rating + " )";
+    }
 
 }

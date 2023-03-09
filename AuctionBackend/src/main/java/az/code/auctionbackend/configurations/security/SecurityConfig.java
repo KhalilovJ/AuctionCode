@@ -30,6 +30,9 @@ public class SecurityConfig{
         http.authorizeHttpRequests()
                 .requestMatchers("/index").authenticated()
                 .requestMatchers("/login").permitAll()
+                .requestMatchers("/style/style.css").permitAll()
+                .requestMatchers("/registration").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 .anyRequest().authenticated();
 ////                .requestMatchers(HttpMethod.GET, "/test/open", "/test/open/**").permitAll()
 //                .requestMatchers(HttpMethod.GET, "/test/open", "/test/open/**").permitAll()
