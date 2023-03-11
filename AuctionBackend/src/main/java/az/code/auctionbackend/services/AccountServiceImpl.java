@@ -4,9 +4,11 @@ import az.code.auctionbackend.entities.finance.Account;
 import az.code.auctionbackend.entities.finance.Transaction;
 import az.code.auctionbackend.entities.users.UserProfile;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepository;
+import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
 import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.AccountService;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -25,6 +27,8 @@ public class AccountServiceImpl implements AccountService {
 
     AccountRepository accountRepository;
     UserRepository userRepository;
+    TransactionRepository transactionRepository;
+    EntityManager entityManager;
 
     @PostConstruct
     public void AccountTest() {
@@ -37,12 +41,8 @@ public class AccountServiceImpl implements AccountService {
 //        topUpBalance(2, 100);
         List<Transaction> transactions = userRepository.findById(2L).get().getAccount().getTransactions();
 
-        System.out.println("LIST " + transactions);
-        Account account = userRepository.findById(2L).get().getAccount();
-        transactions.add(Transaction.builder().amount(152).account(account).sender(userRepository.findById(2L).get()).build());
-        account.setTransactions(transactions);
-//        System.out.println(purchase(userRepository.findById(2L).get(), userRepository.findById(3L).get(), 1));
-        accountRepository.save(account);
+
+        System.out.println(purchase(userRepository.findById(2L).get(), userRepository.findById(3L).get(), 1));
         System.out.println(getAccountDetails(1));
         System.out.println(getAccountDetails(2));
     }
@@ -73,17 +73,15 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    @Transactional
     public void addTransaction(Transaction transaction) {
-        Account account = transaction.getAccount();
-        List<Transaction> transactions = account.getTransactions();
-        transactions.add(transaction);
-
-        account.setTransactions(transactions);
-
-        accountRepository.save(account);
+        System.out.println(transaction);
+        entityManager.merge(transaction);
+//        transactionRepository.save(transaction);
     }
 
     @Override
+    @Transactional
     public Transaction purchase(UserProfile sender, UserProfile receiver, double amount) {
 
         Account senderAccount = sender.getAccount();
