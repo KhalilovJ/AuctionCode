@@ -22,6 +22,7 @@ public class Transaction {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", nullable = false)
+    @ToString.Exclude
     private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL)

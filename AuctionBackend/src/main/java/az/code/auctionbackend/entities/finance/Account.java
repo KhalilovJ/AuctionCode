@@ -31,6 +31,5 @@ public class Account {
     private boolean isActive;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
-    @ToString.Exclude
     private List<Transaction> transactions;
 }

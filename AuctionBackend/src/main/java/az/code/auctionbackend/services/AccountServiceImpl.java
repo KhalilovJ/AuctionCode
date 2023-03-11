@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,9 +35,14 @@ public class AccountServiceImpl implements AccountService {
 
 //        topUpBalance(1, -10);
 //        topUpBalance(2, 100);
+        List<Transaction> transactions = userRepository.findById(2L).get().getAccount().getTransactions();
 
-        System.out.println(purchase(userRepository.findById(2L).get(), userRepository.findById(3L).get(), 1));
-
+        System.out.println("LIST " + transactions);
+        Account account = userRepository.findById(2L).get().getAccount();
+        transactions.add(Transaction.builder().amount(152).account(account).sender(userRepository.findById(2L).get()).build());
+        account.setTransactions(transactions);
+//        System.out.println(purchase(userRepository.findById(2L).get(), userRepository.findById(3L).get(), 1));
+        accountRepository.save(account);
         System.out.println(getAccountDetails(1));
         System.out.println(getAccountDetails(2));
     }
@@ -66,13 +73,14 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    public void addTransaction(Account account, Transaction transaction) {
+    public void addTransaction(Transaction transaction) {
+        Account account = transaction.getAccount();
         List<Transaction> transactions = account.getTransactions();
-
-        System.out.println(account.getId() + " " + transactions);
         transactions.add(transaction);
+
+        account.setTransactions(transactions);
+
         accountRepository.save(account);
-        System.out.println(account.getId() + " " + transactions);
     }
 
     @Override
@@ -104,6 +112,8 @@ public class AccountServiceImpl implements AccountService {
         topUpBalance(receiverAccount.getId(), amount);
 //        addTransaction(receiverAccount, transaction);
 
+
+        addTransaction(transaction);
         return transaction;
     }
 }
