@@ -1,12 +1,10 @@
-package az.code.auctionbackend.entities.finance;
+package az.code.auctionbackend.entities;
 
-import az.code.auctionbackend.entities.users.UserProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 import java.util.List;
 
@@ -32,6 +30,6 @@ public class Account {
 
     private boolean isActive;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 }

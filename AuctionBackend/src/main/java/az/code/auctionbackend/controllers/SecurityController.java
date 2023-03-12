@@ -1,6 +1,6 @@
 package az.code.auctionbackend.controllers;
 
-import az.code.auctionbackend.entities.users.UserProfile;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,16 +16,12 @@ public class SecurityController {
     private UserServiceImpl userService;
 
     @GetMapping("/login")
-    public ModelAndView login(@AuthenticationPrincipal UserDetails user) {
-        ModelAndView nextPage;
+    public String login(@AuthenticationPrincipal UserDetails user) {
         if (user != null){
-            nextPage = new ModelAndView("index");
-            nextPage.addObject("user", user);
+            return "redirect:/home";
         } else {
-            nextPage = new ModelAndView("login");
+            return "login";
         }
-
-        return nextPage;
     }
 
     @GetMapping("/home")

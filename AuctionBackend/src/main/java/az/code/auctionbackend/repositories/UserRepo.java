@@ -1,7 +1,6 @@
 package az.code.auctionbackend.repositories;
 
-import az.code.auctionbackend.entities.users.UserProfile;
-import jakarta.annotation.PostConstruct;
+import az.code.auctionbackend.entities.UserProfile;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

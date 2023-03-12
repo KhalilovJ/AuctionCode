@@ -1,7 +1,7 @@
 package az.code.auctionbackend.controllers;
 
 
-import az.code.auctionbackend.entities.auction.Lot;
+import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
@@ -16,13 +16,12 @@ import java.util.Map;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/api/lots")
+@RequestMapping("/open/api/lots")
 @RequiredArgsConstructor
 public class LotController {
 
     private final LotService lotService;
     private final RedisRepository redisRepository;
-
     private final ObjectMapper objectMapper;
 
     //get all lots
@@ -63,6 +62,19 @@ public class LotController {
 
         return (redisRepository.saveRedis(redisLot) == null) ? new ResponseEntity<>(null, HttpStatus.BAD_REQUEST)
                 : ResponseEntity.ok(objectMapper.convertValue(redisRepository.saveRedis(redisLot), Lot.class));
+    }
+
+
+    @CrossOrigin
+    @GetMapping("/{lotId}")
+    public Lot getLot(@PathVariable Long lotId){
+
+//        ModelAndView model = new ModelAndView("auction");
+        Lot lot = lotService.findLotById(lotId).orElse(null);
+
+//        model.addObject("auction", lot);
+
+        return lot;
     }
 
     // send details to winner

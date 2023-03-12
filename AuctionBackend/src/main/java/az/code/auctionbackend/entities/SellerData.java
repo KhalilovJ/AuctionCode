@@ -1,15 +1,10 @@
-package az.code.auctionbackend.entities.users;
+package az.code.auctionbackend.entities;
 
-import az.code.auctionbackend.entities.auction.Bid;
-import az.code.auctionbackend.entities.finance.Account;
-import az.code.auctionbackend.entities.users.UserProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 
 @Entity

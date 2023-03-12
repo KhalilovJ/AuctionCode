@@ -1,6 +1,6 @@
 package az.code.auctionbackend.repositories.redisRepositories;
 
-import az.code.auctionbackend.entities.auction.Bid;
+import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.HashOperations;
