@@ -22,14 +22,16 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.formLogin().loginPage("/login").defaultSuccessUrl("/index" , true)
+        http.formLogin().loginPage("/login").defaultSuccessUrl("/home" , true)
                 .and()
                 .logout().logoutSuccessUrl("/login");
 
         http.authorizeHttpRequests()
                 .requestMatchers("/index").authenticated()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/style/style.css").permitAll()
+                .requestMatchers(HttpMethod.POST,"/open", "/open/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/open", "/open/**").permitAll()
+                .requestMatchers("/static").permitAll()
                 .requestMatchers("/registration").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 .anyRequest().authenticated();

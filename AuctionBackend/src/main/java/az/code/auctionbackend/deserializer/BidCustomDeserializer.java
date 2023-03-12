@@ -1,8 +1,8 @@
 package az.code.auctionbackend.deserializer;
 
-import az.code.auctionbackend.entities.auction.Bid;
-import az.code.auctionbackend.entities.auction.Lot;
-import az.code.auctionbackend.entities.users.UserProfile;
+import az.code.auctionbackend.entities.Bid;
+import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.services.interfaces.LotService;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.core.JacksonException;
@@ -11,21 +11,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
+@Service
 public class
 BidCustomDeserializer extends JsonDeserializer<Bid> {
 
@@ -57,7 +51,7 @@ BidCustomDeserializer extends JsonDeserializer<Bid> {
                 .bid(customBid.asDouble())
                 .user(user)
                 .lot(lot)
-                .bidTime(LocalDate.now())
+                .bidTime(LocalDateTime.now())
                 .build();
     }
 }

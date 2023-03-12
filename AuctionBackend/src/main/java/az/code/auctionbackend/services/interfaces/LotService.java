@@ -1,6 +1,6 @@
 package az.code.auctionbackend.services.interfaces;
 
-import az.code.auctionbackend.entities.auction.Lot;
+import az.code.auctionbackend.entities.Lot;
 
 import java.util.List;
 import java.util.Optional;

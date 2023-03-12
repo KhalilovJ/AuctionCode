@@ -1,13 +1,11 @@
-package az.code.auctionbackend.entities.auction;
+package az.code.auctionbackend.entities;
 
 
-import az.code.auctionbackend.entities.auction.Lot;
-import az.code.auctionbackend.entities.users.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,5 +33,5 @@ public class Bid {
 
     private double bid;
 
-    private LocalDate bidTime;
+    private LocalDateTime bidTime;
 }

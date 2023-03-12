@@ -1,6 +1,5 @@
-package az.code.auctionbackend.entities.finance;
+package az.code.auctionbackend.entities;
 
-import az.code.auctionbackend.entities.users.UserProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

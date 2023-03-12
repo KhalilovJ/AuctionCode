@@ -1,8 +1,6 @@
 package az.code.auctionbackend.entities.redis;
 
-import az.code.auctionbackend.entities.auction.Bid;
-import az.code.auctionbackend.entities.auction.Lot;
-import jakarta.persistence.*;
+import az.code.auctionbackend.entities.Lot;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,5 +37,24 @@ public class RedisLot implements Serializable {
 
     private LocalDate endDate;
 
-    private List<Bid> bidHistory;
+    private List<RedisBid> bidHistory;
+
+
+    public void mapLot(Lot lot){
+        id = lot.getId();
+        description = lot.getDescription();
+        reservePrice = lot.getReservePrice();
+        startingPrice = lot.getStartingPrice();
+        bidStep = lot.getBidStep();
+//        startDate = lot.getStartDate();
+//        endDate = lot.getEndDate();
+
+        bidHistory = new ArrayList<>();
+
+        lot.getBidHistory().forEach(
+                bid -> bidHistory.add(RedisBid.builder()
+                                .id(bid.getId()).lotId(bid.getId()).userId(bid.getUser().getId()).bid(bid.getBid()).bidTime(bid.getBidTime())
+                        .build())
+        );
+    }
 }

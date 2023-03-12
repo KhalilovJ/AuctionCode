@@ -1,8 +1,8 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.UserDto;
-import az.code.auctionbackend.entities.finance.Account;
-import az.code.auctionbackend.entities.users.UserProfile;
+import az.code.auctionbackend.entities.Account;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.UserRepo;
 import az.code.auctionbackend.repositories.usersRepositories.RoleRepository;
 import az.code.auctionbackend.repositories.usersRepositories.UserRepository;

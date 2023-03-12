@@ -1,4 +1,4 @@
-package az.code.auctionbackend.entities.users;
+package az.code.auctionbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

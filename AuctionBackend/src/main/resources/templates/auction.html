@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <title>Auction</title>
+</head>
+<body>
+
+<div th:if="${auction != null}">
+  <span   th:text="${auction.id}"></span>
+  <span  th:id="currentBid" th:text="${auction.currentBid}"></span>
+  <span  th:id="bid_step" th:text="${auction.bidStep}"></span>
+  <span   th:text="${auction.description}"></span>
+  <br>
+===================== bids
+  <div th:id="bids">
+    <tr th:each="bid: ${auction.bidHistory}">
+      <br>
+      <td th:text="${bid.user.username}" />
+      <td th:text="${bid.bid}" />
+    </tr>
+  </div>
+
+</div>
+
+<br>
+<button th:onclick="UserAction()">PlaceBid</button>
+<br>
+<button th:onclick="buttonClickM()">-</button>
+<input type="text" id="inc" value="0"></input>
+<button th:onclick="buttonClickP()">+</button>
+
+<script type="text/javascript" th:src="@{/js/auctionscripts.js}"></script>
+</body>
+</html>

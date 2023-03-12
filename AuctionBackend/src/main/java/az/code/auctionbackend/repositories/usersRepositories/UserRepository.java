@@ -1,6 +1,6 @@
 package az.code.auctionbackend.repositories.usersRepositories;
 
-import az.code.auctionbackend.entities.users.UserProfile;
+import az.code.auctionbackend.entities.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

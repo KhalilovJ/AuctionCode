@@ -1,15 +1,11 @@
-package az.code.auctionbackend.entities.users;
+package az.code.auctionbackend.entities;
 
-import az.code.auctionbackend.entities.auction.Bid;
-import az.code.auctionbackend.entities.finance.Account;
-import az.code.auctionbackend.entities.finance.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Data
