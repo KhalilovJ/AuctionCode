@@ -2,6 +2,7 @@ package az.code.auctionbackend.entities;
 
 
 import az.code.auctionbackend.entities.Bid;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
