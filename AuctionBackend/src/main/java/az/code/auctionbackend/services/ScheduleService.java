@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 @Service
 public class ScheduleService {
 
-    @Scheduled(fixedDelay = 3000)
-    public void test() {
+    @Scheduled(cron = "${interval-in-cron-every-minute}")
+    public void test() throws InterruptedException {
 
         System.out.println("test " + LocalDateTime.now());
     }
+
 }
