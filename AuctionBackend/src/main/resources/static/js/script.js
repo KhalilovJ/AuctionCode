@@ -54,5 +54,12 @@ function getAllProducts(){
         })
         .catch(error => console.log(error))
 }
-getAllCategories()
-getAllProducts()
+// getAllCategories()
+// getAllProducts()
+
+function setNewAuction(){
+    let username = document.getElementById("usernameSpan").innerText
+    document.getElementById("createAuction").setAttribute("href", "/user/".concat(username).concat("/add_auction"))
+}
+
+setNewAuction()

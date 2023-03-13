@@ -49,4 +49,12 @@ public class Lot {
 
     @OneToMany(mappedBy = "lot")
     private List<Bid> bidHistory;
+
+    @Column(name = "pictures")
+    private String itemPictures;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    @JsonIgnore
+    private UserProfile user;
 }

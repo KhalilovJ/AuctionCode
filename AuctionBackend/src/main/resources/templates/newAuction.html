@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link th:href="@{/style/style.css}" rel="stylesheet">
+
+  <title>Registration</title>
+</head>
+<body>
+
+<form class="form-signin page" enctype="multipart/form-data" method="post" th:action="@{/open/api/lots/save}" th:object="${lot}" >
+  <!--  class="registerForm"-->
+
+  <div class="form-label-group">
+    <label>Item images</label>
+    <br><br>
+    <input type="file" multiple name="files" class="form-control" placeholder="Images"  >
+  </div>
+
+  <div class="form-label-group">
+    <input type="text" id="description" required th:field="*{description}" class="form-control" placeholder="Item description"  >
+    <label for="description">Item description</label>
+  </div>
+
+  <div class="form-label-group">
+    <input type="number" step="0.01" id="reservePrice" required th:field="*{reservePrice}" class="form-control" placeholder="Reserve Price"  >
+    <label for="reservePrice">Reserve Price</label>
+  </div>
+
+  <div class="form-label-group">
+    <input type="number" step="0.01" id="startingPrice" required th:field="*{startingPrice}" class="form-control" placeholder="Starting Price"  >
+    <label for="startingPrice">Starting Price</label>
+  </div>
+
+
+  <div class="form-label-group">
+    <input type="number" step="0.01" id="bidStep" required th:field="*{bidStep}" class="form-control" placeholder="Bid Step"  >
+    <label for="bidStep">Bid Step</label>
+  </div>
+
+  <div class="form-label-group">
+    <input type="datetime-local" id="startDate" th:onchange="minChanged()" required th:field="*{startDate}" class="form-control" >
+    <label for="startDate">Auction start time</label>
+  </div>
+
+  <div class="form-label-group">
+    <input type="datetime-local" id="endDate" required th:onchange="maxChanged()" th:field="*{endDate}" class="form-control" placeholder="Auction end time"  >
+    <label for="endDate">Auction end time</label>
+  </div>
+
+  <br>
+  <input class="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
+
+</form>
+
+
+<script type="text/javascript" th:src="@{/js/newauctionscripts.js}"></script>
+</body>
+</html>
