@@ -1,15 +1,19 @@
 package az.code.auctionbackend.controllers;
 
 
+import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
@@ -78,4 +82,12 @@ public class LotController {
     }
 
     // send details to winner
+
+    @PostMapping("/save")
+    public ModelAndView saveLot(@ModelAttribute LotDto lotDto){
+
+
+        System.out.println(lotDto);
+        return new ModelAndView("redirect:/home");
+    }
 }

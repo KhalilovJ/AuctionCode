@@ -18,6 +18,7 @@
   <span  th:id="currentBid" th:text="${auction.currentBid}"></span>
   <span  th:id="bid_step" th:text="${auction.bidStep}"></span>
   <span   th:text="${auction.description}"></span>
+  <span   th:text="${auction.endDate}"></span>
   <br>
 ===================== bids
   <div th:id="bids">
@@ -34,7 +35,8 @@
 <button th:onclick="UserAction()">PlaceBid</button>
 <br>
 <button th:onclick="buttonClickM()">-</button>
-<input type="text" id="inc" value="0"></input>
+<!--<input type="text" id="inc" value="0"></input>-->
+<input type="number" step="0.01" id="inc" value="0"></input>
 <button th:onclick="buttonClickP()">+</button>
 
 <script type="text/javascript" th:src="@{/js/auctionscripts.js}"></script>

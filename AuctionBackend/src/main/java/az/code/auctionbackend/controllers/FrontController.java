@@ -1,8 +1,11 @@
 package az.code.auctionbackend.controllers;
 
+import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.services.LotServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +34,20 @@ public class FrontController {
         }
 
         return model;
+    }
+
+    @GetMapping("/user/{username}/add_auction")
+    public ModelAndView newAuction(@PathVariable String username, @AuthenticationPrincipal UserDetails user){
+        if (username.equalsIgnoreCase(user.getUsername())){
+        ModelAndView model = new ModelAndView("newAuction");
+        LotDto lotDto = LotDto.builder().build();
+        model.addObject("lot", lotDto);
+        return model;}
+
+
+        else { // if username is incorrect
+            return new ModelAndView("redirect:/home");
+        }
     }
 
 }
