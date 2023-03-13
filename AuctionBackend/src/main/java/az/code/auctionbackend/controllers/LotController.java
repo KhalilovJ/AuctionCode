@@ -6,6 +6,7 @@ import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.UploadcareService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,7 +32,7 @@ import java.util.*;
 @Log4j2
 public class LotController {
 
-    private final LotService lotService;
+    private final LotServiceImpl lotService;
     private final RedisRepository redisRepository;
     private final ObjectMapper objectMapper;
 
@@ -91,7 +94,7 @@ public class LotController {
     // send details to winner
 
     @PostMapping("/save")
-    public ModelAndView saveLot(@ModelAttribute LotDto lotDto, @RequestParam("files") MultipartFile[] files){
+    public ModelAndView saveLot(@ModelAttribute LotDto lotDto, @RequestParam("files") MultipartFile[] files, @AuthenticationPrincipal UserDetails user){
 
         List<File> filesList = new ArrayList<>();
         List<String> fileIds = new ArrayList<>();
@@ -101,6 +104,16 @@ public class LotController {
         filesList.forEach(i-> {
             fileIds.add(uploadcareService.sendFile(i));
         });
+
+        StringBuilder imgs = new StringBuilder();
+        imgs.append("{");
+        for (int i = 0; i<fileIds.size(); i++){
+            if (i > 0){ imgs.append(",");}
+            imgs.append("\"" + i + "\":\"" + fileIds.get(i) + "\"");
+        }
+        imgs.append("}");
+
+        lotService.createLot(lotDto, imgs.toString(), user.getUsername());
 
         log.info("Lot created: " + lotDto);
         filesList.forEach(File::delete); // deleting temp files

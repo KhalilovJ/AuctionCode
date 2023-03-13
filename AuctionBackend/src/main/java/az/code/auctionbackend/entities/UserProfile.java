@@ -46,6 +46,10 @@ public class UserProfile {
     @JsonIgnore
     private List<Bid> bidList;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Lot> lots;
+
     public String toString(){
         return "User (id: " + id +
                 " Username: " + username +

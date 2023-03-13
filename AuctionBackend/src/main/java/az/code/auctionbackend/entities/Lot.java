@@ -2,6 +2,7 @@ package az.code.auctionbackend.entities;
 
 
 import az.code.auctionbackend.entities.Bid;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,4 +49,12 @@ public class Lot {
 
     @OneToMany(mappedBy = "lot")
     private List<Bid> bidHistory;
+
+    @Column(name = "pictures")
+    private String itemPictures;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    @JsonIgnore
+    private UserProfile user;
 }
