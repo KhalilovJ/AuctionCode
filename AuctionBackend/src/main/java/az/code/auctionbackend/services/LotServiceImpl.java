@@ -54,5 +54,7 @@ public class LotServiceImpl implements LotService {
         lot.setItemPictures(images);
         lot.setUser(user);
         save(lot);
+
+        // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
     }
 }
