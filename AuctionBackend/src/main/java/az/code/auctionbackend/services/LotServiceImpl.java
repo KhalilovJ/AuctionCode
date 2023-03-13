@@ -58,6 +58,7 @@ public class LotServiceImpl implements LotService {
         Lot lot = lotDto.getLot();
         lot.setItemPictures(images);
         lot.setUser(user);
+        lot.setStatus(1);
         Lot tmpLot = save(lot);
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
@@ -66,5 +67,11 @@ public class LotServiceImpl implements LotService {
                 .id(tmpLot.getId())
                 .endDate(tmpLot.getEndDate())
                 .build());
+    }
+
+    public void changeStatus(long lotId, int status) {
+        Lot lot = lotRepository.findById(lotId).get();
+        lot.setStatus(status);
+        save(lot);
     }
 }

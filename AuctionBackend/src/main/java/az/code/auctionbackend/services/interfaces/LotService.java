@@ -12,4 +12,6 @@ public interface LotService {
     List<Lot> getAllLots();
 
     Optional<Lot> findLotById(long id);
+
+    void changeStatus(long lotId, int status);
 }

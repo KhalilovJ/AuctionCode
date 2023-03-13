@@ -62,7 +62,6 @@ public class ScheduleService {
 
     public void checkTimer(List<RedisTimer> redisTimerList) {
 
-
         System.out.println("Куда идём мы с Пятачком - большой-большой секрет!");
 
         for (RedisTimer l : redisTimerList) {
@@ -71,10 +70,13 @@ public class ScheduleService {
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
 //            System.out.println(l);
-//            if (endTime.isEqual(currentTime)) {
-//
-//                System.out.println("\t" + l.getEndDate() + " BOOM");
-//            }
+            if (endTime.isEqual(currentTime)) {
+
+                // 2 - auction finished
+                lotService.changeStatus(l.getId(), 2);
+
+                System.out.println("Кто ходит в гости по утрам");
+            }
         }
     }
 
