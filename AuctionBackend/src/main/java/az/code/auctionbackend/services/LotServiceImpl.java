@@ -58,7 +58,8 @@ public class LotServiceImpl implements LotService {
         Lot lot = lotDto.getLot();
         lot.setItemPictures(images);
         lot.setUser(user);
-        lot.setStatus(1);
+        // 0 - not active
+        lot.setStatus(0);
         Lot tmpLot = save(lot);
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
