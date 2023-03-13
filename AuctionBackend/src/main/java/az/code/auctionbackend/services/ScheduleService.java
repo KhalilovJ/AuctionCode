@@ -72,8 +72,15 @@ public class ScheduleService {
 //            System.out.println(l);
             if (endTime.isEqual(currentTime)) {
 
-                // 2 - auction finished
-                lotService.changeStatus(l.getId(), 2);
+                long lotId = l.getId();
+                Lot lot = lotService.findLotById(lotId).get();
+
+                // TODO @Jamal
+                // Предлагаю в Лот держать CurrentBid в виде Bid Entity
+                // Таким образом будем знать кто сделал последнюю ставку
+
+                // User # @userId won lot # @lotId
+                lotService.closeLot(-1, lotId);
 
                 System.out.println("Кто ходит в гости по утрам");
             }

@@ -75,4 +75,12 @@ public class LotServiceImpl implements LotService {
         lot.setStatus(status);
         save(lot);
     }
+
+    public void closeLot(long userId, long lotId) {
+        // 2 - auction finished
+        changeStatus(lotId, 2);
+
+        // как то отправляем клиенту добрую весть :)
+        System.out.println();
+    }
 }
