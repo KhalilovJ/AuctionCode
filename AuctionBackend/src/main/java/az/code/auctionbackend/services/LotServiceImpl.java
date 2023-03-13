@@ -4,8 +4,10 @@ import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.entities.redis.RedisTimer;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
+import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,11 @@ import java.util.Optional;
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
+    private final RedisRepository redisRepository;
+
     private final AuctionRealtimeRepo auctionRealtimeRepo;
     private final UserServiceImpl userService;
+
 
     @Override
     public Lot save(Lot lot) {
@@ -53,8 +58,13 @@ public class LotServiceImpl implements LotService {
         Lot lot = lotDto.getLot();
         lot.setItemPictures(images);
         lot.setUser(user);
-        save(lot);
+        Lot tmpLot = save(lot);
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
+        // Пихать. Eee Boy
+        redisRepository.saveRedis(RedisTimer.builder()
+                .id(tmpLot.getId())
+                .endDate(tmpLot.getEndDate())
+                .build());
     }
 }
