@@ -18,6 +18,10 @@
   <span  th:id="currentBid" th:text="${auction.currentBid}"></span>
   <span  th:id="bid_step" th:text="${auction.bidStep}"></span>
   <span   th:text="${auction.description}"></span>
+  <span   th:text="${auction.endDate}"></span>
+  <br>
+
+  <img th:id="imgs1" style="max-width:100px;max-height:100px;" alt="Girl in a jacket">
   <br>
 ===================== bids
   <div th:id="bids">
@@ -34,9 +38,23 @@
 <button th:onclick="UserAction()">PlaceBid</button>
 <br>
 <button th:onclick="buttonClickM()">-</button>
-<input type="text" id="inc" value="0"></input>
+<!--<input type="text" id="inc" value="0"></input>-->
+<input type="number" step="0.01" id="inc" value="0"></input>
 <button th:onclick="buttonClickP()">+</button>
 
 <script type="text/javascript" th:src="@{/js/auctionscripts.js}"></script>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+
+  var imgsJson = /*[[${auction.itemPictures}]]*/ 'default';
+  let json = JSON.parse(imgsJson);
+  let url = "https://ucarecdn.com/".concat(json[0]).concat("/");
+  console.log(url);
+
+  document.getElementById("imgs1").setAttribute("src", url);
+  /*]]>*/
+</script>
+
 </body>
 </html>
