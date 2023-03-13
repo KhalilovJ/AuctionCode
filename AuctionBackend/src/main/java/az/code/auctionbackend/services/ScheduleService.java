@@ -39,6 +39,7 @@ public class ScheduleService {
         redisRepository.saveRedis(RedisTimer.builder().id(3).endDate(LocalDateTime.now().plusMinutes(3)).build());
 
         redisTimerList = redisRepository.getAllRedis().values().stream().toList();
+        System.out.println(redisTimerList);
 
 //        list.add(Lot.builder().description("lot 1").endDate(LocalDateTime.now().plusMinutes(1)).build());
 //        list.add(Lot.builder().description("lot 2").endDate(LocalDateTime.now().plusMinutes(2)).build());
@@ -60,6 +61,7 @@ public class ScheduleService {
     }
 
     public void checkTimer(List<RedisTimer> redisTimerList) {
+
 
         for (RedisTimer l : redisTimerList) {
 
