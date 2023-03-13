@@ -15,37 +15,43 @@
 </head>
 <body>
 
-<form class="form-signin page" method="post" th:action="@{/open/api/lots/save}" th:object="${lot}" >
+<form class="form-signin page" enctype="multipart/form-data" method="post" th:action="@{/open/api/lots/save}" th:object="${lot}" >
   <!--  class="registerForm"-->
 
   <div class="form-label-group">
-    <input type="text" id="description" required th:field="*{description}" class="form-control" placeholder="Username"  >
+    <label>Item images</label>
+    <br><br>
+    <input type="file" multiple name="files" class="form-control" placeholder="Images"  >
+  </div>
+
+  <div class="form-label-group">
+    <input type="text" id="description" required th:field="*{description}" class="form-control" placeholder="Item description"  >
     <label for="description">Item description</label>
   </div>
 
   <div class="form-label-group">
-    <input type="number" step="0.01" id="reservePrice" required th:field="*{reservePrice}" class="form-control" placeholder="Username"  >
-    <label for="reservePrice">reservePrice</label>
+    <input type="number" step="0.01" id="reservePrice" required th:field="*{reservePrice}" class="form-control" placeholder="Reserve Price"  >
+    <label for="reservePrice">Reserve Price</label>
   </div>
 
   <div class="form-label-group">
-    <input type="number" step="0.01" id="startingPrice" required th:field="*{startingPrice}" class="form-control" placeholder="Username"  >
+    <input type="number" step="0.01" id="startingPrice" required th:field="*{startingPrice}" class="form-control" placeholder="Starting Price"  >
     <label for="startingPrice">Starting Price</label>
   </div>
 
 
   <div class="form-label-group">
-    <input type="number" step="0.01" id="bidStep" required th:field="*{bidStep}" class="form-control" placeholder="Username"  >
+    <input type="number" step="0.01" id="bidStep" required th:field="*{bidStep}" class="form-control" placeholder="Bid Step"  >
     <label for="bidStep">Bid Step</label>
   </div>
 
   <div class="form-label-group">
-    <input type="datetime-local" id="startDate" th:onchange="minChanged()" required th:field="*{startDate}" class="form-control" placeholder="Username"  >
+    <input type="datetime-local" id="startDate" th:onchange="minChanged()" required th:field="*{startDate}" class="form-control" >
     <label for="startDate">Auction start time</label>
   </div>
 
   <div class="form-label-group">
-    <input type="datetime-local" id="endDate" required th:onchange="maxChanged()" th:field="*{endDate}" class="form-control" placeholder="Username"  >
+    <input type="datetime-local" id="endDate" required th:onchange="maxChanged()" th:field="*{endDate}" class="form-control" placeholder="Auction end time"  >
     <label for="endDate">Auction end time</label>
   </div>
 

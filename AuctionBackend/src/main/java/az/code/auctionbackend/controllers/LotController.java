@@ -6,27 +6,34 @@ import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.UploadcareService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/open/api/lots")
 @RequiredArgsConstructor
+@Log4j2
 public class LotController {
 
     private final LotService lotService;
     private final RedisRepository redisRepository;
     private final ObjectMapper objectMapper;
+
+    private final UploadcareService uploadcareService;
 
     //get all lots
 
@@ -84,10 +91,34 @@ public class LotController {
     // send details to winner
 
     @PostMapping("/save")
-    public ModelAndView saveLot(@ModelAttribute LotDto lotDto){
+    public ModelAndView saveLot(@ModelAttribute LotDto lotDto, @RequestParam("files") MultipartFile[] files){
 
+        List<File> filesList = new ArrayList<>();
+        List<String> fileIds = new ArrayList<>();
 
-        System.out.println(lotDto);
+        Arrays.stream(files).toList().forEach(a-> filesList.add(convert(a)));
+
+        filesList.forEach(i-> {
+            fileIds.add(uploadcareService.sendFile(i));
+        });
+
+        log.info("Lot created: " + lotDto);
+        filesList.forEach(File::delete); // deleting temp files
+
         return new ModelAndView("redirect:/home");
+    }
+
+    public static File convert(MultipartFile file) {
+        File convFile = new File("files\\" + file.getOriginalFilename());
+        try {
+            convFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(convFile);
+            fos.write(file.getBytes());
+            fos.close();
+        } catch (IOException e){
+            log.warn(e);
+        }
+
+        return convFile;
     }
 }
