@@ -57,4 +57,13 @@ public class Lot {
     @JoinColumn(name = "userId")
     @JsonIgnore
     private UserProfile user;
+
+    /*
+        0 - not active
+        1 - active
+        2 - auction finished
+        3 - paid
+     */
+    @Column(name = "status")
+    private int status;
 }

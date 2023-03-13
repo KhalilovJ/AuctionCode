@@ -34,12 +34,12 @@ public class ScheduleService {
     @PostConstruct
     public void work() {
 
-        redisRepository.saveRedis(RedisTimer.builder().id(1).endDate(LocalDateTime.now().plusMinutes(1)).build());
-        redisRepository.saveRedis(RedisTimer.builder().id(2).endDate(LocalDateTime.now().plusMinutes(2)).build());
-        redisRepository.saveRedis(RedisTimer.builder().id(3).endDate(LocalDateTime.now().plusMinutes(3)).build());
-
-        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
-        System.out.println(redisTimerList);
+//        redisRepository.saveRedis(RedisTimer.builder().id(1).endDate(LocalDateTime.now().plusMinutes(1)).build());
+//        redisRepository.saveRedis(RedisTimer.builder().id(2).endDate(LocalDateTime.now().plusMinutes(2)).build());
+//        redisRepository.saveRedis(RedisTimer.builder().id(3).endDate(LocalDateTime.now().plusMinutes(3)).build());
+//
+//        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
+//        System.out.println(redisTimerList);
 
 //        list.add(Lot.builder().description("lot 1").endDate(LocalDateTime.now().plusMinutes(1)).build());
 //        list.add(Lot.builder().description("lot 2").endDate(LocalDateTime.now().plusMinutes(2)).build());
@@ -63,12 +63,14 @@ public class ScheduleService {
     public void checkTimer(List<RedisTimer> redisTimerList) {
 
 
+        System.out.println("Куда идём мы с Пятачком - большой-большой секрет!");
+
         for (RedisTimer l : redisTimerList) {
 
             LocalDateTime endTime = l.getEndDate().truncatedTo(ChronoUnit.MINUTES);
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-            System.out.println(l);
+//            System.out.println(l);
 //            if (endTime.isEqual(currentTime)) {
 //
 //                System.out.println("\t" + l.getEndDate() + " BOOM");
