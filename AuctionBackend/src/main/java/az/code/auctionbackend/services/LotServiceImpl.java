@@ -80,10 +80,12 @@ public class LotServiceImpl implements LotService {
     public void closeLot(long lotId) {
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
+        redisRepository.deleteRedis(lotId);
 
         Bid winnerBid = getWinnerBid(lot);
 
         accountService.purchaseV2(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
+
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
