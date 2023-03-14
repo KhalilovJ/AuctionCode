@@ -27,7 +27,7 @@ public class Transaction {
     @JoinColumn(name = "accountId", nullable = false)
     private Account account;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "senderId", nullable = false)
     UserProfile sender;
 }

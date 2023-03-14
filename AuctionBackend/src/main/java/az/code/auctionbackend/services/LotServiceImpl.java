@@ -101,8 +101,8 @@ public class LotServiceImpl implements LotService {
         return bid;
     }
 
-//    @PostConstruct
-//    private void testWin(){
-//        closeLot(202);
-//    }
+    @PostConstruct
+    private void testWin(){
+        closeLot(202);
+    }
 }

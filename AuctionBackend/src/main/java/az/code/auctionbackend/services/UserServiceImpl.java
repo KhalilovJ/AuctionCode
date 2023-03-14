@@ -73,4 +73,8 @@ public class UserServiceImpl implements UserService {
     public Optional<UserProfile> findByUsername(String username) {
         return  userRepository.findByUsername(username);
     }
+
+    public List<UserProfile> findByIds(List<Long> ids){
+        return userRepository.findByIds(ids);
+    }
 }

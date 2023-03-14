@@ -26,9 +26,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    AccountRepository accountRepository;
-    UserRepository userRepository;
-    TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
+
+    private final TranactionService tranactionService;
+
 
 //    @PostConstruct
     public void AccountTest() {
@@ -75,6 +77,7 @@ public class AccountServiceImpl implements AccountService {
 
         double balance = account.getBalance();
         account.setBalance(balance + amount);
+
         accountRepository.save(account);
     }
 
@@ -113,12 +116,15 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Transactional
-    public void purchaseV2(UserProfile sender, UserProfile receiver, double amount){
+    public Transaction purchaseV2(UserProfile sender, UserProfile receiver, double amount){
 
         topUpBalance(sender.getAccount().getId(), amount*-1);
 
         topUpBalance(receiver.getAccount().getId(), amount);
 
+        return tranactionService.createTransaction(amount, receiver.getId(), sender.getId());
 
     }
+
+
 }
