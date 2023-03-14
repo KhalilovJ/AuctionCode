@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.hibernate.SessionFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,11 @@ public class AccountServiceImpl implements AccountService {
     @PostConstruct
     public void AccountTest() {
 
+        //Error
+//        transactionRepository.save(Transaction.builder()
+//                .account(getAccountDetails(1))
+//                .amount(5)
+//                .sender(getAccountDetails(2).getUser()).build());
 
         System.out.println(getAccountDetails(1));
         System.out.println(getAccountDetails(2));
