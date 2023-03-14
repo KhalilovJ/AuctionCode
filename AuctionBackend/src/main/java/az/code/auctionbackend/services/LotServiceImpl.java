@@ -1,7 +1,6 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.LotDto;
-import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -81,15 +81,15 @@ public class LotServiceImpl implements LotService {
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
 
-        Bid winnerbid = getWinnderBid(lot);
+        Bid winnerBid = getWinnerBid(lot);
 
-        accountService.purchaseV2(winnerbid.getUser(), lot.getUser(), winnerbid.getBid());
+        accountService.purchaseV2(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
     }
 
-    private Bid getWinnderBid(Lot lot){
+    private Bid getWinnerBid(Lot lot){
         Bid bid = lot.getBidHistory().get(0);
         for (Bid bid1: lot.getBidHistory()){
             if (bid1.getBid() > bid.getBid()){
@@ -101,8 +101,20 @@ public class LotServiceImpl implements LotService {
         return bid;
     }
 
+    /**
+     * loads all lots with status 0 and 1 from the database into Redis memory if the redis is empty
+     */
 //    @PostConstruct
-//    private void testWin(){
-//        closeLot(202);
+//    private void lotsImport(){
+//
+//        if(redisRepository.getAllRedis().isEmpty()) {
+//
+//            lotRepository.getAllNonFinishedLots()
+//                    .forEach(l -> redisRepository.saveRedis(
+//                            RedisTimer.builder()
+//                                .id(l.getId())
+//                                .endDate(l.getEndDate())
+//                                .build()));
+//        }
 //    }
 }

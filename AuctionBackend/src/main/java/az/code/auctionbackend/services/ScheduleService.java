@@ -86,26 +86,4 @@ public class ScheduleService {
             }
         }
     }
-
-
-//    @Autowired
-//    private TaskScheduler taskScheduler;
-//
-//    Map<String, ScheduledFuture<?>> jobsMap = new HashMap<>();
-//
-//    public void scheduleATask(String jobId, Runnable tasklet, String cronExpression) {
-//        System.out.println("Scheduling task with job id: " + jobId + " and cron expression: " + cronExpression);
-//        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(tasklet,
-//                new CronTrigger(cronExpression, TimeZone.getTimeZone(TimeZone.getDefault().getID())));
-//        jobsMap.put(jobId, scheduledTask);
-//    }
-//
-//    public void removeScheduledTask(String jobId) {
-//        ScheduledFuture<?> scheduledTask = jobsMap.get(jobId);
-//        if(scheduledTask != null) {
-//            scheduledTask.cancel(true);
-//            jobsMap.put(jobId, null);
-//        }
-//    }
-
 }
