@@ -62,7 +62,7 @@ public class ScheduleService {
 
     public void checkTimer(List<RedisTimer> redisTimerList) {
 
-        System.out.println("Куда идём мы с Пятачком - большой-большой секрет!");
+        System.out.println("Куда идём мы с Пятачком - большой-большой секрет! " + LocalDateTime.now());
 
         for (RedisTimer l : redisTimerList) {
 
@@ -82,7 +82,7 @@ public class ScheduleService {
                 // User # @userId won lot # @lotId
                 lotService.closeLot(-1, lotId);
 
-                System.out.println("Кто ходит в гости по утрам");
+                System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now());
             }
         }
     }
