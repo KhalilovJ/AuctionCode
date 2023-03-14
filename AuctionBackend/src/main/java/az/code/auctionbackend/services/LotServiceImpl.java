@@ -2,6 +2,7 @@ package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.DTOs.UserDto;
+import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisTimer;
@@ -9,6 +10,7 @@ import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRe
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
     private final RedisRepository redisRepository;
-
+    private final AccountServiceImpl accountService;
     private final AuctionRealtimeRepo auctionRealtimeRepo;
     private final UserServiceImpl userService;
 
@@ -58,7 +60,6 @@ public class LotServiceImpl implements LotService {
         Lot lot = lotDto.getLot();
         lot.setItemPictures(images);
         lot.setUser(user);
-        // 0 - not active
         lot.setStatus(0);
         Lot tmpLot = save(lot);
 
@@ -70,17 +71,38 @@ public class LotServiceImpl implements LotService {
                 .build());
     }
 
-    public void changeStatus(long lotId, int status) {
+    public Lot changeStatus(Long lotId, int status) {
         Lot lot = lotRepository.findById(lotId).get();
         lot.setStatus(status);
-        save(lot);
+        return save(lot);
     }
 
-    public void closeLot(long userId, long lotId) {
+    public void closeLot(long lotId) {
         // 2 - auction finished
-        changeStatus(lotId, 2);
+        Lot lot = changeStatus(lotId, 2);
+
+        Bid winnerbid = getWinnderBid(lot);
+
+        accountService.purchaseV2(winnerbid.getUser(), lot.getUser(), winnerbid.getBid());
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
     }
+
+    private Bid getWinnderBid(Lot lot){
+        Bid bid = lot.getBidHistory().get(0);
+        for (Bid bid1: lot.getBidHistory()){
+            if (bid1.getBid() > bid.getBid()){
+                bid = bid1;
+            } else if (bid1.getBid() == bid.getBid() && bid.getBidTime().isAfter(bid1.getBidTime())){
+
+            }
+        }
+        return bid;
+    }
+
+//    @PostConstruct
+//    private void testWin(){
+//        closeLot(202);
+//    }
 }

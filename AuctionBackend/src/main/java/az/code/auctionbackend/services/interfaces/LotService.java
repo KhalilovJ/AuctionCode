@@ -13,6 +13,6 @@ public interface LotService {
 
     Optional<Lot> findLotById(long id);
 
-    void changeStatus(long lotId, int status);
-    void closeLot(long userId, long lotId);
+    Lot changeStatus(Long lotId, int status);
+    void closeLot(long lotId);
 }

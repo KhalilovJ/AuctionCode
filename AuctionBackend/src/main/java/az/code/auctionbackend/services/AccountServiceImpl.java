@@ -30,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
     UserRepository userRepository;
     TransactionRepository transactionRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void AccountTest() {
 
         //Error
@@ -109,5 +109,16 @@ public class AccountServiceImpl implements AccountService {
 //        addTransaction(receiverAccount, transaction);
 
         return transaction;
+    }
+
+
+    @Transactional
+    public void purchaseV2(UserProfile sender, UserProfile receiver, double amount){
+
+        topUpBalance(sender.getAccount().getId(), amount*-1);
+
+        topUpBalance(receiver.getAccount().getId(), amount);
+
+
     }
 }

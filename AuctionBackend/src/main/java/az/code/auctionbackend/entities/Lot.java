@@ -47,7 +47,7 @@ public class Lot {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "lot")
+    @OneToMany(mappedBy = "lot", fetch = FetchType.EAGER)
     private List<Bid> bidHistory;
 
     @Column(name = "pictures")
@@ -58,7 +58,7 @@ public class Lot {
     @JsonIgnore
     private UserProfile user;
 
-    /*
+    /**
         0 - not active
         1 - active
         2 - auction finished
