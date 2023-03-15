@@ -84,8 +84,7 @@ public class LotServiceImpl implements LotService {
 
         Bid winnerBid = getWinnerBid(lot);
 
-        accountService.purchaseV2(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
-
+        accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
@@ -101,6 +100,10 @@ public class LotServiceImpl implements LotService {
             }
         }
         return bid;
+    }
+
+    private Bid getWinnerBidV2(Lot lot){
+        return lot.getBidHistory().get(lot.getBidHistory().size() - 1);
     }
 
     /**

@@ -79,7 +79,6 @@ public class ScheduleService {
                 // Предлагаю в Лот держать CurrentBid в виде Bid Entity
                 // Таким образом будем знать кто сделал последнюю ставку
 
-                // User # @userId won lot # @lotId
                 lotService.closeLot(lotId);
 
                 System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now());

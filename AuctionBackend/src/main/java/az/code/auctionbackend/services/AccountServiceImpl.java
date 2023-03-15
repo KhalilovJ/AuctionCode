@@ -87,11 +87,6 @@ public class AccountServiceImpl implements AccountService {
 
         Account senderAccount = sender.getAccount();
         Account receiverAccount = receiver.getAccount();
-        Transaction transaction = Transaction.builder()
-                .amount(amount)
-                .account(receiverAccount)
-                .sender(sender)
-                .build();
 
         //TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
@@ -101,30 +96,12 @@ public class AccountServiceImpl implements AccountService {
         if (senderAccount.getBalance() < amount) {
             return null;
         }
-        // update sender`s Balance
-        topUpBalance(senderAccount.getId(), amount * -1);
-//        addTransaction(senderAccount, transaction);
 
-        // TODO fix bug. transaction
-
-        // update receiver`s Balance
-        topUpBalance(receiverAccount.getId(), amount);
-//        addTransaction(receiverAccount, transaction);
-
-        return transaction;
-    }
-
-
-    @Transactional
-    public Transaction purchaseV2(UserProfile sender, UserProfile receiver, double amount){
-
-        topUpBalance(sender.getAccount().getId(), amount*-1);
+        topUpBalance(sender.getAccount().getId(), amount * -1);
 
         topUpBalance(receiver.getAccount().getId(), amount);
 
         return tranactionService.createTransaction(amount, receiver.getId(), sender.getId());
 
     }
-
-
 }
