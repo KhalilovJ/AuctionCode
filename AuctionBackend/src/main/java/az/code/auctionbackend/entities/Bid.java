@@ -21,8 +21,10 @@ public class Bid {
     private Long id;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne
     @JoinColumn(name="lotId", nullable=false)
+    @ToString.Exclude
     @JsonIgnore
     private Lot lot;
 

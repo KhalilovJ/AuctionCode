@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,11 @@ public class Lot {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    @Column(name = "id", nullable = false)
+//    private Long id;
 
     @Column
     private String description;
@@ -47,7 +53,7 @@ public class Lot {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "lot", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "lot", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Bid> bidHistory;
 
     @Column(name = "pictures")
@@ -55,7 +61,7 @@ public class Lot {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
-    @JsonIgnore
+//    @JsonIgnore
     private UserProfile user;
 
     /**

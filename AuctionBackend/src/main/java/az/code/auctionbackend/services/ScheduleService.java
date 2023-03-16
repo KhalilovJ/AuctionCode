@@ -44,8 +44,10 @@ public class ScheduleService {
                 .endDate(LocalDateTime.now().plusMinutes(1))
                 .build();
         System.out.println("lotDto!!! " + lotDto.getEndDate());
-        lotService.createLot(lotDto, null, "test");
+//        lotService.createLot(lotDto, null, "test");
 
+
+        lotService.createLot(lotDto, null, "user6");
     }
 
     @Scheduled(cron = "${interval-in-cron-every-minute}")
@@ -63,6 +65,7 @@ public class ScheduleService {
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
             System.out.println(l);
+            //|| endTime.isBefore(currentTime)
             if (endTime.isEqual(currentTime)) {
 
                 long lotId = l.getId();
@@ -72,7 +75,7 @@ public class ScheduleService {
                 // Предлагаю в Лот держать CurrentBid в виде Bid Entity
                 // Таким образом будем знать кто сделал последнюю ставку
 
-                System.out.println("lotId " + lotId);
+                log.error("lotId " + lotId);
                 lotService.closeLot(lotId);
 
                 System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now() + " " + l.getId());

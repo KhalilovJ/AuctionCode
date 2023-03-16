@@ -4,6 +4,7 @@ import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
@@ -19,14 +20,24 @@ public class AuctionRealtimeRepo {
         return auctionData.getOrDefault(id, null);
     }
 
-    public Lot deletelot(Long id){
+    public Lot deleteLot(Long id){
         Lot lot = getLot(id);
-        auctionData.remove(lot);
+        System.out.println("deleteLot " );
+        auctionData.remove(lot.getId());
+        System.out.println();
         return lot;
     }
 
     public Lot makeBid(Long lotId, Bid bid){
         Lot lot = auctionData.get(lotId);
+
+        if (lot.getBidHistory() == null) {
+            lot.setBidHistory(new ArrayList<>());
+            return lot;
+        }
+
+        System.out.println("makeBid ");
+
         lot.getBidHistory().add(bid);
         if (bid.getBid() > lot.getCurrentBid()){
             lot.setCurrentBid(bid.getBid());

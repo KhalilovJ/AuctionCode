@@ -1,6 +1,7 @@
 package az.code.auctionbackend.entities.redis;
 
 
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class RedisTimer implements Serializable {
     @Serial
     private static final long serialVersionUID = 8820922885878929357L;
 
+    @Id
     private long id;
 
     private LocalDateTime endDate;
