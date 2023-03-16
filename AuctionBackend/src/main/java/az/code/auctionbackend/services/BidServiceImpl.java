@@ -1,6 +1,5 @@
 package az.code.auctionbackend.services;
 
-import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.BidResponseDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
@@ -8,6 +7,7 @@ import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.services.interfaces.BidService;
+import az.code.auctionbackend.services.interfaces.LotService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class BidServiceImpl implements BidService {
     // Repositories
     private final BidRepository bidRepository;
     // Services
-    private final LotServiceImpl lotService;
+    private final LotService lotService;
     private final UserServiceImpl userService;
     private final AuctionRealtimeRepo auctionRealtimeRepo;
 

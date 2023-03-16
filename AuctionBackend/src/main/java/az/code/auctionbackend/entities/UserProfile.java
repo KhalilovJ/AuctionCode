@@ -50,6 +50,10 @@ public class UserProfile {
 //    @JsonIgnore
     private List<Lot> lots;
 
+//    @OneToMany(mappedBy = "lotWinner")
+//    @JsonIgnore
+//    private List<Lot> wonLots;
+
     public String toString(){
         return "User (id: " + id +
                 " Username: " + username +

@@ -90,3 +90,42 @@ function updateBid(){
 }
 
 updateBid();
+
+var date1 = new Date("2023-03-18 14:14:49.363691");
+
+var upgradeTime = 172801;
+
+var seconds = upgradeTime;
+function timer() {
+    var difference = date1.getTime() - Date.now();
+    // console.log(difference);
+
+    var daysDifference = Math.floor(difference/1000/60/60/24);
+    difference -= daysDifference*1000*60*60*24
+
+    var hoursDifference = Math.floor(difference/1000/60/60);
+    difference -= hoursDifference*1000*60*60
+
+    var minutesDifference = Math.floor(difference/1000/60);
+    difference -= minutesDifference*1000*60
+
+    var secondsDifference = Math.floor(difference/1000);
+
+    // console.log('difference = ' +
+    //   daysDifference + ' day/s ' +
+    //   hoursDifference + ' hour/s ' +
+    //   minutesDifference + ' minute/s ' +
+    //   secondsDifference + ' second/s ');
+
+    function pad(n) {
+        return (n < 10 ? "0" + n : n);
+    }
+    document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " +  pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
+    if (seconds == 0) {
+        clearInterval(countdownTimer);
+        document.getElementById('countdown').innerHTML = "Completed";
+    } else {
+        seconds--;
+    }
+}
+var countdownTimer = setInterval('timer()', 1000);

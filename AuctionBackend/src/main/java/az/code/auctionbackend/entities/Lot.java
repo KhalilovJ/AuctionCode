@@ -31,6 +31,8 @@ public class Lot {
 
     @Column
     private String description;
+    @Column
+    private String lotName;
 
     @Column(name = "reserve_price")
     private double reservePrice;
@@ -63,6 +65,12 @@ public class Lot {
     @JoinColumn(name = "userId")
 //    @JsonIgnore
     private UserProfile user;
+
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "winnerId")
+////    @JsonIgnore
+//    private UserProfile lotWinner;
 
     /**
         0 - not active
