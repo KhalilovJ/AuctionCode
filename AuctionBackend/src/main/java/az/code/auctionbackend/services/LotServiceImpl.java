@@ -68,7 +68,6 @@ public class LotServiceImpl implements LotService {
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
         // Пихать. Eee Boy
-        log.error("createLot / before  saveRedis");
         redisRepository.saveRedis(RedisTimer.builder()
                 .id(tmpLot.getId())
                 .endDate(tmpLot.getEndDate())
@@ -86,10 +85,12 @@ public class LotServiceImpl implements LotService {
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
 
-
 //        Bid winnerBid = getWinnerBid(lot);
-//        Bid winnerBid = getWinnerBidV2(lot);
-//        accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
+        Bid winnerBid = getWinnerBidV2(lot);
+
+        if (winnerBid != null) {
+            accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
+        }
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
@@ -108,7 +109,11 @@ public class LotServiceImpl implements LotService {
         return bid;
     }
 
-    private Bid getWinnerBidV2(Lot lot){
+    private Bid getWinnerBidV2(Lot lot) {
+
+        //TODO validation
+        if (lot.getBidHistory().isEmpty()) return null;
+
         return lot.getBidHistory().get(lot.getBidHistory().size() - 1);
     }
 

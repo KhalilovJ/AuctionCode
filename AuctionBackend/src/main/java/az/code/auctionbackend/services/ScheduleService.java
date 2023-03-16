@@ -1,11 +1,14 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisTimer;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
+import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.interfaces.BidService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -23,26 +26,18 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
+@AllArgsConstructor
 @Slf4j
 public class ScheduleService {
 
-    @Autowired
-    LotService lotService;
 
-    @Autowired
-    RedisRepository redisRepository;
-
-    List<RedisTimer> redisTimerList = new ArrayList<>();
+    private final LotService lotService;
+    private final RedisRepository redisRepository;
+    private final BidService bidService;
 
     @PostConstruct
     public void work() {
 
-//        redisRepository.saveRedis(RedisTimer.builder().id(1).endDate(LocalDateTime.now().plusMinutes(1)).build());
-//        redisRepository.saveRedis(RedisTimer.builder().id(2).endDate(LocalDateTime.now().plusMinutes(2)).build());
-//        redisRepository.saveRedis(RedisTimer.builder().id(3).endDate(LocalDateTime.now().plusMinutes(3)).build());
-//
-//        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
-//        System.out.println(redisTimerList);
         LotDto lotDto = LotDto.builder()
                 .bidStep(1)
                 .description("test")
@@ -51,26 +46,11 @@ public class ScheduleService {
         System.out.println("lotDto!!! " + lotDto.getEndDate());
         lotService.createLot(lotDto, null, "test");
 
-
-        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
-
-//        list.add(Lot.builder().description("lot 1").endDate(LocalDateTime.now().plusMinutes(1)).build());
-//        list.add(Lot.builder().description("lot 2").endDate(LocalDateTime.now().plusMinutes(2)).build());
-//        list.add(Lot.builder().description("lot 3").endDate(LocalDateTime.now().plusMinutes(3)).build());
-
-//        lotService.save(Lot.builder()
-//                .bidStep(5)
-//                .description("lot 3")
-//                .endDate(LocalDateTime.now().plusMinutes(3))
-//                .reservePrice(25)
-//                .startDate(LocalDateTime.now().minusDays(5))
-//                .startingPrice(10)
-//                .build());
     }
 
     @Scheduled(cron = "${interval-in-cron-every-minute}")
     public void scheduledRateChecker() {
-        checkTimer(redisTimerList);
+        checkTimer(redisRepository.getAllRedis().values().stream().toList());
     }
 
     public void checkTimer(List<RedisTimer> redisTimerList) {
@@ -85,7 +65,6 @@ public class ScheduleService {
             System.out.println(l);
             if (endTime.isEqual(currentTime)) {
 
-                log.error("IF checkTimer");
                 long lotId = l.getId();
                 Lot lot = lotService.findLotById(lotId).get();
 
