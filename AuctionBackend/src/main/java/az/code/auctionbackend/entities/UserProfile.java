@@ -46,8 +46,8 @@ public class UserProfile {
     @JsonIgnore
     private List<Bid> bidList;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JsonIgnore
     private List<Lot> lots;
 
     public String toString(){
