@@ -11,6 +11,7 @@ import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
@@ -61,10 +63,12 @@ public class LotServiceImpl implements LotService {
         lot.setItemPictures(images);
         lot.setUser(user);
         lot.setStatus(0);
+        // save(lot) - writes data to the database
         Lot tmpLot = save(lot);
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
         // Пихать. Eee Boy
+        log.error("createLot / before  saveRedis");
         redisRepository.saveRedis(RedisTimer.builder()
                 .id(tmpLot.getId())
                 .endDate(tmpLot.getEndDate())
@@ -78,16 +82,18 @@ public class LotServiceImpl implements LotService {
     }
 
     public void closeLot(long lotId) {
+        log.error("IN closeLot");
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
-        redisRepository.deleteRedis(lotId);
 
-        Bid winnerBid = getWinnerBid(lot);
 
-        accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
+//        Bid winnerBid = getWinnerBid(lot);
+//        Bid winnerBid = getWinnerBidV2(lot);
+//        accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
 
         // как то отправляем клиенту добрую весть :)
         System.out.println();
+        redisRepository.deleteRedis(lotId);
     }
 
     private Bid getWinnerBid(Lot lot){
@@ -109,17 +115,17 @@ public class LotServiceImpl implements LotService {
     /**
      * loads all lots with status 0 and 1 from the database into Redis memory if the redis is empty
      */
-//    @PostConstruct
-//    private void lotsImport(){
-//
-//        if(redisRepository.getAllRedis().isEmpty()) {
-//
-//            lotRepository.getAllNonFinishedLots()
-//                    .forEach(l -> redisRepository.saveRedis(
-//                            RedisTimer.builder()
-//                                .id(l.getId())
-//                                .endDate(l.getEndDate())
-//                                .build()));
-//        }
-//    }
+    @PostConstruct
+    private void lotsImport(){
+
+        if(redisRepository.getAllRedis().isEmpty()) {
+
+            lotRepository.getAllNonFinishedLots()
+                    .forEach(l -> redisRepository.saveRedis(
+                            RedisTimer.builder()
+                                .id(l.getId())
+                                .endDate(l.getEndDate())
+                                .build()));
+        }
+    }
 }

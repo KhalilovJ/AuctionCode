@@ -1,5 +1,6 @@
 package az.code.auctionbackend.services;
 
+import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisTimer;
@@ -9,6 +10,7 @@ import az.code.auctionbackend.services.interfaces.LotService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
+@Slf4j
 public class ScheduleService {
 
     @Autowired
@@ -40,6 +43,16 @@ public class ScheduleService {
 //
 //        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
 //        System.out.println(redisTimerList);
+        LotDto lotDto = LotDto.builder()
+                .bidStep(1)
+                .description("test")
+                .endDate(LocalDateTime.now().plusMinutes(1))
+                .build();
+        System.out.println("lotDto!!! " + lotDto.getEndDate());
+        lotService.createLot(lotDto, null, "test");
+
+
+        redisTimerList = redisRepository.getAllRedis().values().stream().toList();
 
 //        list.add(Lot.builder().description("lot 1").endDate(LocalDateTime.now().plusMinutes(1)).build());
 //        list.add(Lot.builder().description("lot 2").endDate(LocalDateTime.now().plusMinutes(2)).build());
@@ -69,9 +82,10 @@ public class ScheduleService {
             LocalDateTime endTime = l.getEndDate().truncatedTo(ChronoUnit.MINUTES);
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-//            System.out.println(l);
+            System.out.println(l);
             if (endTime.isEqual(currentTime)) {
 
+                log.error("IF checkTimer");
                 long lotId = l.getId();
                 Lot lot = lotService.findLotById(lotId).get();
 
@@ -79,9 +93,10 @@ public class ScheduleService {
                 // Предлагаю в Лот держать CurrentBid в виде Bid Entity
                 // Таким образом будем знать кто сделал последнюю ставку
 
+                System.out.println("lotId " + lotId);
                 lotService.closeLot(lotId);
 
-                System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now());
+                System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now() + " " + l.getId());
             }
         }
     }
