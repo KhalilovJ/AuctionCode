@@ -47,8 +47,6 @@ public class Lot {
     @Nullable
     private double currentBid;
 
-    // TODO Bid history
-
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
@@ -67,16 +65,21 @@ public class Lot {
     private UserProfile user;
 
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "winnerId")
-////    @JsonIgnore
-//    private UserProfile lotWinner;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "winnerId")
+//    @JsonIgnore
+    private UserProfile lotWinner;
 
     /**
+
+       -2 - not sold
+       -1 - not approved
         0 - not active
         1 - active
         2 - auction finished
-        3 - paid
+        3 - waiting to approve by second place
+        4 - paid
+
      */
     @Column(name = "status")
     private int status;
