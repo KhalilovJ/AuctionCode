@@ -7,11 +7,13 @@ import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRe
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -48,14 +50,25 @@ public class FrontController {
 
     @GetMapping("/user/{username}/add_auction")
     public ModelAndView newAuction(@PathVariable String username, @AuthenticationPrincipal UserDetails user){
-        if (username.equalsIgnoreCase(user.getUsername())){
-        ModelAndView model = new ModelAndView("newAuction");
-        LotDto lotDto = LotDto.builder().build();
-        model.addObject("lot", lotDto);
-        return model;}
+
+        String un = user.getUsername();
 
 
-        else { // if username is incorrect
+        if (username.equalsIgnoreCase(un)) {
+
+            // TODO validation
+            // userService.findSellerProfileById(un).isChecked() - verified seller
+            if (!userService.findSellerProfileById(un).isChecked()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+
+            ModelAndView model = new ModelAndView("newAuction");
+            LotDto lotDto = LotDto.builder().build();
+            model.addObject("lot", lotDto);
+
+            return model;
+        } else {
+            // if username is incorrect
             return new ModelAndView("redirect:/home");
         }
     }

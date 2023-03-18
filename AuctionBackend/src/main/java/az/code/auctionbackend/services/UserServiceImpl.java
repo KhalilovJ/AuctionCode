@@ -2,9 +2,12 @@ package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Account;
+import az.code.auctionbackend.entities.SellerData;
 import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.repositories.SellerRepo;
 import az.code.auctionbackend.repositories.UserRepo;
 import az.code.auctionbackend.repositories.usersRepositories.RoleRepository;
+import az.code.auctionbackend.repositories.usersRepositories.SellerDataRepository;
 import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
@@ -23,8 +26,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserRepo userRepo;
+    private final SellerRepo sellerRepo;
     @Autowired
     private RoleRepository roleRepo;
+    private final SellerDataRepository sellerDataRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -57,11 +62,22 @@ public class UserServiceImpl implements UserService {
         Account account = Account.builder().isActive(true).user(user).balance(200).build();
 
         user.setAccount(account);
-
         userRepo.saveUser(user);
 
         log.info(user + " has been saved");
 
+        SellerData sellerData = SellerData.builder()
+                .userProfile(userRepository.findByUsername(user.getUsername()).get())
+                .build();
+
+        sellerRepo.saveSeller(sellerData);
+
+        log.info(sellerData + " has been saved");
+    }
+
+    @Override
+    public SellerData findSellerProfileById(String username) {
+        return sellerDataRepository.findByUsername(username);
     }
 
     @Override

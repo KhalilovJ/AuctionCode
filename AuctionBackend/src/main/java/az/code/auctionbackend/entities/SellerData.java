@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @Entity
@@ -21,6 +22,9 @@ public class SellerData {
     private Long id;
 
     private long TIN;
+
+    // TODO temporarily
+    @Value("true")
     private boolean checked;
 
     @OneToOne

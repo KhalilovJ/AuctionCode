@@ -88,8 +88,10 @@ public class AccountServiceImpl implements AccountService {
         Account senderAccount = sender.getAccount();
         Account receiverAccount = receiver.getAccount();
 
+
         //TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
+            // userService.findByUsername(un).get().isBlocked()
             return null;
         }
 
