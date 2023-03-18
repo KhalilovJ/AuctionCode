@@ -92,6 +92,7 @@ public class AccountServiceImpl implements AccountService {
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
             return null;
         }
+
         //TODO validation
         if (senderAccount.getBalance() < amount) {
             return null;
