@@ -12,8 +12,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,8 +43,8 @@ public class AccountServiceImpl implements AccountService {
 //                .amount(5)
 //                .sender(getAccountDetails(2).getUser()).build());
 
-        System.out.println(getAccountDetails(1));
-        System.out.println(getAccountDetails(2));
+//        System.out.println(getAccountDetails(1));
+//        System.out.println(getAccountDetails(3));
 
 //        topUpBalance(1, -10);
 //        topUpBalance(2, 100);
@@ -88,16 +90,16 @@ public class AccountServiceImpl implements AccountService {
         Account senderAccount = sender.getAccount();
         Account receiverAccount = receiver.getAccount();
 
-
-        //TODO validation
+        // TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
             // userService.findByUsername(un).get().isBlocked()
             return null;
         }
 
-        //TODO validation
+        // TODO validation
         if (senderAccount.getBalance() < amount) {
-            return null;
+            // status - 406
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
         topUpBalance(sender.getAccount().getId(), amount * -1);

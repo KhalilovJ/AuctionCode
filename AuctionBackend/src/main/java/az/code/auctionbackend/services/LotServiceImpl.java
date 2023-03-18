@@ -114,7 +114,7 @@ public class LotServiceImpl implements LotService {
             log.error(bidList.toString());
             lot.setBidHistory(bidList);
 
-            Bid winnerBid = getWinnerBidV2(lot);
+            Bid winnerBid = getWinnerBid(lot);
 
             if (winnerBid != null) {
                 accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());

@@ -37,7 +37,7 @@ public class ScheduleService {
 
 //     @PostConstruct
 //     public void work() {
-
+//
 //         LotDto lotDto = LotDto.builder()
 //                 .bidStep(1)
 //                 .description("test")
@@ -45,8 +45,8 @@ public class ScheduleService {
 //                 .build();
 //         System.out.println("lotDto!!! " + lotDto.getEndDate());
 // //        lotService.createLot(lotDto, null, "test");
-
-
+//
+//
 //         lotService.createLot(lotDto, null, "user6");
 //     }
 
@@ -71,7 +71,7 @@ public class ScheduleService {
                 long lotId = l.getId();
                 Lot lot = lotService.findLotById(lotId).get();
 
-                // TODO @Jamal
+                //TODO @Jamal
                 // Предлагаю в Лот держать CurrentBid в виде Bid Entity
                 // Таким образом будем знать кто сделал последнюю ставку
 
