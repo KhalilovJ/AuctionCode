@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,14 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
-
-    private final TranactionService tranactionService;
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TranactionService tranactionService;
 
 
 //    @PostConstruct
@@ -56,9 +58,14 @@ public class AccountServiceImpl implements AccountService {
 //        System.out.println(getAccountDetails(2));
     }
 
+    @Override
+    public List<Account> getAllAccounts() {
+        return  accountRepository.findAll();
+    }
 
     @Override
     public Account getAccountDetails(long accountId) {
+        System.out.println(accountRepository.getAccountBy(accountId));
         return accountRepository.getAccountBy(accountId).orElse(null);
     }
 

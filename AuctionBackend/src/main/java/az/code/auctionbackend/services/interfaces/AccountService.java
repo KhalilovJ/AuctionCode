@@ -4,6 +4,7 @@ import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.Transaction;
 import az.code.auctionbackend.entities.UserProfile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AccountService {
@@ -15,4 +16,6 @@ public interface AccountService {
     void topUpBalance(long accountId, double amount);
 
     Transaction purchase(UserProfile sender, UserProfile receiver, double amount);
+
+    List<Account> getAllAccounts();
 }

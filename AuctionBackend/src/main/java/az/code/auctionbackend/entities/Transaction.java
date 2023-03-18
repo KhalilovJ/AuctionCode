@@ -2,10 +2,7 @@ package az.code.auctionbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -25,6 +22,7 @@ public class Transaction {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", nullable = false)
+    @JsonIgnore
     private Account account;
 
     @ManyToOne
