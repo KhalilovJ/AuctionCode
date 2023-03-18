@@ -94,6 +94,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public Transaction purchase(UserProfile sender, UserProfile receiver, double amount) {
 
+        System.out.println();
         Account senderAccount = sender.getAccount();
         Account receiverAccount = receiver.getAccount();
 

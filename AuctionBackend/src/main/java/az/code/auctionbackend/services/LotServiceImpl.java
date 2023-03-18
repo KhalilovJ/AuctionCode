@@ -71,6 +71,7 @@ public class LotServiceImpl implements LotService {
         // save(lot) - writes data to the database
         Lot tmpLot = save(lot);
 
+        System.out.println("LOT ID " + tmpLot.getId());
 
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
@@ -115,6 +116,7 @@ public class LotServiceImpl implements LotService {
             lot.setBidHistory(bidList);
 
             Bid winnerBid = getWinnerBid(lot);
+            log.error("winnerBid " + winnerBid);
 
             if (winnerBid != null) {
                 accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());

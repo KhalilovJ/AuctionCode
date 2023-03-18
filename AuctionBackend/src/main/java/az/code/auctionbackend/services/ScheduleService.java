@@ -35,20 +35,20 @@ public class ScheduleService {
     private final RedisRepository redisRepository;
     private final BidService bidService;
 
-//     @PostConstruct
-//     public void work() {
-//
-//         LotDto lotDto = LotDto.builder()
-//                 .bidStep(1)
-//                 .description("test")
-//                 .endDate(LocalDateTime.now().plusMinutes(1))
-//                 .build();
-//         System.out.println("lotDto!!! " + lotDto.getEndDate());
-// //        lotService.createLot(lotDto, null, "test");
-//
-//
-//         lotService.createLot(lotDto, null, "user6");
-//     }
+     @PostConstruct
+     public void work() {
+
+         LotDto lotDto = LotDto.builder()
+                 .bidStep(1)
+                 .description("test")
+                 .endDate(LocalDateTime.now().plusMinutes(2))
+                 .build();
+         System.out.println("lotDto!!! " + lotDto.getEndDate());
+ //        lotService.createLot(lotDto, null, "test");
+
+
+         lotService.createLot(lotDto, null, "user6");
+     }
 
     @Scheduled(cron = "${interval-in-cron-every-minute}")
     public void scheduledRateChecker() {
