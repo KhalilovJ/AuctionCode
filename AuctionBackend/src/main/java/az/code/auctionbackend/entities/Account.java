@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -30,6 +31,10 @@ public class Account {
 
     private double balance;
 
+
+    // for user banning
+
+    @Value("true")
     private boolean isActive;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)

@@ -2,7 +2,10 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.services.LotServiceImpl;
+import az.code.auctionbackend.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,19 +21,26 @@ public class FrontController {
 
     @Autowired
     private LotServiceImpl lotService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AuctionRealtimeRepo realtimeRepo;
 
     @GetMapping("/lots/{lotId}")
     public ModelAndView getLot(@PathVariable Long lotId){
 
         ModelAndView model;
 
-        Lot lot = lotService.findRedisLotByIdActive(lotId);
+        Lot lot = realtimeRepo.getLot(lotId);
 
-        if (lot.getStartDate() != null && lot.getStartDate().isAfter(LocalDateTime.now())){
+        if (lot == null){lot = lotService.findRedisLotByIdActive(lotId);}
+
+        if (lot == null || lot.getStartDate() != null && lot.getStartDate().isAfter(LocalDateTime.now())){
             model = new ModelAndView("index");
         } else {
             model = new ModelAndView("auction");
             model.addObject("auction", lot);
+            model.addObject("user", lot.getUser());
         }
 
         return model;

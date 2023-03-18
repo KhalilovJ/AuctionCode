@@ -31,7 +31,7 @@ public class BidController {
 //    private ApplicationContext context;
 
     @Autowired
-    private final BidServiceImpl bidService;
+    private BidServiceImpl bidService;
 //private final LotService lotService;
 //private final UserService userService;
     private final ObjectMapper objectMapper;
