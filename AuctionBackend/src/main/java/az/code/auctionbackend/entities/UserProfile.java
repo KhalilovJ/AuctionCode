@@ -62,7 +62,4 @@ public class UserProfile {
                 " Rating: " + rating + " )";
     }
 
-    @OneToMany(mappedBy = "sender")
-    @JsonIgnore
-    private List<Transaction> transactionList;
 }

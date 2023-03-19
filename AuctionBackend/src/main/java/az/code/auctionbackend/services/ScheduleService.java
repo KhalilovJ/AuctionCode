@@ -57,16 +57,18 @@ public class ScheduleService {
 
     public void checkTimer(List<RedisTimer> redisTimerList) {
 
-        System.out.println("Куда идём мы с Пятачком - большой-большой секрет! " + LocalDateTime.now());
+        log.info("Redis checking " + LocalDateTime.now());
+//        System.out.println("Куда идём мы с Пятачком - большой-большой секрет! " + LocalDateTime.now());
 
         for (RedisTimer l : redisTimerList) {
 
             LocalDateTime endTime = l.getEndDate().truncatedTo(ChronoUnit.MINUTES);
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-            System.out.println(l);
+//            System.out.println(l);
+            log.info(l.toString());
             //|| endTime.isBefore(currentTime)
-            if (endTime.isEqual(currentTime)) {
+            if (endTime.isEqual(currentTime) ||endTime.isBefore(currentTime) ) {
 
                 long lotId = l.getId();
                 Lot lot = lotService.findLotById(lotId).get();
@@ -78,8 +80,14 @@ public class ScheduleService {
                 log.error("lotId " + lotId);
                 lotService.closeLot(lotId);
 
-                System.out.println("Кто ходит в гости по утрам " + LocalDateTime.now() + " " + l.getId());
+                log.info("Scheduler checked " + LocalDateTime.now() + " " + l.getId());
             }
         }
     }
+
+    @PostConstruct
+    private void init(){
+        lotService.closeLot(1);
+    }
+
 }

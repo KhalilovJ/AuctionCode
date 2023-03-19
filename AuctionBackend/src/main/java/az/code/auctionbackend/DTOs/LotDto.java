@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class LotDto {
 
     private String description;
+    private String lotName;
     private double reservePrice;
     private double startingPrice;
     private double bidStep;
@@ -23,6 +24,7 @@ public class LotDto {
 
     public Lot getLot(){
         return Lot.builder()
+                .lotName(lotName)
                 .description(description).reservePrice(reservePrice).startingPrice(startingPrice)
                 .bidStep(bidStep).startDate(startDate).endDate(endDate)
         .build();

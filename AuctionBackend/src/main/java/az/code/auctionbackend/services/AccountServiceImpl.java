@@ -3,6 +3,7 @@ package az.code.auctionbackend.services;
 import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.Transaction;
 import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.repositories.financeRepositories.AccountRepo;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepository;
 import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
 import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
@@ -11,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,15 +29,15 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
+@Log4j2
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TranactionService tranactionService;
+    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
+    private final AccountRepo accRepo;
 
+    private final TranactionService tranactionService;
 
 //    @PostConstruct
     public void AccountTest() {
@@ -65,9 +68,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountDetails(long accountId) {
-        System.out.println(accountRepository.getAccountBy(accountId));
-        return accountRepository.getAccountBy(accountId).orElse(null);
+
+        return accountRepository.getAccountById(accountId).orElse(null);
     }
+
 
     @Override
     public double getBalance(long accountId) {
@@ -87,16 +91,16 @@ public class AccountServiceImpl implements AccountService {
         double balance = account.getBalance();
         account.setBalance(balance + amount);
 
-        accountRepository.save(account);
+//        accountRepository.save(account);0.
+        log.info("saving account " + account);
+        log.info("saved" + accRepo.saveAccount(account));
     }
 
     @Override
-    @Transactional
-    public Transaction purchase(UserProfile sender, UserProfile receiver, double amount) {
+    public Transaction purchase(long senderId, long receiverId, double amount) {
 
-        System.out.println();
-        Account senderAccount = sender.getAccount();
-        Account receiverAccount = receiver.getAccount();
+        Account senderAccount = accountRepository.getAccountById(senderId).orElse(null);
+        Account receiverAccount = accountRepository.getAccountById(receiverId).orElse(null);
 
         // TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
@@ -110,11 +114,48 @@ public class AccountServiceImpl implements AccountService {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        topUpBalance(sender.getAccount().getId(), amount * -1);
+//        Transaction tr =  makePurchase(sender, receiver, amount);
+//        return tr;
+        topUpBalance(senderId, amount * -1);
+//
+        topUpBalance(receiverId, amount);
 
-        topUpBalance(receiver.getAccount().getId(), amount);
-
-        return tranactionService.createTransaction(amount, receiver.getId(), sender.getId());
+        return tranactionService.createTransaction(amount, receiverId, senderId);
 
     }
+
+
+
+//    private Transaction makePurchase(UserProfile sender, UserProfile receiver, double amount){
+//
+//        Transaction transaction = Transaction.builder()
+//                .amount(amount)
+//                .transactionTime(LocalDateTime.now())
+//                .build();
+//
+//        Account senderAccount = topUpBalance(sender, amount);
+//        Account receiverAccount = getAccountDetails(receiver.getAccount().getId());
+//
+//        senderAccount.setBalance(senderAccount.getBalance() - amount);
+//        receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+//
+//        transaction = transaction.toBuilder()
+//                .senderAccount(senderAccount)
+//                .senderAccountId(senderAccount.getId())
+//                .account(receiverAccount).build();
+//
+//        if (senderAccount.getTransactions() == null){
+//            List<Transaction> newList = new ArrayList<>();
+//            newList.add(transaction);
+//            senderAccount.setTransactions(newList);
+//        } else {
+//            senderAccount.getTransactions().add(transaction);
+//        }
+//
+//        Account acc =tranactionService.saveAccount(receiverAccount);
+//
+//        System.out.println("saved " + acc);
+//        return transaction;
+//
+//    }
 }

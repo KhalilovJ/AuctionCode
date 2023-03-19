@@ -1,12 +1,16 @@
 package az.code.auctionbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
-@Builder
+@Builder(toBuilder = true)
 @Table(name = "transactions")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,10 +26,21 @@ public class Transaction {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", nullable = false)
-    @JsonIgnore
+    @ToString.Exclude
     private Account account;
+//
+////    @ManyToOne
+////    @JoinColumn(name = "senderId", nullable = false)
+////    UserProfile sender;
+//
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "accountId",insertable=false, updatable=false)
+    @ToString.Exclude
+    private Account senderAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "senderId", nullable = false)
-    UserProfile sender;
+    @Column(name = "senderAccId")
+    Long senderAccountId;
+
+    @Column(name = "time")
+    LocalDateTime transactionTime;
 }
