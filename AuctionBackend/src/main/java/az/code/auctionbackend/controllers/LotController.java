@@ -99,20 +99,22 @@ public class LotController {
 
         List<File> filesList = new ArrayList<>();
         List<String> fileIds = new ArrayList<>();
+        StringBuilder imgs = new StringBuilder();
 
+        if (files != null){
         Arrays.stream(files).toList().forEach(a-> filesList.add(convert(a)));
 
         filesList.forEach(i-> {
             fileIds.add(uploadcareService.sendFile(i));
         });
 
-        StringBuilder imgs = new StringBuilder();
         imgs.append("{");
         for (int i = 0; i<fileIds.size(); i++){
             if (i > 0){ imgs.append(",");}
             imgs.append("\"" + i + "\":\"" + fileIds.get(i) + "\"");
         }
         imgs.append("}");
+        }
 
         lotService.createLot(lotDto, imgs.toString(), user.getUsername());
 

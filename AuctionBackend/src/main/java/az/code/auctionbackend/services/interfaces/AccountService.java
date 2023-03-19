@@ -14,5 +14,5 @@ public interface AccountService {
 
     void topUpBalance(long accountId, double amount);
 
-    Transaction purchase(UserProfile sender, UserProfile receiver, double amount);
+    Transaction purchase(long senderId, long receiverId, double amount);
 }

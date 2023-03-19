@@ -26,6 +26,11 @@ public class FrontController {
     @Autowired
     private AuctionRealtimeRepo realtimeRepo;
 
+    @GetMapping("/")
+    public ModelAndView getIndex(){
+        return new ModelAndView("redirect:/home");
+    }
+
     @GetMapping("/lots/{lotId}")
     public ModelAndView getLot(@PathVariable Long lotId){
 
@@ -33,7 +38,10 @@ public class FrontController {
 
         Lot lot = realtimeRepo.getLot(lotId);
 
-        if (lot == null){lot = lotService.findRedisLotByIdActive(lotId);}
+        if (lot == null){lot = lotService.findRedisLotByIdActive(lotId);
+            lot.setCurrentBid(lot.getStartingPrice());
+            realtimeRepo.addLot(lot);
+        }
 
         if (lot == null || lot.getStartDate() != null && lot.getStartDate().isAfter(LocalDateTime.now())){
             model = new ModelAndView("index");

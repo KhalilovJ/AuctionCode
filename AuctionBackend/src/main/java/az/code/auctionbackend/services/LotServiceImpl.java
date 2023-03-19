@@ -86,38 +86,51 @@ public class LotServiceImpl implements LotService {
     public Lot changeStatus(Long lotId, int status) {
         Lot lot = lotRepository.findById(lotId).get();
         log.error(lot.toString());
-        System.out.println("test");
+//        System.out.println("test");
         lot.setStatus(status);
 
-        System.out.println("test2");
+//        System.out.println("test2");
         return lot;
     }
 
     public void closeLot(long lotId) {
-        log.error("IN closeLot");
+        log.info("IN closeLot");
         // 2 - auction finished
+
         Lot lot = changeStatus(lotId, 2);
-        List<Bid> bidList = auctionRealtimeRepo.getLot(lotId).getBidHistory();
-        log.error("auctionRealtimeRepo.getLot(lotId).getBidHistory() ");
+//        Lot lot = lotRepository.getReferenceById(lotId); // remove it
+
+        Lot lotRam = auctionRealtimeRepo.getLot(lotId);  // lot could be not initiated
+        if (lotRam == null){
+            lotRam = lot;
+            auctionRealtimeRepo.addLot(lot);
+        }
+
+        List<Bid> bidList = lotRam.getBidHistory();
+        log.info("auctionRealtimeRepo.getLot(lotId).getBidHistory() ");
 
 
         // nobody made bids
         if (bidList == null) {
-            log.error("nobody made bids");
+            log.info("nobody made bids");
             bidList = new ArrayList<>();
             lot.setBidHistory(bidList);
         }
 
         // somebody made bids
         if (!bidList.isEmpty()) {
-            log.error("somebody made bids");
-            log.error(bidList.toString());
+            log.info("somebody made bids");
+            log.info(bidList.toString());
             lot.setBidHistory(bidList);
 
-            Bid winnerBid = getWinnerBidV2(lot);
+            Bid winnerBid = getWinnerBid(lot);
 
             if (winnerBid != null) {
-                accountService.purchase(winnerBid.getUser(), lot.getUser(), winnerBid.getBid());
+                accountService.purchase(
+                        winnerBid.getUser().getAccount().getId(),
+                        lot.getUser().getAccount().getId(),
+                        winnerBid.getBid()
+                );
             }
         }
 
@@ -145,6 +158,7 @@ public class LotServiceImpl implements LotService {
 
             }
         }
+        log.info("Lot " + lot.getId() + " winner: " + bid.getUser().getUsername());
         return bid;
     }
 

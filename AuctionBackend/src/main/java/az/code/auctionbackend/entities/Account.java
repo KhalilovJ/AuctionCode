@@ -2,10 +2,7 @@ package az.code.auctionbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
@@ -39,4 +36,11 @@ public class Account {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
+
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "senderAccount", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    @ToString.Exclude
+//    private List<Transaction> transactionsSent;
+
+
 }
