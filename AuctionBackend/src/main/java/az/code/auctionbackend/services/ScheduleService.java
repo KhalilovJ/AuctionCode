@@ -4,7 +4,6 @@ import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.entities.redis.RedisTimer;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
@@ -55,12 +54,12 @@ public class ScheduleService {
         checkTimer(redisRepository.getAllRedis().values().stream().toList());
     }
 
-    public void checkTimer(List<RedisTimer> redisTimerList) {
+    public void checkTimer(List<RedisLot> redisTimerList) {
 
         log.info("Redis checking " + LocalDateTime.now());
 //        System.out.println("Куда идём мы с Пятачком - большой-большой секрет! " + LocalDateTime.now());
 
-        for (RedisTimer l : redisTimerList) {
+        for (RedisLot l : redisTimerList) {
 
             LocalDateTime endTime = l.getEndDate().truncatedTo(ChronoUnit.MINUTES);
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
@@ -85,9 +84,9 @@ public class ScheduleService {
         }
     }
 
-    @PostConstruct
-    private void init(){
-        lotService.closeLot(1);
-    }
+//    @PostConstruct
+//    private void init(){
+//        lotService.closeLot(1);
+//    }
 
 }

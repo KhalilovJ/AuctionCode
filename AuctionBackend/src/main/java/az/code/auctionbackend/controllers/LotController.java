@@ -5,7 +5,6 @@ import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.entities.redis.RedisTimer;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.UploadcareService;
@@ -54,7 +53,7 @@ public class LotController {
      * Get all active lots from Redis
      */
     @GetMapping("/active")
-    public ResponseEntity<Map<Long, RedisTimer>> getAllActiveLots() {
+    public ResponseEntity<Map<Long, RedisLot>> getAllActiveLots() {
 
         return ResponseEntity.ok(redisRepository.getAllRedis());
     }
@@ -71,7 +70,7 @@ public class LotController {
     @PostMapping("/lot")
     public ResponseEntity<Lot> save(@RequestBody Lot lot) {
 
-        RedisTimer redisLot = objectMapper.convertValue(lot, RedisTimer.class);
+        RedisLot redisLot = objectMapper.convertValue(lot, RedisLot.class);
         // TODO set real ID
         redisLot.setId(new Random().nextLong());
 

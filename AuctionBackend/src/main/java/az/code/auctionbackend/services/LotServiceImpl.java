@@ -4,12 +4,13 @@ import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
-import az.code.auctionbackend.entities.redis.RedisTimer;
+import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -76,10 +77,11 @@ public class LotServiceImpl implements LotService {
 
         // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
         // Пихать. Eee Boy
-        redisRepository.saveRedis(RedisTimer.builder()
+        redisRepository.saveRedis(RedisLot.builder()
                 .id(tmpLot.getId())
                 .endDate(tmpLot.getEndDate())
                 .build());
+
 
         auctionRealtimeRepo.addLot(tmpLot);
     }
@@ -93,24 +95,15 @@ public class LotServiceImpl implements LotService {
 //        System.out.println("test2");
         return lot;
     }
-
     public void closeLot(long lotId) {
-        log.info("IN closeLot");
+        log.info("IN closeLot v2");
+
         // 2 - auction finished
-
         Lot lot = changeStatus(lotId, 2);
-//        Lot lot = lotRepository.getReferenceById(lotId); // remove it
 
-
-        Lot lotRam = auctionRealtimeRepo.getLot(lotId);  // lot could be not initiated
-        if (lotRam == null){
-            lotRam = lot;
-            auctionRealtimeRepo.addLot(lot);
-        }
-
-        List<Bid> bidList = lotRam.getBidHistory();
-        log.info("auctionRealtimeRepo.getLot(lotId).getBidHistory() ");
-
+        RedisLot redisLot = redisRepository.getRedis(lotId);
+        List<Bid> bidList = redisLot.getBidHistory();
+        log.info("redisLot.getBidHistory() - done");
 
         // nobody made bids
         if (bidList == null) {
@@ -122,7 +115,7 @@ public class LotServiceImpl implements LotService {
         // somebody made bids
         if (!bidList.isEmpty()) {
             log.info("somebody made bids");
-            log.info(bidList.toString());
+            log.info("Bids: " + bidList.toString());
             lot.setBidHistory(bidList);
 
             Bid winnerBid = getWinnerBid(lot);
@@ -136,20 +129,71 @@ public class LotServiceImpl implements LotService {
             }
         }
 
-//        log.error(auctionRealtimeRepo.getLot(lotId).toString());
-
-//        Bid winnerBid = getWinnerBid(lot);
-
         log.error(lot.toString());
+        // save lot to DB
         lotRepository.save(lot);
 
         // как то отправляем клиенту добрую весть :)
-        System.out.println();
+        System.out.println("WINNER!");
         // delete from Redis
         redisRepository.deleteRedis(lotId);
-        // delete from RAM
-        auctionRealtimeRepo.deleteLot(lotId);
     }
+//    public void closeLot(long lotId) {
+//        log.info("IN closeLot");
+//        // 2 - auction finished
+//
+//        Lot lot = changeStatus(lotId, 2);
+////        Lot lot = lotRepository.getReferenceById(lotId); // remove it
+//
+//
+//        Lot lotRam = auctionRealtimeRepo.getLot(lotId);  // lot could be not initiated
+//        if (lotRam == null){
+//            lotRam = lot;
+//            auctionRealtimeRepo.addLot(lot);
+//        }
+//
+//        List<Bid> bidList = lotRam.getBidHistory();
+//        log.info("auctionRealtimeRepo.getLot(lotId).getBidHistory() ");
+//
+//
+//        // nobody made bids
+//        if (bidList == null) {
+//            log.info("nobody made bids");
+//            bidList = new ArrayList<>();
+//            lot.setBidHistory(bidList);
+//        }
+//
+//        // somebody made bids
+//        if (!bidList.isEmpty()) {
+//            log.info("somebody made bids");
+//            log.info(bidList.toString());
+//            lot.setBidHistory(bidList);
+//
+//            Bid winnerBid = getWinnerBid(lot);
+//
+//            if (winnerBid != null) {
+//                accountService.purchase(
+//                        winnerBid.getUser().getAccount().getId(),
+//                        lot.getUser().getAccount().getId(),
+//                        winnerBid.getBid()
+//                );
+//            }
+//        }
+//
+////        log.error(auctionRealtimeRepo.getLot(lotId).toString());
+//
+////        Bid winnerBid = getWinnerBid(lot);
+//
+//        log.error(lot.toString());
+//        lotRepository.save(lot);
+//
+//        // как то отправляем клиенту добрую весть :)
+//        System.out.println();
+//        // delete from Redis
+//        redisRepository.deleteRedis(lotId);
+//        // delete from RAM
+//        auctionRealtimeRepo.deleteLot(lotId);
+//    }
 
     private Bid getWinnerBid(Lot lot){
         Bid bid = lot.getBidHistory().get(0);
@@ -183,7 +227,7 @@ public class LotServiceImpl implements LotService {
 
             lotRepository.getAllNonFinishedLots()
                     .forEach(l -> redisRepository.saveRedis(
-                            RedisTimer.builder()
+                            RedisLot.builder()
                                 .id(l.getId())
                                 .endDate(l.getEndDate())
                                 .build()));
