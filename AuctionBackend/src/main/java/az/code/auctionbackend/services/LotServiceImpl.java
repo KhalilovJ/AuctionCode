@@ -1,5 +1,6 @@
 package az.code.auctionbackend.services;
 
+import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
@@ -12,11 +13,14 @@ import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +37,10 @@ public class LotServiceImpl implements LotService {
     private final AuctionRealtimeRepo auctionRealtimeRepo;
     private final UserServiceImpl userService;
 
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EntityManager em;
 
     @Override
     @Transactional
@@ -75,13 +83,17 @@ public class LotServiceImpl implements LotService {
         System.out.println("LOT ID " + tmpLot.getId());
 
 
-        // Мурад, сейв лот даст тебе новый лот, его в редис очередь пихаешь
-        // Пихать. Eee Boy
-        redisRepository.saveRedis(RedisLot.builder()
-                .id(tmpLot.getId())
-                .endDate(tmpLot.getEndDate())
-                .build());
+        RedisLot test = objectMapper.convertValue(lotDto, RedisLot.class);
+        test.setId(lot.getId());
+        test.setItemPictures(images);
+        test.setUserId(user.getId());
 
+        List<BidDto> bidList = new ArrayList<>();
+        bidList.add(BidDto.builder().bid(5).bidTime(LocalDateTime.now()).lotId(lot.getId()).userId(user.getId()).build());
+
+        test.setBidHistory(bidList);
+
+        redisRepository.saveRedis(test);
 
         auctionRealtimeRepo.addLot(tmpLot);
     }
@@ -95,6 +107,7 @@ public class LotServiceImpl implements LotService {
 //        System.out.println("test2");
         return lot;
     }
+    @Transactional
     public void closeLot(long lotId) {
         log.info("IN closeLot v2");
 
@@ -102,36 +115,50 @@ public class LotServiceImpl implements LotService {
         Lot lot = changeStatus(lotId, 2);
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
-        List<Bid> bidList = redisLot.getBidHistory();
+        List<BidDto> bidDtoList = redisLot.getBidHistory();
+        List<Bid> bidList = new ArrayList<>();
         log.info("redisLot.getBidHistory() - done");
+        log.info("bidList " + bidDtoList);
 
         // nobody made bids
-        if (bidList == null) {
+        if (bidDtoList == null) {
             log.info("nobody made bids");
-            bidList = new ArrayList<>();
+            bidDtoList = new ArrayList<>();
             lot.setBidHistory(bidList);
         }
 
         // somebody made bids
-        if (!bidList.isEmpty()) {
+        if (!bidDtoList.isEmpty()) {
             log.info("somebody made bids");
-            log.info("Bids: " + bidList.toString());
+            log.info("Bids: " + bidDtoList.toString());
+
+            for (BidDto bidDto : bidDtoList) {
+                bidList.add(Bid.builder()
+                        .lot(lotRepository.findById(bidDto.getLotId()).get())
+                        .user(userService.findProfileById(bidDto.getUserId()).get())
+                        .bidTime(bidDto.getBidTime())
+                        .build());
+            }
+
             lot.setBidHistory(bidList);
 
             Bid winnerBid = getWinnerBid(lot);
 
-            if (winnerBid != null) {
-                accountService.purchase(
-                        winnerBid.getUser().getAccount().getId(),
-                        lot.getUser().getAccount().getId(),
-                        winnerBid.getBid()
-                );
-            }
+            // TODO fix bug -.IndexOutOfBoundsException
+//            if (winnerBid != null) {
+//                accountService.purchase(
+//                        winnerBid.getUser().getAccount().getId(),
+//                        lot.getUser().getAccount().getId(),
+//                        winnerBid.getBid()
+//                );
+//            }
         }
 
         log.error(lot.toString());
         // save lot to DB
-        lotRepository.save(lot);
+//        lotRepository.save(lot);
+
+        em.merge(lot);
 
         // как то отправляем клиенту добрую весть :)
         System.out.println("WINNER!");

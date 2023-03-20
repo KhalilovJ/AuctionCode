@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ import java.util.List;
 @Table(name = "profiles")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class UserProfile{
 
 
     @Id

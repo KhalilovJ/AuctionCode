@@ -1,5 +1,6 @@
 package az.code.auctionbackend.entities.redis;
 
+import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
@@ -47,13 +48,13 @@ public class RedisLot implements Serializable {
 
     private LocalDateTime endDate;
 
-    private List<Bid> bidHistory;
+    private List<BidDto> bidHistory;
 
     private String itemPictures;
 
-    private UserProfile user;
+    private long userId;
 
-    private UserProfile lotWinner;
+    private long lotWinnerId;
 
     private int status;
 

@@ -7,6 +7,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,6 @@ public class Lot {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
-//    @JsonIgnore
     private UserProfile user;
 
 
