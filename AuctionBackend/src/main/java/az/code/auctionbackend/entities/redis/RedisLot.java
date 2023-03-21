@@ -4,12 +4,10 @@ import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serial;
@@ -49,6 +47,8 @@ public class RedisLot implements Serializable {
     private LocalDateTime endDate;
 
     private List<BidDto> bidHistory;
+
+//    private List<Long> bidHistory;
 
     private String itemPictures;
 

@@ -17,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -83,11 +84,17 @@ private ObjectMapper objectMapper;
 
         List<BidDto> bidList = redisLot.getBidHistory();
 
+        if (bidList == null) bidList = new ArrayList<>();
+
+        System.out.println("makeBid ");
         bidList.add(bidDto);
         redisLot.setBidHistory(bidList);
 
-//        redisRepository.updateRedis(redisLot);
-        auctionRealtimeRepo.makeBid(lotId, bid);
+        if (bidValue > lot.getCurrentBid()){
+            lot.setCurrentBid(bid.getBid());
+        }
+
+        redisRepository.updateRedis(redisLot);
 
         return bid;
     }

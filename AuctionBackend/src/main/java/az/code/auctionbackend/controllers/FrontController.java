@@ -4,8 +4,10 @@ import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
+import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.interfaces.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +29,10 @@ public class FrontController {
     private UserService userService;
     @Autowired
     private AuctionRealtimeRepo realtimeRepo;
+    @Autowired
+    private RedisRepository redisRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping("/")
     public ModelAndView getIndex(){
@@ -38,9 +44,14 @@ public class FrontController {
 
         ModelAndView model;
 
-        Lot lot = realtimeRepo.getLot(lotId);
+        Lot lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
+//        Lot lot = realtimeRepo.getLot(lotId);
 
-        if (lot == null){lot = lotService.findRedisLotByIdActive(lotId);
+        if (lot == null){
+
+            lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
+
+//            lot = lotService.findRedisLotByIdActive(lotId);
             lot.setCurrentBid(lot.getStartingPrice());
             realtimeRepo.addLot(lot);
         }

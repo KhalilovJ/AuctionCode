@@ -48,7 +48,7 @@ public class UserProfile{
     private List<Bid> bidList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonIgnore
+    @JsonIgnore
     private List<Lot> lots;
 
     @OneToMany(mappedBy = "lotWinner")

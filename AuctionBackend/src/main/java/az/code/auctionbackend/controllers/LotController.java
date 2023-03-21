@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -83,11 +84,18 @@ public class LotController {
     @GetMapping("/{lotId}")
     public Lot getLot(@PathVariable Long lotId){
 
-//        ModelAndView model = new ModelAndView("auction");
+        ModelAndView model = new ModelAndView("auction");
+//        System.out.println("lot " + lotService.findLotById(lotId));
+//
         Lot lot = lotService.findLotById(lotId).orElse(null);
+//        RedisLot redisLot = redisRepository.getRedis(lotId);
+//        System.out.println("redisLot " + redisLot);
 
-//        model.addObject("auction", lot);
 
+        log.error("getLot /{lotId} " + lot);
+//        log.error("getLot /{lotId} redis lot " + redisLot);
+        model.addObject("auction", lot);
+//return Lot.builder().id(redisLot.getId()).build();
         return lot;
     }
 
@@ -115,6 +123,7 @@ public class LotController {
         imgs.append("}");
         }
 
+        log.info("saveLot /save DONE " + LocalDateTime.now());
         lotService.createLot(lotDto, imgs.toString(), user.getUsername());
 
         log.info("Lot created: " + lotDto);

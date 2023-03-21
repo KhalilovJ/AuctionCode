@@ -88,13 +88,13 @@ public class LotServiceImpl implements LotService {
         test.setItemPictures(images);
         test.setUserId(user.getId());
 
-        List<BidDto> bidList = new ArrayList<>();
-        bidList.add(BidDto.builder().bid(5).bidTime(LocalDateTime.now()).lotId(lot.getId()).userId(user.getId()).build());
-
-        test.setBidHistory(bidList);
+//        List<BidDto> bidList = new ArrayList<>();
+//        bidList.add(BidDto.builder().bid(5).bidTime(LocalDateTime.now()).lotId(lot.getId()).userId(user.getId()).build());
+//
+//        test.setBidHistory(bidList);
 
         redisRepository.saveRedis(test);
-
+        log.info("createLot DONE " + LocalDateTime.now());
         auctionRealtimeRepo.addLot(tmpLot);
     }
 
@@ -233,15 +233,6 @@ public class LotServiceImpl implements LotService {
         }
         log.info("Lot " + lot.getId() + " winner: " + bid.getUser().getUsername());
         return bid;
-    }
-
-    private Bid getWinnerBidV2(Lot lot) {
-        log.error(lot.getBidHistory().toString());
-
-        //TODO validation
-        if (lot.getBidHistory().isEmpty()) return null;
-
-        return lot.getBidHistory().get(lot.getBidHistory().size() - 1);
     }
 
     /**
