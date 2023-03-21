@@ -80,7 +80,8 @@ public class BidController {
         Long lotId = jsonRequest.getLong("lotId");
         double bidValue = jsonRequest.getLong("bid");
 
-        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
+//        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
+        BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
         sendUpdates(bidService.bidDtoMapper(bid));
 

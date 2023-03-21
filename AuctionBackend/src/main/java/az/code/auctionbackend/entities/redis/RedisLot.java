@@ -1,20 +1,13 @@
 package az.code.auctionbackend.entities.redis;
 
 import az.code.auctionbackend.DTOs.BidDto;
-import az.code.auctionbackend.entities.Bid;
-import az.code.auctionbackend.entities.Lot;
-import az.code.auctionbackend.entities.UserProfile;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

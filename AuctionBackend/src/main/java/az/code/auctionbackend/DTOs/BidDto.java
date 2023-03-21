@@ -13,9 +13,10 @@ public class BidDto implements Serializable {
 
 
     private static final long serialVersionUID = 5537903830430852973L;
-    public long lotId;
-    public long userId;
+    private long lotId;
+    private long userId;
+    private String username;
 
-    public double bid;
+    private double bid;
     public LocalDateTime bidTime;
 }

@@ -2,9 +2,10 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
-import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,9 @@ public class FrontController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/")
     public ModelAndView getIndex(){
         return new ModelAndView("redirect:/home");
@@ -44,8 +48,18 @@ public class FrontController {
 
         ModelAndView model;
 
-        Lot lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
+        RedisLot redisLot = redisRepository.getRedis(lotId);
+        Lot lot = objectMapper.convertValue(redisLot, Lot.class);
+
+//        System.out.println("setUser " + LocalDateTime.now());
+        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
+//        System.out.println("setUser 2 " + LocalDateTime.now());
+
+
+
 //        Lot lot = realtimeRepo.getLot(lotId);
+
+
 
         if (lot == null){
 

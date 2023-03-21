@@ -84,7 +84,7 @@ public class LotController {
     @GetMapping("/{lotId}")
     public Lot getLot(@PathVariable Long lotId){
 
-        ModelAndView model = new ModelAndView("auction");
+//        ModelAndView model = new ModelAndView("auction");
 //        System.out.println("lot " + lotService.findLotById(lotId));
 //
         Lot lot = lotService.findLotById(lotId).orElse(null);
@@ -94,7 +94,7 @@ public class LotController {
 
         log.error("getLot /{lotId} " + lot);
 //        log.error("getLot /{lotId} redis lot " + redisLot);
-        model.addObject("auction", lot);
+//        model.addObject("auction", lot);
 //return Lot.builder().id(redisLot.getId()).build();
         return lot;
     }

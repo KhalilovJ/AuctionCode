@@ -57,29 +57,19 @@ private ObjectMapper objectMapper;
     }
 
 
-    public Bid makeBid(String username, Long lotId, double bidValue){
+    public BidDto makeBid(String username, Long lotId, double bidValue){
 
-//        Lot lot = auctionRealtimeRepo.getLot(lotId);
         RedisLot redisLot = redisRepository.getRedis(lotId);
-        Lot lot = objectMapper.convertValue(redisLot, Lot.class);
-        log.info("Lot realtime found " + lot.getId());
+        log.info("Lot realtime found " + redisLot.getId());
 
         UserProfile user = userService.findByUsername(username).orElse(null);
 
-        LocalDateTime time = LocalDateTime.now();
-
-        Bid bid = Bid.builder()
-                .user(user)
-                .lot(lot)
-                .bidTime(time)
-                .bid(bidValue)
-                .build();
-
         BidDto bidDto = BidDto.builder()
                 .userId(user.getId())
+                .username(username)
                 .bid(bidValue)
                 .lotId(lotId)
-                .bidTime(time)
+                .bidTime(LocalDateTime.now())
                 .build();
 
         List<BidDto> bidList = redisLot.getBidHistory();
@@ -90,17 +80,17 @@ private ObjectMapper objectMapper;
         bidList.add(bidDto);
         redisLot.setBidHistory(bidList);
 
-        if (bidValue > lot.getCurrentBid()){
-            lot.setCurrentBid(bid.getBid());
+        if (bidValue > redisLot.getCurrentBid()){
+            redisLot.setCurrentBid(bidValue);
         }
 
         redisRepository.updateRedis(redisLot);
 
-        return bid;
+        return bidDto;
     }
 
 
-    public BidResponseDto bidDtoMapper(Bid bid){
+    public BidResponseDto bidDtoMapper(BidDto bidDto){
 
 //        return BidResponseDto.builder()
 //                .lotId(bid.getLot().getId())
@@ -110,13 +100,24 @@ private ObjectMapper objectMapper;
 //                .bid(bid.getBid())
 //                .bidTime(bid.getBidTime())
 //                .build();
+        long lotId = bidDto.getLotId();
+
         return BidResponseDto.builder()
-                .lotId(bid.getLot().getId())
-                .userId(bid.getUser().getId())
-                .username(bid.getUser().getUsername())
-                .lotCurrentBidPrice(bid.getLot().getCurrentBid())
-                .bid(bid.getBid())
-                .bidTime(bid.getBidTime())
+                .lotId(lotId)
+                .userId(bidDto.getUserId())
+                .username(bidDto.getUsername())
+                .lotCurrentBidPrice(redisRepository.getRedis(lotId).getCurrentBid())
+                .bid(bidDto.getBid())
+                .bidTime(bidDto.getBidTime())
                 .build();
+
+//        return BidResponseDto.builder()
+//                .lotId(bid.getLot().getId())
+//                .userId(bid.getUser().getId())
+//                .username(bid.getUser().getUsername())
+//                .lotCurrentBidPrice(bid.getLot().getCurrentBid())
+//                .bid(bid.getBid())
+//                .bidTime(bid.getBidTime())
+//                .build();
     }
 }
