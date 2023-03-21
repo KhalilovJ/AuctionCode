@@ -6,6 +6,7 @@ import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
@@ -62,10 +63,10 @@ private ObjectMapper objectMapper;
         RedisLot redisLot = redisRepository.getRedis(lotId);
         log.info("Lot realtime found " + redisLot.getId());
 
-        UserProfile user = userService.findByUsername(username).orElse(null);
+        RedisUser redisUser = redisRepository.getRedisUserByUsername(username);
 
         BidDto bidDto = BidDto.builder()
-                .userId(user.getId())
+                .userId(redisUser.getId())
                 .username(username)
                 .bid(bidValue)
                 .lotId(lotId)

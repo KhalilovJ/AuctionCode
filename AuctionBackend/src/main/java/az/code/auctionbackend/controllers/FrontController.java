@@ -2,6 +2,7 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
@@ -51,9 +52,14 @@ public class FrontController {
         RedisLot redisLot = redisRepository.getRedis(lotId);
         Lot lot = objectMapper.convertValue(redisLot, Lot.class);
 
-//        System.out.println("setUser " + LocalDateTime.now());
-        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
-//        System.out.println("setUser 2 " + LocalDateTime.now());
+        System.out.println("setUser " + LocalDateTime.now());
+//        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
+// id and rating
+        lot.setUser(objectMapper.convertValue(redisRepository.getRedisUser(redisLot.getUserId()), UserProfile.class));
+        System.out.println("setUser 2 " + LocalDateTime.now());
+        System.out.println("AFTER MAPPING " + lot);
+//        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
+//        System.out.println("from db " + lot);
 
 
 

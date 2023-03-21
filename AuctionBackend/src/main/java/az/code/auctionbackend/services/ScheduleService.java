@@ -1,14 +1,18 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.BidService;
 import az.code.auctionbackend.services.interfaces.LotService;
+import az.code.auctionbackend.services.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -23,6 +27,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +38,6 @@ public class ScheduleService {
 
     private final LotService lotService;
     private final RedisRepository redisRepository;
-    private final BidService bidService;
 
      @PostConstruct
      public void work() {
@@ -57,24 +62,18 @@ public class ScheduleService {
     public void checkTimer(List<RedisLot> redisTimerList) {
 
         log.info("Redis checking " + LocalDateTime.now());
-//        System.out.println("Куда идём мы с Пятачком - большой-большой секрет! " + LocalDateTime.now());
 
         for (RedisLot l : redisTimerList) {
 
             LocalDateTime endTime = l.getEndDate().truncatedTo(ChronoUnit.MINUTES);
             LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-//            System.out.println(l);
             log.info(l.toString());
             //|| endTime.isBefore(currentTime)
             if (endTime.isEqual(currentTime) ||endTime.isBefore(currentTime) ) {
 
                 long lotId = l.getId();
                 Lot lot = lotService.findLotById(lotId).get();
-
-                //TODO @Jamal
-                // Предлагаю в Лот держать CurrentBid в виде Bid Entity
-                // Таким образом будем знать кто сделал последнюю ставку
 
                 log.error("lotId " + lotId);
                 lotService.closeLot(lotId);
