@@ -1,6 +1,8 @@
 package az.code.auctionbackend.controllers;
 
+import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
@@ -21,6 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class FrontController {
@@ -52,29 +56,48 @@ public class FrontController {
         RedisLot redisLot = redisRepository.getRedis(lotId);
         Lot lot = objectMapper.convertValue(redisLot, Lot.class);
 
-        System.out.println("setUser " + LocalDateTime.now());
+
 //        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
 // id and rating
-        lot.setUser(objectMapper.convertValue(redisRepository.getRedisUser(redisLot.getUserId()), UserProfile.class));
-        System.out.println("setUser 2 " + LocalDateTime.now());
-        System.out.println("AFTER MAPPING " + lot);
+        lot.setUser(objectMapper.convertValue(
+                redisRepository.getRedisUser(redisLot.getUserId()), UserProfile.class));
+;
+
+
+        if (redisLot.getBidHistory() == null) {
+            lot.setBidHistory(new ArrayList<>());
+        } else {
+            List<Bid> bidList = new ArrayList<>();
+
+            for (BidDto bidDto : redisLot.getBidHistory()) {
+                bidList.add(Bid.builder()
+                        .bidTime(bidDto.getBidTime())
+                        .lot(lot)
+                        .bid(bidDto.getBid())
+                        .user(objectMapper.convertValue(
+                                redisRepository.getRedisUser(bidDto.getUserId()), UserProfile.class))
+                        .build());
+            }
+            lot.setBidHistory(bidList);
+        }
+
 //        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
 //        System.out.println("from db " + lot);
 
-
+        System.out.println("lot " + lot);
 
 //        Lot lot = realtimeRepo.getLot(lotId);
 
 
 
-        if (lot == null){
-
-            lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
-
-//            lot = lotService.findRedisLotByIdActive(lotId);
-            lot.setCurrentBid(lot.getStartingPrice());
-            realtimeRepo.addLot(lot);
-        }
+//        if (lot == null){
+//
+//            lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
+//
+////            lot = lotService.findRedisLotByIdActive(lotId);
+//            lot.setCurrentBid(lot.getStartingPrice());
+//            realtimeRepo.addLot(lot);
+//        }
 
         if (lot == null || lot.getStartDate() != null && lot.getStartDate().isAfter(LocalDateTime.now())){
             model = new ModelAndView("index");

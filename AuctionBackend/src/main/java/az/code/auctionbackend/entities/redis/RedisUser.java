@@ -41,4 +41,6 @@ public class RedisUser implements Serializable {
     private String address;
 
     private double rating;
+
+    private String role;
 }

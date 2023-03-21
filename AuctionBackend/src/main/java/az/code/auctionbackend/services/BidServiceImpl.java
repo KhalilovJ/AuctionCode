@@ -73,6 +73,8 @@ private ObjectMapper objectMapper;
                 .bidTime(LocalDateTime.now())
                 .build();
 
+        log.error("makeBid bidDto " + bidDto);
+
         List<BidDto> bidList = redisLot.getBidHistory();
 
         if (bidList == null) bidList = new ArrayList<>();
@@ -121,4 +123,5 @@ private ObjectMapper objectMapper;
 //                .bidTime(bid.getBidTime())
 //                .build();
     }
+
 }

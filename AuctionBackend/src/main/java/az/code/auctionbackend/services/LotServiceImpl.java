@@ -56,17 +56,17 @@ public class LotServiceImpl implements LotService {
         return lotRepository.findById(id);
     }
 
-    public Lot findRedisLotByIdActive(long id){
-
-        Lot lotMain = auctionRealtimeRepo.getLot(id);
-
-        if (lotMain == null){
-            lotMain = findLotById(id).orElse(null);
-            auctionRealtimeRepo.addLot(lotMain);
-        }
-        return lotMain;
-
-    }
+//    public Lot findRedisLotByIdActive(long id){
+//
+//        Lot lotMain = auctionRealtimeRepo.getLot(id);
+//
+//        if (lotMain == null){
+//            lotMain = findLotById(id).orElse(null);
+//            auctionRealtimeRepo.addLot(lotMain);
+//        }
+//        return lotMain;
+//
+//    }
 
     @Transactional
     public void createLot(LotDto lotDto, String images, String username){
@@ -93,7 +93,7 @@ public class LotServiceImpl implements LotService {
 
         redisRepository.saveRedis(test);
         log.info("createLot DONE " + LocalDateTime.now());
-        auctionRealtimeRepo.addLot(tmpLot);
+//        auctionRealtimeRepo.addLot(tmpLot);
     }
 
     public Lot changeStatus(Long lotId, int status) {
