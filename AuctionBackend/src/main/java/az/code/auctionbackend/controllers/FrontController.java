@@ -6,12 +6,10 @@ import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
-import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
-import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,26 +20,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class FrontController {
 
     @Autowired
-    private LotServiceImpl lotService;
-    @Autowired
     private UserService userService;
-    @Autowired
-    private AuctionRealtimeRepo realtimeRepo;
     @Autowired
     private RedisRepository redisRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/")
     public ModelAndView getIndex(){
@@ -54,6 +45,7 @@ public class FrontController {
         ModelAndView model;
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
+        log.error("getLot " + redisLot);
         Lot lot = objectMapper.convertValue(redisLot, Lot.class);
 
 
@@ -61,9 +53,12 @@ public class FrontController {
 // id and rating
         lot.setUser(objectMapper.convertValue(
                 redisRepository.getRedisUser(redisLot.getUserId()), UserProfile.class));
-;
 
+        System.out.println("redisLot.getStartDate() " + redisLot.getStartDate());
 
+        /**
+         *  Создание пустого списка бидов и заполноение в противном случае
+         */
         if (redisLot.getBidHistory() == null) {
             lot.setBidHistory(new ArrayList<>());
         } else {
@@ -84,11 +79,9 @@ public class FrontController {
 //        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
 //        System.out.println("from db " + lot);
 
-        System.out.println("lot " + lot);
+        log.info("lot " + lot);
 
 //        Lot lot = realtimeRepo.getLot(lotId);
-
-
 
 //        if (lot == null){
 //
@@ -99,7 +92,8 @@ public class FrontController {
 //            realtimeRepo.addLot(lot);
 //        }
 
-        if (lot == null || lot.getStartDate() != null && lot.getStartDate().isAfter(LocalDateTime.now())){
+       // TODO для if что-то еще надо делать?
+        if (lot.getStatus() < 0){
             model = new ModelAndView("index");
         } else {
             model = new ModelAndView("auction");
@@ -127,6 +121,8 @@ public class FrontController {
             ModelAndView model = new ModelAndView("newAuction");
             LotDto lotDto = LotDto.builder().build();
             model.addObject("lot", lotDto);
+
+            log.info("newAuction " + lotDto);
 
             return model;
         } else {

@@ -6,7 +6,6 @@ import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
@@ -31,8 +30,6 @@ public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
     private final RedisRepository redisRepository;
-    private final AccountServiceImpl accountService;
-    private final AuctionRealtimeRepo auctionRealtimeRepo;
     private final UserServiceImpl userService;
 
     private ObjectMapper objectMapper;

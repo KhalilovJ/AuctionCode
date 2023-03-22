@@ -1,40 +1,24 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.LotDto;
-import az.code.auctionbackend.DTOs.UserDto;
-import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
-import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.entities.redis.RedisUser;
-import az.code.auctionbackend.repositories.auctionRepositories.AuctionRealtimeRepo;
-import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
-import az.code.auctionbackend.services.interfaces.BidService;
 import az.code.auctionbackend.services.interfaces.LotService;
-import az.code.auctionbackend.services.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class ScheduleService {
-
 
     private final LotService lotService;
     private final RedisRepository redisRepository;
