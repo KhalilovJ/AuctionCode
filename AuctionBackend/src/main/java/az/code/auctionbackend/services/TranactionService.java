@@ -43,7 +43,7 @@ public class TranactionService {
         Transaction transaction = Transaction.builder()
                 .amount(amount)
                 .account(users.get(1).getAccount())
-                .senderAccountId(users.get(0).getAccount().getId())
+//                .senderAccountId(users.get(0).getAccount().getId())
                 .transactionTime(LocalDateTime.now())
 //                .senderAccount(users.get(0).getAccount())
                 .build();

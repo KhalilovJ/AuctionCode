@@ -27,6 +27,7 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     private Account account;
 //
 ////    @ManyToOne
@@ -36,10 +37,11 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId",insertable=false, updatable=false)
     @ToString.Exclude
+    @JsonIgnore
     private Account senderAccount;
 
-    @Column(name = "senderAccId")
-    Long senderAccountId;
+//    @Column(name = "senderAccId")
+//    Long senderAccountId;
 
     @Column(name = "time")
     LocalDateTime transactionTime;
