@@ -3,6 +3,7 @@ package az.code.auctionbackend.controllers;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.UserServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+
 @Controller
+@Slf4j
 public class SecurityController {
 
     @Autowired
@@ -32,9 +36,12 @@ public class SecurityController {
     public ModelAndView getHome(@AuthenticationPrincipal UserDetails user){
         ModelAndView nextPage = null;
 
-        UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
 
-        if (userProfile.getRole().getName().equals("USER") ){
+        log.error("start time " + LocalDateTime.now());
+        UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
+        log.error("end time " + LocalDateTime.now());
+
+        if (userProfile.getRole().getName().equals("USER")){
             nextPage = new ModelAndView("index");
         } else {
             nextPage = new ModelAndView("adminPanel");

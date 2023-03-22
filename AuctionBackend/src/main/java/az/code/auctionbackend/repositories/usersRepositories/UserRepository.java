@@ -4,17 +4,20 @@ import az.code.auctionbackend.entities.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+//@Repository
 public interface UserRepository extends JpaRepository<UserProfile, Long> {
 
 
     @Query("SELECT u FROM UserProfile u")
     List<UserProfile> findAll();
 
-
+//    Query(value = "SELECT U FROM UserProfile U WHERE U.username = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM profiles AS U WHERE U.username= :username", nativeQuery = true)
     Optional<UserProfile> findByUsername(String username);
 
     Optional<UserProfile> findById(Long id);
