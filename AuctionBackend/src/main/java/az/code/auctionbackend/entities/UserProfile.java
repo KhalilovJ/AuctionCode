@@ -43,7 +43,7 @@ public class UserProfile{
     @ToString.Exclude
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Bid> bidList;
 

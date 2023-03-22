@@ -80,8 +80,7 @@ public class FrontController {
                         .bidTime(bidDto.getBidTime())
                         .lot(lot)
                         .bid(bidDto.getBid())
-                        .user(objectMapper.convertValue(
-                                redisRepository.getRedisUser(bidDto.getUserId()), UserProfile.class))
+                        .user(mapper.mapperRedisUserToUserProfile(redisRepository.getRedisUser(bidDto.getUserId())))
                         .build());
             }
             lot.setBidHistory(bidList);
@@ -125,7 +124,7 @@ public class FrontController {
             // TODO validation
             // userService.findSellerProfileById(un).isChecked() - verified seller
             if (!userService.findSellerProfileById(un).isChecked()) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             ModelAndView model = new ModelAndView("newAuction");
