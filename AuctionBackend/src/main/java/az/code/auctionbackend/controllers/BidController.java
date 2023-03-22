@@ -2,7 +2,6 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.BidResponseDto;
-import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.services.BidServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

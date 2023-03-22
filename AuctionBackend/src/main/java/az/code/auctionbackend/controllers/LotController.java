@@ -2,15 +2,12 @@ package az.code.auctionbackend.controllers;
 
 
 import az.code.auctionbackend.DTOs.LotDto;
-import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.UploadcareService;
-import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;

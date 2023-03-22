@@ -2,6 +2,7 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.deserializer.CustomMapper;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
@@ -34,6 +35,9 @@ public class FrontController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private CustomMapper mapper;
+
     @GetMapping("/")
     public ModelAndView getIndex(){
         return new ModelAndView("redirect:/home");
@@ -48,13 +52,20 @@ public class FrontController {
         log.error("getLot " + redisLot);
         Lot lot = objectMapper.convertValue(redisLot, Lot.class);
 
+        // TODO status change
+        // closed lot
+        if (lot == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
 
-//        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
-// id and rating
-        lot.setUser(objectMapper.convertValue(
-                redisRepository.getRedisUser(redisLot.getUserId()), UserProfile.class));
+        log.info("lot " + lot);
+        log.info("redisRepository.getRedisUser(redisLot.getUserId()) "
+                + redisRepository.getRedisUser(redisLot.getUserId()));
 
-        System.out.println("redisLot.getStartDate() " + redisLot.getStartDate());
+        lot.setUser(mapper.mapperRedisUserToUserProfile(
+                redisRepository.getRedisUser(redisLot.getUserId())));
+
+        log.info("lot.getUser() " + lot.getUser());
 
         /**
          *  Создание пустого списка бидов и заполноение в противном случае
@@ -108,7 +119,6 @@ public class FrontController {
     public ModelAndView newAuction(@PathVariable String username, @AuthenticationPrincipal UserDetails user){
 
         String un = user.getUsername();
-
 
         if (username.equalsIgnoreCase(un)) {
 

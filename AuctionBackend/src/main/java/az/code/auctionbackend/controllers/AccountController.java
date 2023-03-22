@@ -2,7 +2,6 @@ package az.code.auctionbackend.controllers;
 
 
 import az.code.auctionbackend.entities.Account;
-import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.services.interfaces.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

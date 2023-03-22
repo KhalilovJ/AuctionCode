@@ -1,7 +1,6 @@
 package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.entities.UserProfile;
-import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

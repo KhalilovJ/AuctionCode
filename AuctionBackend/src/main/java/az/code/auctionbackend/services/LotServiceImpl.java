@@ -125,7 +125,7 @@ public class LotServiceImpl implements LotService {
         // somebody made bids
         if (!bidDtoList.isEmpty()) {
             log.info("somebody made bids");
-            log.info("Bids: " + bidDtoList.toString());
+            log.info("Bids: " + bidDtoList);
 
             for (BidDto bidDto : bidDtoList) {
                 bidList.add(Bid.builder()
