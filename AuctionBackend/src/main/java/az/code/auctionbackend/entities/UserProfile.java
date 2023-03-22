@@ -55,6 +55,12 @@ public class UserProfile{
     @JsonIgnore
     private List<Lot> wonLots;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "sellerDataId", referencedColumnName = "id")
+    @ToString.Exclude
+    @JsonIgnore
+    private SellerData sellerData;
+
     public String toString(){
         return "User (id: " + id +
                 " Username: " + username +

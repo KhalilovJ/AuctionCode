@@ -27,7 +27,6 @@ public class SellerData {
     @Value("true")
     private boolean checked;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "sellerData")
     private UserProfile userProfile;
 }
