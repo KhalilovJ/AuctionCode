@@ -17,9 +17,9 @@ public interface RedisInterface {
 
 
         // User
-        RedisUser saveRedisUser(RedisUser red);
-
-        Map<Long, RedisUser> getAllRedisUser();
-
-        RedisUser getRedisUser(Long id);
+//        RedisUser saveRedisUser(RedisUser red);
+//
+//        Map<Long, RedisUser> getAllRedisUser();
+//
+//        RedisUser getRedisUser(Long id);
 }

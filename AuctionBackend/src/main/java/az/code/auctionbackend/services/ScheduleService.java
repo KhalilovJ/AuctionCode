@@ -1,11 +1,9 @@
 package az.code.auctionbackend.services;
 
-import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,20 +21,20 @@ public class ScheduleService {
     private final LotService lotService;
     private final RedisRepository redisRepository;
 
-     @PostConstruct
-     public void work() {
-
-         LotDto lotDto = LotDto.builder()
-                 .bidStep(1)
-                 .description("test")
-                 .endDate(LocalDateTime.now().plusMinutes(2))
-                 .build();
-         System.out.println("lotDto!!! " + lotDto.getEndDate());
- //        lotService.createLot(lotDto, null, "test");
-
-
-         lotService.createLot(lotDto, null, "user6");
-     }
+//     @PostConstruct
+//     public void work() {  TODO cut it off
+//
+//         LotDto lotDto = LotDto.builder()
+//                 .bidStep(1)
+//                 .description("test")
+//                 .endDate(LocalDateTime.now().plusMinutes(2))
+//                 .build();
+//         System.out.println("lotDto!!! " + lotDto.getEndDate());
+// //        lotService.createLot(lotDto, null, "test");
+//
+//
+//         lotService.createLot(lotDto, null, "user6");
+//     }
 
     @Scheduled(cron = "${interval-in-cron-every-minute}")
     public void scheduledRateChecker() {
@@ -57,7 +55,7 @@ public class ScheduleService {
             if (endTime.isEqual(currentTime) ||endTime.isBefore(currentTime) ) {
 
                 long lotId = l.getId();
-                Lot lot = lotService.findLotById(lotId).get();
+//                Lot lot = lotService.findLotById(lotId).get();
 
                 log.error("lotId " + lotId);
                 lotService.closeLot(lotId);

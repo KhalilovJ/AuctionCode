@@ -47,15 +47,15 @@ public class RegistrationController {
 
             log.info("New userProfile: " + userProfile);
 
-            redisRepository.saveRedisUser(RedisUser.builder()
-                    .id(userProfile.getId())
-                    .name(userProfile.getName())
-                    .username(userProfile.getUsername())
-                    .password(userProfile.getPassword())
-                    .address(userProfile.getAddress())
-                    .rating(userProfile.getRating())
-                    .role(userProfile.getRole().getName())
-                    .build());
+//            redisRepository.saveRedisUser(RedisUser.builder()   TODO cut it off
+//                    .id(userProfile.getId())
+//                    .name(userProfile.getName())
+//                    .username(userProfile.getUsername())
+//                    .password(userProfile.getPassword())
+//                    .address(userProfile.getAddress())
+//                    .rating(userProfile.getRating())
+//                    .role(userProfile.getRole().getName())
+//                    .build());
 
             return "login";
         }

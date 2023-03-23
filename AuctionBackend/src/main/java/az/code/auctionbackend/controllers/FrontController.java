@@ -8,12 +8,15 @@ import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.LotServiceImpl;
+import az.code.auctionbackend.services.interfaces.LotService;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +35,9 @@ public class FrontController {
     private UserService userService;
     @Autowired
     private RedisRepository redisRepository;
+
+    @Autowired
+    private LotService lotService;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -55,15 +61,21 @@ public class FrontController {
         // TODO status change
         // closed lot
         if (lot == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            lot = lotService.findLotById(lotId).orElse(null);
+            if (lot == null){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            } else {
+                model = new ModelAndView("auction");
+                model.addObject("auction", lot);
+                model.addObject("user", lot.getUser());
+            }
         }
 
         log.info("lot " + lot);
-        log.info("redisRepository.getRedisUser(redisLot.getUserId()) "
-                + redisRepository.getRedisUser(redisLot.getUserId()));
 
-        lot.setUser(mapper.mapperRedisUserToUserProfile(
-                redisRepository.getRedisUser(redisLot.getUserId())));
+        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
 
         log.info("lot.getUser() " + lot.getUser());
 
@@ -80,7 +92,7 @@ public class FrontController {
                         .bidTime(bidDto.getBidTime())
                         .lot(lot)
                         .bid(bidDto.getBid())
-                        .user(mapper.mapperRedisUserToUserProfile(redisRepository.getRedisUser(bidDto.getUserId())))
+                        .user(userService.findProfileById(bidDto.getUserId()).get())
                         .build());
             }
             lot.setBidHistory(bidList);
@@ -91,18 +103,7 @@ public class FrontController {
 
         log.info("lot " + lot);
 
-//        Lot lot = realtimeRepo.getLot(lotId);
-
-//        if (lot == null){
-//
-//            lot = objectMapper.convertValue(redisRepository.getRedis(lotId), Lot.class);
-//
-////            lot = lotService.findRedisLotByIdActive(lotId);
-//            lot.setCurrentBid(lot.getStartingPrice());
-//            realtimeRepo.addLot(lot);
-//        }
-
-       // TODO для if что-то еще надо делать?
+       // TODO для if что-то еще надо делать? (нет)
         if (lot.getStatus() < 0){
             model = new ModelAndView("index");
         } else {
@@ -119,12 +120,16 @@ public class FrontController {
 
         String un = user.getUsername();
 
+
         if (username.equalsIgnoreCase(un)) {
+
+
+            UserProfile userProfile = userService.findByUsername(username).get();
 
             // TODO validation
             // userService.findSellerProfileById(un).isChecked() - verified seller
-            if (!userService.findSellerProfileById(un).isChecked()) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            if (userProfile.isSellerActive()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
 
             ModelAndView model = new ModelAndView("newAuction");

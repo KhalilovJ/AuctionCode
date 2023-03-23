@@ -75,7 +75,7 @@ public class BidController {
 
     @PostMapping("/makeBid")
     public String makeBid(@AuthenticationPrincipal UserDetails userIn, @RequestBody JSONObject jsonRequest){
-        System.out.println(jsonRequest);
+        log.info("New bid has been received " + jsonRequest);
         Long lotId = jsonRequest.getLong("lotId");
         double bidValue = jsonRequest.getLong("bid");
 

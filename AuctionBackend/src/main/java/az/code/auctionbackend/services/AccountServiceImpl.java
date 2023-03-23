@@ -3,6 +3,7 @@ package az.code.auctionbackend.services;
 import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.Transaction;
 import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.repositories.UserRepo;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepo;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepository;
 import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
@@ -35,6 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final UserRepo userRepo;
     private final AccountRepo accRepo;
 
     private final TranactionService tranactionService;
@@ -63,20 +65,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAllAccounts() {
-        return  accountRepository.findAll();
+        return accRepo.getAllAccs();
+//        return  accountRepository.getAllAccs().get();
     }
 
     @Override
     public Account getAccountDetails(long accountId) {
 
-        return accountRepository.getAccountById(accountId).orElse(null);
+//        return accountRepository.getAccountById(accountId).orElse(null);
+        return accRepo.searchAccountById(accountId).orElse(null);
     }
 
 
     @Override
     public double getBalance(long accountId) {
 
-        return accountRepository.getAccountBy(accountId)
+        return accRepo.searchAccountById(accountId)
                 .map(Account::getBalance)
                 .orElse(0.0);
     }
@@ -99,8 +103,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Transaction purchase(long senderId, long receiverId, double amount) {
 
-        Account senderAccount = accountRepository.getAccountById(senderId).orElse(null);
-        Account receiverAccount = accountRepository.getAccountById(receiverId).orElse(null);
+//        Account senderAccount = accountRepository.getAccountById(senderId).orElse(null);
+//        Account receiverAccount = accountRepository.getAccountById(receiverId).orElse(null);
+        Account senderAccount = accRepo.searchAccountById(senderId).orElse(null);
+        Account receiverAccount = accRepo.searchAccountById(receiverId).orElse(null);
 
         // TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {

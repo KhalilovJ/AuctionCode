@@ -2,6 +2,7 @@ package az.code.auctionbackend.repositories;
 
 import az.code.auctionbackend.entities.Role;
 import az.code.auctionbackend.repositories.usersRepositories.RoleRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,12 @@ public class RoleRepo {
     @Autowired
     private RoleRepository roleRepo;
 
-    public Optional<Role> findById(Long id){
-        return roleRepo.findById(id);
+    @Autowired
+    private EntityManager entityManager;
+
+    public Role findById(Long id){
+//        return entityManager.find(Role.class, id);
+        return (Role)entityManager.createNativeQuery("SELECT * FROM roles where id = ?1").setParameter(1, id).getSingleResult();
     }
 
 }

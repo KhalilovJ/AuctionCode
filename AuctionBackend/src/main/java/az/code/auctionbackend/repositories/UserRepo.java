@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserRepo {
 
@@ -18,5 +20,12 @@ public class UserRepo {
         return em.merge(userProfile);
     }
 
+    public List<UserProfile> allUsers(){
+        return em.createNativeQuery("SELECT * FROM profiles").getResultList();
+    };
+
+    public UserProfile getUserById(Long id){
+        return em.find(UserProfile.class, id);
+    }
 
 }

@@ -3,8 +3,10 @@ package az.code.auctionbackend.services;
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.BidResponseDto;
 import az.code.auctionbackend.entities.Bid;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisUser;
+import az.code.auctionbackend.repositories.auctionRepositories.BidRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.BidService;
@@ -28,12 +30,13 @@ public class BidServiceImpl implements BidService {
     // Services
     private final LotService lotService;
     private final UserServiceImpl userService;
+    private final BidRepo bidRepo;
 
 private final RedisRepository redisRepository;
 private ObjectMapper objectMapper;
     @Override
     public List<Bid> getAllBids() {
-        return bidRepository.findAll();
+        return bidRepo.getAllBids();
     }
 
     @Override
@@ -58,10 +61,11 @@ private ObjectMapper objectMapper;
         RedisLot redisLot = redisRepository.getRedis(lotId);
         log.info("Lot realtime found " + redisLot.getId());
 
-        RedisUser redisUser = redisRepository.getRedisUserByUsername(username);
+//        RedisUser redisUser = redisRepository.getRedisUserByUsername(username); TODO cut it off
+        UserProfile user = userService.findByUsername(username).get();
 
         BidDto bidDto = BidDto.builder()
-                .userId(redisUser.getId())
+                .userId(user.getId())
                 .username(username)
                 .bid(bidValue)
                 .lotId(lotId)

@@ -13,16 +13,17 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserProfile, Long> {
 
 
-    @Query("SELECT u FROM UserProfile u")
-    List<UserProfile> findAll();
+//    @Query(value = "SELECT * FROM profiles", nativeQuery = true)
+//    List<UserProfile> getAllUsers();
 
 //    Query(value = "SELECT U FROM UserProfile U WHERE U.username = ?1", nativeQuery = true)
     @Query(value = "SELECT * FROM profiles AS U WHERE U.username= :username", nativeQuery = true)
     Optional<UserProfile> findByUsername(String username);
 
+    @Query(value = "SELECT * FROM profiles AS U WHERE U.id= :id", nativeQuery = true)
     Optional<UserProfile> findById(Long id);
 
-    @Query("select u from UserProfile u where u.id in :ids")
+    @Query(value = "select * from profiles as u where u.id in :ids", nativeQuery = true)
     List<UserProfile> findByIds(@Param("ids") List<Long> idList);
 
 }
