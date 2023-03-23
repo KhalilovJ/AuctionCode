@@ -3,6 +3,7 @@ package az.code.auctionbackend.repositories.auctionRepositories;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,24 @@ public class BidRepo {
         }
 
         public Lot getLotById(Long id){
-            System.out.println("error is here");
-            return (Lot) em.createNativeQuery("select * from lots as lot where lot.id = ?1", Lot.class)
+
+            // It's okay
+            Lot lot = (Lot) em.createNativeQuery("select * from lots as lot where lot.id = ?1", Lot.class)
                     .setParameter(1, id).getSingleResult();
+
+            return lot;
         }
+
+        @Transactional
+        public void updateLotStatus(Long id, int status){
+            em.createNativeQuery("update lots set status = ?2 where id = ?1")
+                    .setParameter(1, id).setParameter(2, status).executeUpdate();
+        }
+
+        @Transactional
+        public Lot saveLot(Lot lot){
+            return em.merge(lot);
+        }
+
+
 }

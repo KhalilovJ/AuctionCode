@@ -88,6 +88,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void topUpBalance(long accountId, double amount) {
 
+        log.info("Top up account " + accountId);
         Account account = getAccountDetails(accountId);
         // TODO validation
         if (account == null || !account.isActive()) return;
@@ -103,8 +104,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Transaction purchase(long senderId, long receiverId, double amount) {
 
-//        Account senderAccount = accountRepository.getAccountById(senderId).orElse(null);
-//        Account receiverAccount = accountRepository.getAccountById(receiverId).orElse(null);
+
+        log.info("Purchase");
+
         Account senderAccount = accRepo.searchAccountById(senderId).orElse(null);
         Account receiverAccount = accRepo.searchAccountById(receiverId).orElse(null);
 

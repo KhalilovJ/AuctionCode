@@ -9,6 +9,7 @@ import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.interfaces.BidService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,15 +32,14 @@ import java.util.Optional;
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
+    private final AccountServiceImpl accountService;
     private final RedisRepository redisRepository;
     private final UserServiceImpl userService;
-
     private final BidRepo bidRepo;
 
-    private ObjectMapper objectMapper;
+    private final ApplicationContext ax;
 
-    @Autowired
-    private EntityManager em;
+    private ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -99,11 +100,12 @@ public class LotServiceImpl implements LotService {
     public Lot changeStatus(Long lotId, int status) {
         Lot lot = bidRepo.getLotById(lotId);
         log.error(lot.toString());
-//        System.out.println("test");
         lot.setStatus(status);
 
-//        System.out.println("test2");
         return lot;
+    }
+    public void changeStatus2(Long lotId, int status) {
+        bidRepo.updateLotStatus(lotId, status);
     }
     @Transactional
     public void closeLot(long lotId) {
@@ -111,12 +113,14 @@ public class LotServiceImpl implements LotService {
 
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
-
-        System.out.println("status changed");
+//        changeStatus2(lotId, 2);
+//        Lot lot = bidRepo.getLotById(lotId);
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
         List<BidDto> bidDtoList = redisLot.getBidHistory();
+
         List<Bid> bidList = new ArrayList<>();
+
         log.info("redisLot.getBidHistory() - done");
         log.info("bidList " + bidDtoList);
 
@@ -145,82 +149,25 @@ public class LotServiceImpl implements LotService {
             Bid winnerBid = getWinnerBid(lot);
 
             // TODO fix bug -.IndexOutOfBoundsException
-//            if (winnerBid != null) {
-//                accountService.purchase(
-//                        winnerBid.getUser().getAccount().getId(),
-//                        lot.getUser().getAccount().getId(),
-//                        winnerBid.getBid()
-//                );
-//            }
+            if (winnerBid != null) {
+                accountService.purchase(
+                        winnerBid.getUser().getAccount().getId(),
+                        lot.getUser().getAccount().getId(),
+                        winnerBid.getBid()
+                );
+            }
         }
 
         log.error(lot.toString());
         // save lot to DB
 //        lotRepository.save(lot);
-
-        em.merge(lot);
+        bidRepo.saveLot(lot);
 
         // как то отправляем клиенту добрую весть :)
         System.out.println("WINNER!");
         // delete from Redis
         redisRepository.deleteRedis(lotId);
     }
-//    public void closeLot(long lotId) {
-//        log.info("IN closeLot");
-//        // 2 - auction finished
-//
-//        Lot lot = changeStatus(lotId, 2);
-////        Lot lot = lotRepository.getReferenceById(lotId); // remove it
-//
-//
-//        Lot lotRam = auctionRealtimeRepo.getLot(lotId);  // lot could be not initiated
-//        if (lotRam == null){
-//            lotRam = lot;
-//            auctionRealtimeRepo.addLot(lot);
-//        }
-//
-//        List<Bid> bidList = lotRam.getBidHistory();
-//        log.info("auctionRealtimeRepo.getLot(lotId).getBidHistory() ");
-//
-//
-//        // nobody made bids
-//        if (bidList == null) {
-//            log.info("nobody made bids");
-//            bidList = new ArrayList<>();
-//            lot.setBidHistory(bidList);
-//        }
-//
-//        // somebody made bids
-//        if (!bidList.isEmpty()) {
-//            log.info("somebody made bids");
-//            log.info(bidList.toString());
-//            lot.setBidHistory(bidList);
-//
-//            Bid winnerBid = getWinnerBid(lot);
-//
-//            if (winnerBid != null) {
-//                accountService.purchase(
-//                        winnerBid.getUser().getAccount().getId(),
-//                        lot.getUser().getAccount().getId(),
-//                        winnerBid.getBid()
-//                );
-//            }
-//        }
-//
-////        log.error(auctionRealtimeRepo.getLot(lotId).toString());
-//
-////        Bid winnerBid = getWinnerBid(lot);
-//
-//        log.error(lot.toString());
-//        lotRepository.save(lot);
-//
-//        // как то отправляем клиенту добрую весть :)
-//        System.out.println();
-//        // delete from Redis
-//        redisRepository.deleteRedis(lotId);
-//        // delete from RAM
-//        auctionRealtimeRepo.deleteLot(lotId);
-//    }
 
     private Bid getWinnerBid(Lot lot){
         Bid bid = lot.getBidHistory().get(0);
@@ -250,5 +197,44 @@ public class LotServiceImpl implements LotService {
                                 .endDate(l.getEndDate())
                                 .build()));
         }
+
+        makeBid("malishov", 1l, 50);
+    }
+
+
+
+    public BidDto makeBid(String username, Long lotId, double bidValue){
+
+        RedisLot redisLot = redisRepository.getRedis(lotId);
+        log.info("Lot realtime found " + redisLot.getId());
+
+//        RedisUser redisUser = redisRepository.getRedisUserByUsername(username); TODO cut it off
+        UserProfile user = userService.findByUsername(username).get();
+
+        BidDto bidDto = BidDto.builder()
+                .userId(user.getId())
+                .username(username)
+                .bid(bidValue)
+                .lotId(lotId)
+                .bidTime(LocalDateTime.now())
+                .build();
+
+        log.error("makeBid bidDto " + bidDto);
+
+        List<BidDto> bidList = redisLot.getBidHistory();
+
+        if (bidList == null) bidList = new ArrayList<>();
+
+        System.out.println("makeBid ");
+        bidList.add(bidDto);
+        redisLot.setBidHistory(bidList);
+
+        if (bidValue > redisLot.getCurrentBid()){
+            redisLot.setCurrentBid(bidValue);
+        }
+
+        redisRepository.updateRedis(redisLot);
+
+        return bidDto;
     }
 }
