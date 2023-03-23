@@ -66,15 +66,15 @@ public class ScheduleService {
         }
     }
 
-    @PostConstruct
-    private void init(){
-        try {
-            Thread.sleep(100);
-
-            lotService.closeLot(1);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostConstruct
+//    private void init(){
+//        try {
+//            Thread.sleep(100);
+//
+//            lotService.closeLot(1);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }
