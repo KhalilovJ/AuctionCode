@@ -61,7 +61,6 @@ private ObjectMapper objectMapper;
         RedisLot redisLot = redisRepository.getRedis(lotId);
         log.info("Lot realtime found " + redisLot.getId());
 
-//        RedisUser redisUser = redisRepository.getRedisUserByUsername(username); TODO cut it off
         UserProfile user = userService.findByUsername(username).get();
 
         BidDto bidDto = BidDto.builder()
@@ -78,7 +77,7 @@ private ObjectMapper objectMapper;
 
         if (bidList == null) bidList = new ArrayList<>();
 
-        System.out.println("makeBid ");
+        log.info("Bid: " + bidDto);
         bidList.add(bidDto);
         redisLot.setBidHistory(bidList);
 

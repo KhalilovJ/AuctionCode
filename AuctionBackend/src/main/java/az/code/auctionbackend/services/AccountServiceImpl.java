@@ -33,12 +33,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Log4j2
 public class AccountServiceImpl implements AccountService {
-
-    private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
-    private final UserRepo userRepo;
     private final AccountRepo accRepo;
-
     private final TranactionService tranactionService;
 
 //    @PostConstruct
@@ -107,8 +102,8 @@ public class AccountServiceImpl implements AccountService {
 
         log.info("Purchase");
 
-        Account senderAccount = accRepo.searchAccountById(senderId).orElse(null);
-        Account receiverAccount = accRepo.searchAccountById(receiverId).orElse(null);
+        Account senderAccount = accRepo.searchAccountById(senderId).get();
+        Account receiverAccount = accRepo.searchAccountById(receiverId).get();
 
         // TODO validation
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
@@ -128,7 +123,7 @@ public class AccountServiceImpl implements AccountService {
 //
         topUpBalance(receiverId, amount);
 
-        return tranactionService.createTransaction(amount, receiverId, senderId);
+        return tranactionService.createTransaction(amount, receiverAccount, senderAccount);
 
     }
 

@@ -9,7 +9,8 @@ import java.util.List;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @Table(name = "accounts")
 @NoArgsConstructor
@@ -24,6 +25,7 @@ public class Account {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
+    @ToString.Exclude
     private UserProfile user;
 
     private double balance;
@@ -35,6 +37,7 @@ public class Account {
     private boolean isActive;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Transaction> transactions;
 
 //    @OneToMany(fetch = FetchType.EAGER, mappedBy = "senderAccount", cascade = CascadeType.ALL)

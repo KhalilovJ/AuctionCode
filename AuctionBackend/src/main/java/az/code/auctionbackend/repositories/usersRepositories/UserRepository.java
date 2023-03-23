@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<UserProfile, Long> {
     @Query(value = "SELECT * FROM profiles AS U WHERE U.id= :id", nativeQuery = true)
     Optional<UserProfile> findById(Long id);
 
-    @Query(value = "select * from profiles as u where u.id in :ids", nativeQuery = true)
+    @Query("select u from UserProfile u where u.id in :ids")
     List<UserProfile> findByIds(@Param("ids") List<Long> idList);
 
 }

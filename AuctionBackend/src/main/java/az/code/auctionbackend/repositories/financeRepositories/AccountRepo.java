@@ -26,7 +26,8 @@ public class AccountRepo {
     };
 
     public Optional<Account> searchAccountById(long id){
-        return Optional.of((Account) em.createNativeQuery("SELECT * from accounts where id ?1")
-                .setParameter(1, id).getSingleResult());
+//        return Optional.of((Account) em.createNativeQuery("SELECT * from accounts as acc where acc.id = ?1", Account.class)
+//                .setParameter(1, id).getSingleResult());
+        return Optional.of(em.find(Account.class, id));
     };
 }

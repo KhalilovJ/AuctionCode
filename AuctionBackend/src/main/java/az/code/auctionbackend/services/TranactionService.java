@@ -23,29 +23,28 @@ import java.util.List;
 public class TranactionService {
 
     @Autowired
-    private UserServiceImpl userService;
-
-    @Autowired
     EntityManager entityManager;
 
     @Autowired
     private TransactionRepository transactionRepository;
 
 
-    public Transaction createTransaction(double amount, long senderId, long receiverId){
+    public Transaction createTransaction(double amount, Account sender, Account receiver){
 
-        List<Long> ids = new ArrayList<>();
-        ids.add(senderId);
-        ids.add(receiverId);
+//        List<Long> ids = new ArrayList<>();
+//        ids.add(senderId);
+//        ids.add(receiverId);
+//
+//        List<UserProfile> users = userService.findByIds(ids);
 
-        List<UserProfile> users = userService.findByIds(ids);
+//        Account sender = accountService.getAccountDetails(senderId);
+//        Account receiver = accountService.getAccountDetails(receiverId);
 
         Transaction transaction = Transaction.builder()
                 .amount(amount)
-                .account(users.get(1).getAccount())
-//                .senderAccountId(users.get(0).getAccount().getId())
+                .account(receiver)
                 .transactionTime(LocalDateTime.now())
-//                .senderAccount(users.get(0).getAccount())
+                .senderAccount(sender)
                 .build();
 
         log.info(transactionRepository.save(transaction));

@@ -91,7 +91,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<UserProfile> findByIds(List<Long> ids){
-        return userRepository.findByIds(ids);
+//        return userRepository.findByIds(ids);
+        return userRepo.getByIdList(ids);
     }
 
 

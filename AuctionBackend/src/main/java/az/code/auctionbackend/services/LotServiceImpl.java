@@ -104,9 +104,7 @@ public class LotServiceImpl implements LotService {
 
         return lot;
     }
-    public void changeStatus2(Long lotId, int status) {
-        bidRepo.updateLotStatus(lotId, status);
-    }
+
     @Transactional
     public void closeLot(long lotId) {
         log.info("IN closeLot v2");
@@ -139,6 +137,7 @@ public class LotServiceImpl implements LotService {
             for (BidDto bidDto : bidDtoList) {
                 bidList.add(Bid.builder()
                         .lot(bidRepo.getLotById(bidDto.getLotId()))
+                        .bid(bidDto.getBid())
                         .user(userService.findProfileById(bidDto.getUserId()).get())
                         .bidTime(bidDto.getBidTime())
                         .build());
@@ -150,10 +149,13 @@ public class LotServiceImpl implements LotService {
 
             // TODO fix bug -.IndexOutOfBoundsException
             if (winnerBid != null) {
+                long winnerAccId = winnerBid.getUser().getAccount().getId();
+                long sellerAccId = lot.getUser().getAccount().getId();
+                double winnerBid1 = winnerBid.getBid();
                 accountService.purchase(
-                        winnerBid.getUser().getAccount().getId(),
-                        lot.getUser().getAccount().getId(),
-                        winnerBid.getBid()
+                        winnerAccId,
+                        sellerAccId,
+                        winnerBid1
                 );
             }
         }
@@ -178,7 +180,7 @@ public class LotServiceImpl implements LotService {
 
             }
         }
-        log.info("Lot " + lot.getId() + " winner: " + bid.getUser().getUsername());
+        log.info("Lot " + lot.getId() + " winner: " + bid.getUser().getUsername() + " Bid " + bid.getBid());
         return bid;
     }
 
@@ -198,43 +200,5 @@ public class LotServiceImpl implements LotService {
                                 .build()));
         }
 
-        makeBid("malishov", 1l, 50);
-    }
-
-
-
-    public BidDto makeBid(String username, Long lotId, double bidValue){
-
-        RedisLot redisLot = redisRepository.getRedis(lotId);
-        log.info("Lot realtime found " + redisLot.getId());
-
-//        RedisUser redisUser = redisRepository.getRedisUserByUsername(username); TODO cut it off
-        UserProfile user = userService.findByUsername(username).get();
-
-        BidDto bidDto = BidDto.builder()
-                .userId(user.getId())
-                .username(username)
-                .bid(bidValue)
-                .lotId(lotId)
-                .bidTime(LocalDateTime.now())
-                .build();
-
-        log.error("makeBid bidDto " + bidDto);
-
-        List<BidDto> bidList = redisLot.getBidHistory();
-
-        if (bidList == null) bidList = new ArrayList<>();
-
-        System.out.println("makeBid ");
-        bidList.add(bidDto);
-        redisLot.setBidHistory(bidList);
-
-        if (bidValue > redisLot.getCurrentBid()){
-            redisLot.setCurrentBid(bidValue);
-        }
-
-        redisRepository.updateRedis(redisLot);
-
-        return bidDto;
     }
 }

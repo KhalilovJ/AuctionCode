@@ -4,6 +4,7 @@ import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.LotService;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -65,9 +66,15 @@ public class ScheduleService {
         }
     }
 
-//    @PostConstruct
-//    private void init(){
-//        lotService.closeLot(1);
-//    }
+    @PostConstruct
+    private void init(){
+        try {
+            Thread.sleep(100);
+
+            lotService.closeLot(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

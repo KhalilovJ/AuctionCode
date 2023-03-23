@@ -28,4 +28,10 @@ public class UserRepo {
         return em.find(UserProfile.class, id);
     }
 
-}
+    public List<UserProfile>getByIdList(List<Long> ids){
+        return em.createQuery("select b from UserProfile b where b.id in (:isbn)", UserProfile.class)
+    .setParameter("isbn", ids).getResultList();
+
+        }
+
+    }
