@@ -37,4 +37,11 @@ public class Transaction {
 
     @Column(name = "time")
     LocalDateTime transactionTime;
+
+    @Column(name = "status", nullable = true)
+    private int status;
+    /**
+            1 - ok
+           -1 - error
+     */
 }

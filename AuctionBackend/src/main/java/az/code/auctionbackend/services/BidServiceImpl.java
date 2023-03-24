@@ -66,6 +66,11 @@ private ObjectMapper objectMapper;
 
         UserProfile user = userService.findByUsername(username).get();
 
+        if (user.isBlocked()){
+            log.error("Can't place bid. User locked. Username: " + username + " Lot id: " + lotId);
+            return null;
+        }
+
         BidDto bidDto = BidDto.builder()
                 .userId(user.getId())
                 .username(username)
@@ -130,18 +135,14 @@ private ObjectMapper objectMapper;
     }
 
 
-//    @PostConstruct
-//    private void makeBidsMock() throws InterruptedException {
-//        Thread.sleep(100);
-//        makeBid("malishov", 1l, 600);
-//        makeBid("Khalil", 1l, 700);
-//        makeBid("admin6", 1l, 800);
-//        makeBid("user8", 1l, 950);
-//        makeBid("malishov", 1l, 600);
-//        makeBid("Khalil", 1l, 700);
-//        makeBid("admin6", 1l, 800);
-//        makeBid("user8", 1l, 950);
-//
-//    }
+    @PostConstruct
+    private void makeBidsMock() throws InterruptedException {
+        Thread.sleep(100);
+        makeBid("malishov", 1l, 600);
+        makeBid("Khalil", 1l, 700);
+        makeBid("admin6", 1l, 800);
+        makeBid("user8", 1l, 950000);
+
+    }
 
 }

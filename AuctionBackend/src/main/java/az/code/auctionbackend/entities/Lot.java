@@ -77,8 +77,7 @@ public class Lot {
         0 - not active
         1 - active
         2 - auction finished
-        3 - waiting to approve by second place
-        4 - paid
+        3 - paid
 
      */
     @Column(name = "status")

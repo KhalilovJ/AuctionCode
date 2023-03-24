@@ -95,5 +95,9 @@ public class UserServiceImpl implements UserService {
         return userRepo.getByIdList(ids);
     }
 
+    public void blockUser(Long id, boolean block){
+        userRepo.blockUser(id, block);
+    }
+
 
 }

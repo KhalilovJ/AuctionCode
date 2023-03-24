@@ -31,7 +31,14 @@ public class UserRepo {
     public List<UserProfile>getByIdList(List<Long> ids){
         return em.createQuery("select b from UserProfile b where b.id in (:isbn)", UserProfile.class)
     .setParameter("isbn", ids).getResultList();
-
         }
+
+
+    public void blockUser(Long userId, boolean block){
+        em.createQuery("update UserProfile u set u.isBlocked = ?1 where u.id = ?2")
+                .setParameter(1, block)
+                .setParameter(2, userId)
+                .executeUpdate();
+    }
 
     }
