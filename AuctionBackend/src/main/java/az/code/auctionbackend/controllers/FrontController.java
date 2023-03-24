@@ -120,15 +120,13 @@ public class FrontController {
 
         String un = user.getUsername();
 
-
         if (username.equalsIgnoreCase(un)) {
-
 
             UserProfile userProfile = userService.findByUsername(username).get();
 
             // TODO validation
             // userService.findSellerProfileById(un).isChecked() - verified seller
-            if (userProfile.isSellerActive()) {
+            if (!userProfile.isSellerActive()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
 
