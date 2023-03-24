@@ -2,16 +2,12 @@ package az.code.auctionbackend.controllers;
 
 
 import az.code.auctionbackend.DTOs.LotDto;
-import az.code.auctionbackend.DTOs.UserDto;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.entities.redis.RedisTimer;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
 import az.code.auctionbackend.services.UploadcareService;
-import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -25,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -54,7 +51,7 @@ public class LotController {
      * Get all active lots from Redis
      */
     @GetMapping("/active")
-    public ResponseEntity<Map<Long, RedisTimer>> getAllActiveLots() {
+    public ResponseEntity<Map<Long, RedisLot>> getAllActiveLots() {
 
         return ResponseEntity.ok(redisRepository.getAllRedis());
     }
@@ -71,7 +68,7 @@ public class LotController {
     @PostMapping("/lot")
     public ResponseEntity<Lot> save(@RequestBody Lot lot) {
 
-        RedisTimer redisLot = objectMapper.convertValue(lot, RedisTimer.class);
+        RedisLot redisLot = objectMapper.convertValue(lot, RedisLot.class);
         // TODO set real ID
         redisLot.setId(new Random().nextLong());
 
@@ -85,10 +82,17 @@ public class LotController {
     public Lot getLot(@PathVariable Long lotId){
 
 //        ModelAndView model = new ModelAndView("auction");
+//        System.out.println("lot " + lotService.findLotById(lotId));
+//
         Lot lot = lotService.findLotById(lotId).orElse(null);
+//        RedisLot redisLot = redisRepository.getRedis(lotId);
+//        System.out.println("redisLot " + redisLot);
 
+
+        log.error("getLot /{lotId} " + lot);
+//        log.error("getLot /{lotId} redis lot " + redisLot);
 //        model.addObject("auction", lot);
-
+//return Lot.builder().id(redisLot.getId()).build();
         return lot;
     }
 
@@ -99,21 +103,24 @@ public class LotController {
 
         List<File> filesList = new ArrayList<>();
         List<String> fileIds = new ArrayList<>();
+        StringBuilder imgs = new StringBuilder();
 
+        if (files != null){
         Arrays.stream(files).toList().forEach(a-> filesList.add(convert(a)));
 
         filesList.forEach(i-> {
             fileIds.add(uploadcareService.sendFile(i));
         });
 
-        StringBuilder imgs = new StringBuilder();
         imgs.append("{");
         for (int i = 0; i<fileIds.size(); i++){
             if (i > 0){ imgs.append(",");}
             imgs.append("\"" + i + "\":\"" + fileIds.get(i) + "\"");
         }
         imgs.append("}");
+        }
 
+        log.info("saveLot /save DONE " + LocalDateTime.now());
         lotService.createLot(lotDto, imgs.toString(), user.getUsername());
 
         log.info("Lot created: " + lotDto);

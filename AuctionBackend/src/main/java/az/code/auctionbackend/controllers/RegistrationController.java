@@ -1,22 +1,21 @@
 package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.UserDto;
+import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.entities.redis.RedisUser;
+import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 @Controller
 @Log4j2
@@ -24,6 +23,7 @@ import java.util.regex.Pattern;
 public class RegistrationController {
 
     private final UserServiceImpl userService;
+    private final RedisRepository redisRepository;
 
     @GetMapping("/registration")
     public ModelAndView registration(Model model){
@@ -37,14 +37,26 @@ public class RegistrationController {
 
         log.info("User is " + user);
 
-
         if (result.hasErrors() || userService.checkUser(user.getUsername()) != null) {
 
             model.addAttribute("user", UserDto.builder().build());
 
             return "registration";
         } else {
-            userService.createUser(user);
+            UserProfile userProfile = userService.createUser(user);
+
+            log.info("New userProfile: " + userProfile);
+
+//            redisRepository.saveRedisUser(RedisUser.builder()   TODO cut it off
+//                    .id(userProfile.getId())
+//                    .name(userProfile.getName())
+//                    .username(userProfile.getUsername())
+//                    .password(userProfile.getPassword())
+//                    .address(userProfile.getAddress())
+//                    .rating(userProfile.getRating())
+//                    .role(userProfile.getRole().getName())
+//                    .build());
+
             return "login";
         }
 

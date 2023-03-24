@@ -2,7 +2,6 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.BidResponseDto;
-import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.services.BidServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +37,6 @@ public class BidController {
 
     HashMap<Long, List<SseEmitter>> subscribers = new HashMap<>();
 
-//    @PostConstruct
-//    private void init(){
-//        bidService.setBidController(this);
-//    }
-
 
     @CrossOrigin
     @GetMapping("/{lotId}")
@@ -76,16 +70,22 @@ public class BidController {
 
     @PostMapping("/makeBid")
     public String makeBid(@AuthenticationPrincipal UserDetails userIn, @RequestBody JSONObject jsonRequest){
-        System.out.println(jsonRequest);
+        log.info("New bid has been received " + jsonRequest);
         Long lotId = jsonRequest.getLong("lotId");
         double bidValue = jsonRequest.getLong("bid");
 
-        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
+//        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
+        BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
-        sendUpdates(bidService.bidDtoMapper(bid));
+        if (bid == null){
+            log.error("Lot is not active");
+            return "Error";
+        } else {
+            sendUpdates(bidService.bidDtoMapper(bid));
 
-        log.info("Bid placed; Lot Id is: " + lotId);
-        return "success";
+            log.info("Bid placed; Lot Id is: " + lotId);
+            return "success";
+        }
     }
 
 

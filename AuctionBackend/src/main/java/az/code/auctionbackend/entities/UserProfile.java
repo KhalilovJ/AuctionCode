@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ import java.util.List;
 @Table(name = "profiles")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class UserProfile{
 
 
     @Id
@@ -42,17 +43,22 @@ public class UserProfile {
     @ToString.Exclude
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Bid> bidList;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Lot> lots;
 
     @OneToMany(mappedBy = "lotWinner")
     @JsonIgnore
     private List<Lot> wonLots;
+
+    private String TIN;
+
+    @Column(name = "sellerActive", nullable = true)
+    private boolean sellerActive;
 
     public String toString(){
         return "User (id: " + id +
@@ -62,7 +68,4 @@ public class UserProfile {
                 " Rating: " + rating + " )";
     }
 
-    @OneToMany(mappedBy = "sender")
-    @JsonIgnore
-    private List<Transaction> transactionList;
 }

@@ -1,16 +1,25 @@
-package az.code.auctionbackend.DTOs;
+package az.code.auctionbackend.entities.redis;
 
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 
 @Data
 @Builder
-@ToString
-public class UserDto implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@RedisHash("redis")
+public class RedisUser implements Serializable {
+
+    private static final long serialVersionUID = 6703811972517405461L;
+
+    @Id
+    private long id;
 
     @NotEmpty
     @NotNull
@@ -31,4 +40,7 @@ public class UserDto implements Serializable {
     @NotEmpty
     private String address;
 
+    private double rating;
+
+    private String role;
 }
