@@ -5,7 +5,6 @@ import az.code.auctionbackend.DTOs.BidResponseDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
-import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
@@ -60,6 +59,9 @@ private ObjectMapper objectMapper;
     public BidDto makeBid(String username, Long lotId, double bidValue){
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
+
+        if (redisLot != null && redisLot.getEndDate().isAfter(LocalDateTime.now())){ // if it's null lot is closed and we can't make bids
+
         log.info("Lot realtime found " + redisLot.getId());
 
         UserProfile user = userService.findByUsername(username).get();
@@ -72,7 +74,7 @@ private ObjectMapper objectMapper;
                 .bidTime(LocalDateTime.now())
                 .build();
 
-        log.error("makeBid bidDto " + bidDto);
+        log.info("makeBid bidDto " + bidDto);
 
         List<BidDto> bidList = redisLot.getBidHistory();
 
@@ -89,6 +91,10 @@ private ObjectMapper objectMapper;
         redisRepository.updateRedis(redisLot);
 
         return bidDto;
+        } else {
+            log.error("Can't place bid. Lot is not active. Username: " + username + " Lot id: " + lotId);
+            return null;
+        }
     }
 
 
@@ -126,7 +132,7 @@ private ObjectMapper objectMapper;
 
     @PostConstruct
     private void makeBidsMock() throws InterruptedException {
-        Thread.sleep(500);
+        Thread.sleep(100);
         makeBid("malishov", 1l, 600);
         makeBid("Khalil", 1l, 700);
         makeBid("admin6", 1l, 800);

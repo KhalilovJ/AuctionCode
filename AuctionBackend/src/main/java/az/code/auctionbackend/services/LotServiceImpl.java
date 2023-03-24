@@ -111,8 +111,6 @@ public class LotServiceImpl implements LotService {
 
         // 2 - auction finished
         Lot lot = changeStatus(lotId, 2);
-//        changeStatus2(lotId, 2);
-//        Lot lot = bidRepo.getLotById(lotId);
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
         List<BidDto> bidDtoList = redisLot.getBidHistory();
@@ -160,6 +158,8 @@ public class LotServiceImpl implements LotService {
                         winnerBid1
                 );
             }
+
+            lot.setLotWinner(winnerBid.getUser());
         }
 
         log.warn(lot.toString());

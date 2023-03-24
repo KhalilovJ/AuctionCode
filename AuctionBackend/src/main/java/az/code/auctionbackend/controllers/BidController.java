@@ -37,11 +37,6 @@ public class BidController {
 
     HashMap<Long, List<SseEmitter>> subscribers = new HashMap<>();
 
-//    @PostConstruct
-//    private void init(){
-//        bidService.setBidController(this);
-//    }
-
 
     @CrossOrigin
     @GetMapping("/{lotId}")
@@ -82,10 +77,15 @@ public class BidController {
 //        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
         BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
-        sendUpdates(bidService.bidDtoMapper(bid));
+        if (bid == null){
+            log.error("Lot is not active");
+            return "Error";
+        } else {
+            sendUpdates(bidService.bidDtoMapper(bid));
 
-        log.info("Bid placed; Lot Id is: " + lotId);
-        return "success";
+            log.info("Bid placed; Lot Id is: " + lotId);
+            return "success";
+        }
     }
 
 
