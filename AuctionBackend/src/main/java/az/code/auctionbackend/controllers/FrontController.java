@@ -120,9 +120,7 @@ public class FrontController {
 
         String un = user.getUsername();
 
-
         if (username.equalsIgnoreCase(un)) {
-
 
             UserProfile userProfile = userService.findByUsername(username).get();
 
