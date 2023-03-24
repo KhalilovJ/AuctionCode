@@ -59,7 +59,7 @@ public class SecurityConfig{
             return userService.findByUsername(username).map(user -> User.builder()
                     .username(user.getUsername())
                     .password(user.getPassword())
-                    .roles(user.getRole().getName())
+//                    .roles(user.getRole().getName())
                     .roles("ADMIN")
                     .build()).orElseThrow(() -> new UsernameNotFoundException("Not found"));
         };
