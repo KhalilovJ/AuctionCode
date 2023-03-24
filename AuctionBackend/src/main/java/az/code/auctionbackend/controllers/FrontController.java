@@ -54,59 +54,49 @@ public class FrontController {
 
         ModelAndView model;
 
+        Lot lot;
+
         RedisLot redisLot = redisRepository.getRedis(lotId);
-        log.error("getLot " + redisLot);
-        Lot lot = objectMapper.convertValue(redisLot, Lot.class);
 
-        // TODO status change
-        // closed lot
-        if (lot == null) {
+        if (redisLot != null) {
+            log.error("getLot " + redisLot);
+            lot = objectMapper.convertValue(redisLot, Lot.class);
+            lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
 
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-            lot = lotService.findLotById(lotId).orElse(null);
-            if (lot == null){
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            /**
+             *  Создание пустого списка бидов и заполноение в противном случае
+             */
+
+            if (redisLot.getBidHistory() == null) {
+                lot.setBidHistory(new ArrayList<>());
             } else {
-                model = new ModelAndView("auction");
-                model.addObject("auction", lot);
-                model.addObject("user", lot.getUser());
+                List<Bid> bidList = new ArrayList<>();
+
+                for (BidDto bidDto : redisLot.getBidHistory()) {
+                    bidList.add(Bid.builder()
+                            .bidTime(bidDto.getBidTime())
+                            .lot(lot)
+                            .bid(bidDto.getBid())
+                            .user(userService.findProfileById(bidDto.getUserId()).get())
+                            .build());
+                }
+                lot.setBidHistory(bidList);
             }
-        }
-
-        log.info("lot " + lot);
-
-        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
-
-        log.info("lot.getUser() " + lot.getUser());
-
-        /**
-         *  Создание пустого списка бидов и заполноение в противном случае
-         */
-        if (redisLot.getBidHistory() == null) {
-            lot.setBidHistory(new ArrayList<>());
         } else {
-            List<Bid> bidList = new ArrayList<>();
-
-            for (BidDto bidDto : redisLot.getBidHistory()) {
-                bidList.add(Bid.builder()
-                        .bidTime(bidDto.getBidTime())
-                        .lot(lot)
-                        .bid(bidDto.getBid())
-                        .user(userService.findProfileById(bidDto.getUserId()).get())
-                        .build());
-            }
-            lot.setBidHistory(bidList);
+            lot = lotService.findLotById(lotId).orElse(null);
         }
 
-//        lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
-//        System.out.println("from db " + lot);
+        if (lot == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
         log.info("lot " + lot);
 
        // TODO для if что-то еще надо делать? (нет)
         if (lot.getStatus() < 0){
             model = new ModelAndView("index");
-        } else {
+        }
+        else {
             model = new ModelAndView("auction");
             model.addObject("auction", lot);
             model.addObject("user", lot.getUser());
