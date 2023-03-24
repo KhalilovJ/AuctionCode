@@ -128,7 +128,7 @@ public class FrontController {
 
             // TODO validation
             // userService.findSellerProfileById(un).isChecked() - verified seller
-            if (userProfile.isSellerActive()) {
+            if (!userProfile.isSellerActive()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
 
