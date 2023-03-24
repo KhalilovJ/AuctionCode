@@ -22,7 +22,7 @@ public class Bid {
 
 
 //    @ManyToOne(cascade = CascadeType.ALL)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="lotId", nullable=false)
     @ToString.Exclude
     @JsonIgnore

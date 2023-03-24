@@ -99,7 +99,7 @@ public class LotServiceImpl implements LotService {
 
     public Lot changeStatus(Long lotId, int status) {
         Lot lot = bidRepo.getLotById(lotId);
-        log.error(lot.toString());
+        log.warn(lot.toString());
         lot.setStatus(status);
 
         return lot;
@@ -134,9 +134,11 @@ public class LotServiceImpl implements LotService {
             log.info("somebody made bids");
             log.info("Bids: " + bidDtoList);
 
+            Lot lot1 = bidRepo.getLotById(bidDtoList.get(0).getLotId());
+
             for (BidDto bidDto : bidDtoList) {
                 bidList.add(Bid.builder()
-                        .lot(bidRepo.getLotById(bidDto.getLotId()))
+                        .lot(lot1)
                         .bid(bidDto.getBid())
                         .user(userService.findProfileById(bidDto.getUserId()).get())
                         .bidTime(bidDto.getBidTime())
@@ -160,9 +162,9 @@ public class LotServiceImpl implements LotService {
             }
         }
 
-        log.error(lot.toString());
-        // save lot to DB
-//        lotRepository.save(lot);
+        log.warn(lot.toString());
+//      save lot to DB
+//      lotRepository.save(lot);
         bidRepo.saveLot(lot);
 
         // как то отправляем клиенту добрую весть :)
@@ -196,6 +198,16 @@ public class LotServiceImpl implements LotService {
                     .forEach(l -> redisRepository.saveRedis(
                             RedisLot.builder()
                                 .id(l.getId())
+                                    .userId(l.getUser().getId())
+                                    .lotName(l.getLotName())
+                                    .startDate(l.getStartDate())
+                                    .endDate(l.getEndDate())
+                                    .bidStep(l.getBidStep())
+                                    .startingPrice(l.getStartingPrice())
+                                    .reservePrice(l.getReservePrice())
+                                    .description(l.getDescription())
+                                    .itemPictures(l.getItemPictures())
+                                    .status(l.getStatus())
                                 .endDate(l.getEndDate())
                                 .build()));
         }

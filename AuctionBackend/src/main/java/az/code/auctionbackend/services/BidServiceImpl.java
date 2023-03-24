@@ -12,6 +12,7 @@ import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.interfaces.BidService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -120,6 +121,21 @@ private ObjectMapper objectMapper;
 //                .bid(bid.getBid())
 //                .bidTime(bid.getBidTime())
 //                .build();
+    }
+
+
+    @PostConstruct
+    private void makeBidsMock() throws InterruptedException {
+        Thread.sleep(500);
+        makeBid("malishov", 1l, 600);
+        makeBid("Khalil", 1l, 700);
+        makeBid("admin6", 1l, 800);
+        makeBid("user8", 1l, 950);
+        makeBid("malishov", 1l, 600);
+        makeBid("Khalil", 1l, 700);
+        makeBid("admin6", 1l, 800);
+        makeBid("user8", 1l, 950);
+
     }
 
 }
