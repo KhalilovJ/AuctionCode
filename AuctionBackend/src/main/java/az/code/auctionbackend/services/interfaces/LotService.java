@@ -2,6 +2,7 @@ package az.code.auctionbackend.services.interfaces;
 
 import az.code.auctionbackend.DTOs.LotDto;
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public interface LotService {
 
     Lot changeStatus(Long lotId, int status);
     void closeLot(long lotId);
-
     void createLot(LotDto lotDto, String images, String username);
+    void closeLot(long lotId, UserProfile userId);
+    void setLotStatus(long lotId, int status);
 }

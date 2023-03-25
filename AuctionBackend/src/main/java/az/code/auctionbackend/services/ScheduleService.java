@@ -1,9 +1,13 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.entities.redis.RedisWaitingPayment;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
+import az.code.auctionbackend.services.interfaces.AccountService;
 import az.code.auctionbackend.services.interfaces.LotService;
+import az.code.auctionbackend.services.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,30 +25,21 @@ public class ScheduleService {
 
     private final LotService lotService;
     private final RedisRepository redisRepository;
-
-//     @PostConstruct
-//     public void work() {  TODO cut it off
-//
-//         LotDto lotDto = LotDto.builder()
-//                 .bidStep(1)
-//                 .description("test")
-//                 .endDate(LocalDateTime.now().plusMinutes(2))
-//                 .build();
-//         System.out.println("lotDto!!! " + lotDto.getEndDate());
-// //        lotService.createLot(lotDto, null, "test");
-//
-//
-//         lotService.createLot(lotDto, null, "user6");
-//     }
+    private final AccountService accountService;
+    private final UserService userService;
 
     @Scheduled(cron = "${interval-in-cron-every-minute}")
     public void scheduledRateChecker() {
+
+        log.info("Scheduled work... Time: " + LocalDateTime.now());
+
         checkTimer(redisRepository.getAllRedis().values().stream().toList());
+
+        checkWaitingPayment(redisRepository.getAllWaitingPayments().values().stream().toList());
     }
 
     public void checkTimer(List<RedisLot> redisTimerList) {
 
-        log.info("Redis checking " + LocalDateTime.now());
 
         for (RedisLot l : redisTimerList) {
 
@@ -66,15 +61,43 @@ public class ScheduleService {
         }
     }
 
-    @PostConstruct
-    private void init(){
-        try {
-            Thread.sleep(3000);
 
-            lotService.closeLot(1);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    private void checkWaitingPayment(List<RedisWaitingPayment> waitingPayments){
+
+        for (RedisWaitingPayment red: waitingPayments){
+            if (
+                    true ||
+                            red.getCreationTime().plusHours(24l).isAfter(LocalDateTime.now()) ||
+                            red.getCreationTime().plusHours(24l).isEqual(LocalDateTime.now())
+            ){ // payment is overdue
+                log.info("Payment overdue: User id: " + red.getSenderId() + " ; Amount: " + red.getAmount());
+
+                int purchaseStatus = accountService.purchase(red.getSenderId(), red.getReceiverId(), red.getAmount());
+
+                UserProfile user = accountService.getAccountDetails(red.getSenderId()).getUser();
+                    if (purchaseStatus <= 0){ //purchase not happened, blocking user
+                        userService.blockUser(user.getId(), true);
+                        lotService.setLotStatus(red.getId(), -3);
+                    } else {
+                        lotService.closeLot(red.getId(), user);
+                    }
+
+                    redisRepository.removeWaitingPayment(red.getId());
+            }
         }
+
+
     }
+
+//    @PostConstruct
+//    private void init(){
+//        try {
+//            Thread.sleep(3000);
+//
+//            lotService.closeLot(1);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }

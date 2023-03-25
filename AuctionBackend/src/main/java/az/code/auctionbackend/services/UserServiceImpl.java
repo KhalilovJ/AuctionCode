@@ -96,6 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void blockUser(Long id, boolean block){
+        log.warn("User: " + id + " block - " + block);
         userRepo.blockUser(id, block);
     }
 

@@ -129,36 +129,6 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-//    private Transaction makePurchase(UserProfile sender, UserProfile receiver, double amount){
-//
-//        Transaction transaction = Transaction.builder()
-//                .amount(amount)
-//                .transactionTime(LocalDateTime.now())
-//                .build();
-//
-//        Account senderAccount = topUpBalance(sender, amount);
-//        Account receiverAccount = getAccountDetails(receiver.getAccount().getId());
-//
-//        senderAccount.setBalance(senderAccount.getBalance() - amount);
-//        receiverAccount.setBalance(receiverAccount.getBalance() + amount);
-//
-//        transaction = transaction.toBuilder()
-//                .senderAccount(senderAccount)
-//                .senderAccountId(senderAccount.getId())
-//                .account(receiverAccount).build();
-//
-//        if (senderAccount.getTransactions() == null){
-//            List<Transaction> newList = new ArrayList<>();
-//            newList.add(transaction);
-//            senderAccount.setTransactions(newList);
-//        } else {
-//            senderAccount.getTransactions().add(transaction);
-//        }
-//
-//        Account acc =tranactionService.saveAccount(receiverAccount);
-//
-//        System.out.println("saved " + acc);
-//        return transaction;
-//
-//    }
+
+
 }

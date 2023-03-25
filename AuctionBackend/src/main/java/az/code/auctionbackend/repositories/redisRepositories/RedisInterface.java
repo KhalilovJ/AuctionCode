@@ -18,6 +18,6 @@ public interface RedisInterface {
 
         // Waiting payments
         Map<Long, RedisWaitingPayment> getAllWaitingPayments();
-        void addWaitingPayment(Long id, RedisWaitingPayment payment);
+        void addWaitingPayment( RedisWaitingPayment payment);
         void removeWaitingPayment(Long id);
 }

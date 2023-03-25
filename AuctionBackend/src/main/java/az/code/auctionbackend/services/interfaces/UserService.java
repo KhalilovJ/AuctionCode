@@ -14,6 +14,7 @@ public interface UserService {
     Optional<UserProfile> findProfileById(long id);
 
     Optional<UserProfile> findByUsername(String username);
+    void blockUser(Long id, boolean block);
 
 //    SellerData findSellerProfileById(String username);
 }

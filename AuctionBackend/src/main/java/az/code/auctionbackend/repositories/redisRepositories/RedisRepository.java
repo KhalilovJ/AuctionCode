@@ -88,8 +88,8 @@ public class RedisRepository implements RedisInterface {
     }
 
     @Override
-    public void addWaitingPayment(Long id, RedisWaitingPayment payment) {
-        waitingsHash.putIfAbsent(hashReferenceWaitings,id,payment);
+    public void addWaitingPayment(RedisWaitingPayment payment) {
+        waitingsHash.putIfAbsent(hashReferenceWaitings,payment.getId(),payment);
     }
 
     @Override

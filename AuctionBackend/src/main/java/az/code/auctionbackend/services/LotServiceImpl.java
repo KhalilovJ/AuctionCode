@@ -168,8 +168,9 @@ public class LotServiceImpl implements LotService {
                         userService.blockUser(winnerBid.getUser().getId(), true);
                         break;
                     case 0:
-                            redisRepository.addWaitingPayment(lot.getId(),
+                            redisRepository.addWaitingPayment(
                                     RedisWaitingPayment.builder()
+                                            .id(lot.getId())
                                             .creationTime(LocalDateTime.now())
                                             .receiverId(sellerAccId)
                                             .senderId(winnerAccId)
@@ -237,5 +238,26 @@ public class LotServiceImpl implements LotService {
                                 .build()));
         }
 
+    }
+
+
+    public void closeLot(long lotId, UserProfile user){
+        Lot lot = bidRepo.getLotById(lotId);
+
+        lot.setLotWinner(user);
+        lot.setStatus(3);
+
+        log.warn("Lot closed: " + lot.getId());
+        bidRepo.saveLot(lot);
+    }
+
+    public void setLotStatus(long lotId, int status){
+
+        Lot lot = bidRepo.getLotById(lotId);
+
+        lot.setStatus(status);
+
+        log.info("Lot status changed: " + lot.getId());
+        bidRepo.saveLot(lot);
     }
 }

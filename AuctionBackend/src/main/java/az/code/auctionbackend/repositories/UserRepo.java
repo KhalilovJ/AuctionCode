@@ -33,7 +33,7 @@ public class UserRepo {
     .setParameter("isbn", ids).getResultList();
         }
 
-
+    @Transactional
     public void blockUser(Long userId, boolean block){
         em.createQuery("update UserProfile u set u.isBlocked = ?1 where u.id = ?2")
                 .setParameter(1, block)
