@@ -2,6 +2,7 @@ package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.LotFrontDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -234,6 +236,7 @@ public class LotServiceImpl implements LotService {
                                     .description(l.getDescription())
                                     .itemPictures(l.getItemPictures())
                                     .status(l.getStatus())
+                                    .imgs(l.getItemPictures())
                                 .endDate(l.getEndDate())
                                 .build());
                         log.info("Lot added to redis " + l.getId());
@@ -260,5 +263,18 @@ public class LotServiceImpl implements LotService {
 
         log.info("Lot status changed: " + lot.getId());
         bidRepo.saveLot(lot);
+    }
+
+    public List<LotFrontDto> getAllActiveLotsFront(){
+        List<LotFrontDto> listOut = new ArrayList<>();
+        Map<Long, RedisLot> allredis = redisRepository.getAllRedis();
+        if (allredis.size() >0){
+        allredis.values().forEach(
+                lot ->{
+                   listOut.add(LotFrontDto.getLotFrontDto(lot));
+                }
+        );
+        return listOut;}
+        else return null;
     }
 }
