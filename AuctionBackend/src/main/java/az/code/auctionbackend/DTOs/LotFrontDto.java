@@ -34,8 +34,6 @@ public class LotFrontDto {
         while(keys.hasNext()) {
             String key = keys.next();
                 idsLocal.add(obj.get(key).toString());
-                System.out.println("JSON parse result" + obj.get(key).toString());
-
         }
 
         LotFrontDto lot = LotFrontDto.builder()

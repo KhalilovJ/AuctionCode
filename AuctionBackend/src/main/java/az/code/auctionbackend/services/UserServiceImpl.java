@@ -1,6 +1,7 @@
 package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.UserDto;
+import az.code.auctionbackend.DTOs.UserFrontDTO;
 import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.RoleRepo;
@@ -98,6 +99,12 @@ public class UserServiceImpl implements UserService {
     public void blockUser(Long id, boolean block){
         log.warn("User: " + id + " block - " + block);
         userRepo.blockUser(id, block);
+    }
+
+    @Override
+    public UserFrontDTO getUserToFront(String username) {
+        UserProfile user = findByUsername(username).get();
+        return UserFrontDTO.convertToUserFront(user);
     }
 
 

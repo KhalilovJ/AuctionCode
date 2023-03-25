@@ -1,0 +1,29 @@
+.profilecard{
+    background-color: #93E2BB;
+    border-radius: 20px;
+    min-height: 20rem;
+    margin-top: 5rem;
+}
+
+.profilecard1{
+    /* background-color: #93E2BB; */
+    border-radius: 20px;
+    max-height: 100%;
+}
+
+.avatar{
+    border-radius: 50%;
+
+    max-height: 8rem;
+}
+
+.buttondiv{
+    height: 33.3%;
+
+}
+.linktextbutton{
+    text-decoration: none;
+    font-size: x-large;
+    font-weight:600;
+
+}
