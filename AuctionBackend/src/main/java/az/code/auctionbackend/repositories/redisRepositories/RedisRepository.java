@@ -80,6 +80,7 @@ public class RedisRepository implements RedisInterface {
         hashOperations.putAll(hashReference,map);
     }
 
+
     // Waiting payments
 
     @Override

@@ -218,10 +218,10 @@ public class LotServiceImpl implements LotService {
     @PostConstruct
     private void lotsImport(){
 
-        if(redisRepository.getAllRedis().isEmpty()) {
-
             lotRepository.getAllNonFinishedLots()
-                    .forEach(l -> redisRepository.saveRedis(
+                    .forEach(l -> {
+                        if(redisRepository.getRedis(l.getId()) == null){
+                        redisRepository.saveRedis(
                             RedisLot.builder()
                                 .id(l.getId())
                                     .userId(l.getUser().getId())
@@ -235,10 +235,11 @@ public class LotServiceImpl implements LotService {
                                     .itemPictures(l.getItemPictures())
                                     .status(l.getStatus())
                                 .endDate(l.getEndDate())
-                                .build()));
+                                .build());
+                        log.info("Lot added to redis " + l.getId());
+                        }
+        });
         }
-
-    }
 
 
     public void closeLot(long lotId, UserProfile user){
