@@ -66,7 +66,6 @@ public class ScheduleService {
 
         for (RedisWaitingPayment red: waitingPayments){
             if (
-                    true ||
                             red.getCreationTime().plusHours(24l).isAfter(LocalDateTime.now()) ||
                             red.getCreationTime().plusHours(24l).isEqual(LocalDateTime.now())
             ){ // payment is overdue
