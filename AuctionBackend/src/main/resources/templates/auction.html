@@ -46,10 +46,6 @@
             <div class="row h-100 d-inline-block" >
               <div id="carouselExampleIndicators" class="carousel slide h-100 d-flex align-content-center" data-bs-ride="carousel">
                 <div class="carousel-indicators" th:id="carousel-indicators">
-                  <!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active bg-secondary" aria-current="true" aria-label="Slide 1"></button>-->
-                  <!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="bg-secondary" aria-label="Slide 2"></button>-->
-                  <!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="bg-secondary" aria-label="Slide 3"></button>-->
-
                   <div th:if="${auction.getIds().size() > 1}">
                     <div th:class="carousel-indicators" >
                       <button th:each="img,ids: ${auction.getIds()}" th:if="${ids.index == 0}" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${ids.index}" class="active bg-secondary" aria-current="true" th:aria-label="'Slide ' + ${ids.index+1}"></button>
@@ -107,18 +103,6 @@
               <span class="card-text" th:id="rating" th:text="${user.rating}">BidStep</span>
               <br>
             </div>
-
-            <!-- <div class="text-left">
-                Reserve price:
-                <span class="card-text" th:id="bid_step" th:text="${auction.reservePrice}">Reserve</span>
-                <br>
-            </div>
-
-            <div class="text-left">
-                Auction end time:
-                <span class="card-text" th:text="${auction.endDate}">endDate</span>
-                <br>
-            </div> -->
 
             <br>
           </div>
@@ -235,21 +219,6 @@
                 <br>
               </div>
             </tr>
-
-<!--          <div class="shadow-sm border d-flex justify-content-between rounded-3">-->
-<!--            <span>bid</span>-->
-<!--            <span>user</span>-->
-<!--            <span>bid time</span>-->
-<!--            <br>-->
-<!--          </div>-->
-<!--          <br>-->
-
-
-<!--          <tr th:each="bid: ${auction.bidHistory}">-->
-<!--            <br>-->
-<!--            <td th:text="${bid.user.username}" />-->
-<!--            <td th:text="${bid.bid}" />-->
-<!--          </tr>-->
 
         </div>
       </div>
