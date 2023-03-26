@@ -1,5 +1,5 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <!-- Required meta tags -->
@@ -9,97 +9,112 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
+  <link rel="stylesheet" th:href="@{/style/indexstyle.css}">
   <title>Home</title>
 </head>
-<body>
+<body class="bg-light">
 
-<div th:if="${user != null}">
-  <span id="usernameSpan"  th:text="${user.username}"></span>
+<header class="d-flex flex-wrap bg-primary justify-content-center w-100 py-3 mb-4 border-bottom shadow">
+  <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none" style="margin-left: 15px;">
+    <img src="https://i.pinimg.com/originals/af/1d/25/af1d25b221d4c5a7231225f4b1566d1c.png" height="55" class="d-inline-block align-top" alt="">
+    <span class="fs-4 text-light">Auctioneer</span>
+  </a>
+
+  <ul class="nav nav-pills" style="margin-right: 30px;">
+    <li class="nav-item"><a disabled class="nav-link text-light" aria-current="page">HOME</a></li>
+    <li class="nav-item"><a href="/profile" class="nav-link text-white">PROFILE</a></li>
+  </ul>
+</header>
+
+<div class="col-md-11 mx-auto bg-white shadow-sm rounded-3" id="centerarea">
+  <br>
+  <div class="bg-info py-2 rounded-3 text-white text-center mx-3 w-25">
+    Aktiv auksionlar
+  </div>
+  <hr class="mx-2">
+  <br>
+
+  <div class="d-flex flex-wrap">
+
+    <tr th:each="lot,lotloop: ${lotList}">
+
+
+      <div class="item col-md-3 mx-auto" style="max-height: 25rem;">
+        <div style="height: 65%;">
+          <div class="d-flex justify-content-center text-center" style="height: 15rem;">
+            <div class="row h-100 d-inline-block" >
+              <div th:id="'carouselindicators' + ${lotloop.index}" class="carousel slide h-100 d-flex align-content-center" data-bs-ride="carousel">
+
+                <div th:if="${lot.getIds().size() > 1}">
+                  <div th:class="carousel-indicators" >
+                    <button th:each="img,ids: ${lot.getIds()}" th:if="${ids.index == 0}" type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}" th:data-bs-slide-to="${ids.index}" class="active bg-secondary" aria-current="true" th:aria-label="'Slide ' + ${ids.index+1}"></button>
+                    <button th:each="img,ids: ${lot.getIds()}" th:unless="${ids.index == 0}" type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}" th:data-bs-slide-to="${ids.index}" class="bg-secondary" th:aria-label="'Slide ' + ${ids.index+1}"></button>
+
+                    <!--                  <button type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}" data-bs-slide-to="0" class="active bg-secondary" aria-current="true" aria-label="Slide 1"></button>-->
+                    <!--                  <button type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}"  data-bs-slide-to="1" class="bg-secondary" aria-label="Slide 2"></button>-->
+                    <!--                  <button type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}"  data-bs-slide-to="2" class="bg-secondary" aria-label="Slide 3"></button>-->
+                  </div>
+                </div>
+
+                <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  onclick="window.location.href = 'https://ru-ru.facebook.com/';">
+
+                  <div class="carousel-item active" th:each="img,ids: ${lot.getIds()}" th:if="${ids.index == 0}">
+                    <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;" >
+                  </div>
+                  <div class="carousel-item" th:each="img,ids: ${lot.getIds()}" th:unless="${ids.index == 0}">
+                    <img th:src="'https://ucarecdn.com/' + ${img}  + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;">
+                  </div>
+
+                </div>
+                <div th:if="${lot.getIds().size() > 1}">
+
+                <button class="carousel-control-prev" type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" th:data-bs-target="'#carouselindicators' + ${lotloop.index}" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+                </div>
+              </div>
+            </div>
+
+          </div >
+        </div>
+
+        <hr>
+        <div class="bottom justify-content-center my-auto d-flex">
+          <div class="text-center">
+            <a class="textLink mb-2 text-dark text-decoration-none hoverable link-dark" th:href="'lots/' + ${lot.getId()}" th:text="${lot.getLotName()}"></a>
+            <td>
+              <h5 th:if="${lot.getCurrentBid() > 0}" th:text="'Öndə olan təklif: ' + ${lot.getCurrentBid()}"></h5>
+              <h5 th:unless="${lot.getCurrentBid() > 0}" th:text="'Başlanğıc qiymət: ' + ${lot.getStartingPrice()}"></h5>
+            </td>
+            <h6 class="timerDiv text-secondary" th:data="${lot.getEndDate()}" >End time</h6>
+          </div>
+
+        </div>
+      </div>
+
+    </tr>
+
+
+
+    <div class="col-md-3 mx-auto fillitem">
+    </div>
+    <div class="col-md-3 mx-auto fillitem">
+    </div>
+    <div class="col-md-3 mx-auto fillitem">
+    </div>
+
+
+  </div>
+
+
 </div>
 
-<section class="vh-100" style="max-height: 400px;">
-  <div class="container-fluid h-custom d-flex p2 d-flex justify-content-center align-middle" style="margin-top: 10%;">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-md-9 col-lg-6 col-xl-5">
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-             class="img-fluid" alt="Sample image">
-      </div>
-      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-        <!--        <form style="max-height:50%" class="mt-4" onsubmit="return setAction(this)">-->
-
-        <!--          <div class="mt-5"></div>-->
-
-
-        <!--          &lt;!&ndash; <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">-->
-        <!--            <p class="lead fw-normal mb-0 me-3">Sign in with</p>-->
-        <!--              <button type="button" class="btn btn-outline-primary fbbutton">-->
-        <!--                      <img src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" height="35" alt="">-->
-        <!--              </button>-->
-
-        <!--          </div>-->
-
-        <!--          <div class="divider d-flex align-items-center my-4">-->
-        <!--            <p class="text-center fw-bold mx-3 mb-0">Or</p>-->
-        <!--          </div> &ndash;&gt;-->
-
-        <!--          &lt;!&ndash; Email input &ndash;&gt;-->
-
-
-        <!--          <div class="form-outline mb-4">-->
-        <!--            <input type="email" id="form3Example3" class="form-control form-control-lg"-->
-        <!--                   placeholder="Enter a valid email address" />-->
-        <!--            <label class="form-label" for="form3Example3">Email address</label>-->
-        <!--          </div>-->
-
-        <!--          &lt;!&ndash; Password input &ndash;&gt;-->
-        <!--          <div class="form-outline mb-3">-->
-        <!--            <input type="password" id="form3Example4" class="form-control form-control-lg"-->
-        <!--                   placeholder="Enter password" />-->
-        <!--            <label class="form-label" for="form3Example4">Password</label>-->
-        <!--          </div>-->
-
-        <!--          &lt;!&ndash; <div class="d-flex justify-content-between align-items-center">-->
-        <!--            <div class="form-check mb-0">-->
-        <!--              <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />-->
-        <!--              <label class="form-check-label" for="form2Example3">-->
-        <!--                Remember me-->
-        <!--              </label>-->
-        <!--            </div>-->
-        <!--            <a href="#!" class="text-body">Forgot password?</a>-->
-        <!--          </div> &ndash;&gt;-->
-
-        <!--          <div class="text-center text-lg-start mt-4 pt-2">-->
-        <!--            <button type="button" class="btn btn-primary btn-lg"-->
-        <!--                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>-->
-        <!--            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="register.html"-->
-        <!--                                                                              class="link-danger">Register</a></p>-->
-        <!--          </div>-->
-
-        <!--        </form>-->
-
-        <a href='/logout'>Logout</a>
-
-        <a id="createAuction">Create auction</a>
-      </div>
-    </div>
-  </div>
-  <div
-          class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary fixed-bottom">
-    <!-- Copyright -->
-    <div class="text-white mb-3 mb-md-0">
-      Copyright © 2023. All rights reserved. Made by Murad and Jamal
-    </div>
-    <!-- Copyright -->
-  </div>
-</section>
-
-
-
-<!-- Option 1: Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-<script th:src="@{/js/script.js}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script th:src="@{/js/index.js}"></script>
 </body>
 </html>

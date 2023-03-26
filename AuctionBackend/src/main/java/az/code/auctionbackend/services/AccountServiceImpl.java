@@ -7,6 +7,7 @@ import az.code.auctionbackend.repositories.UserRepo;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepo;
 import az.code.auctionbackend.repositories.financeRepositories.AccountRepository;
 import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
+import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.repositories.usersRepositories.UserRepository;
 import az.code.auctionbackend.services.interfaces.AccountService;
 import jakarta.annotation.PostConstruct;
@@ -35,6 +36,7 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepo accRepo;
     private final TranactionService tranactionService;
+    private final RedisRepository redisRepository;
 
 //    @PostConstruct
     public void AccountTest() {
@@ -61,13 +63,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> getAllAccounts() {
         return accRepo.getAllAccs();
-//        return  accountRepository.getAllAccs().get();
     }
 
     @Override
     public Account getAccountDetails(long accountId) {
 
-//        return accountRepository.getAccountById(accountId).orElse(null);
         return accRepo.searchAccountById(accountId).orElse(null);
     }
 
@@ -91,74 +91,44 @@ public class AccountServiceImpl implements AccountService {
         double balance = account.getBalance();
         account.setBalance(balance + amount);
 
-//        accountRepository.save(account);0.
         log.info("saving account " + account);
         log.info("saved" + accRepo.saveAccount(account));
     }
 
-    @Override
-    public Transaction purchase(long senderId, long receiverId, double amount) {
 
+    @Override
+    public int purchase(long senderId, long receiverId, double amount){
+        /**
+         Returns 1 if it's ok; 0 if insufficient funds; -1 if error
+         */
 
         log.info("Purchase");
 
         Account senderAccount = accRepo.searchAccountById(senderId).get();
         Account receiverAccount = accRepo.searchAccountById(receiverId).get();
 
-        // TODO validation
+
         if(!senderAccount.isActive() || !receiverAccount.isActive()) {
-            // userService.findByUsername(un).get().isBlocked()
-            return null;
-        }
+            return -1;
+        } else if (senderAccount.getBalance() < amount) {
 
-        // TODO validation
-        if (senderAccount.getBalance() < amount) {
+            tranactionService.createTransaction(amount, receiverAccount, senderAccount, -1);
+            return 0;
             // status - 406
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
-        }
+//            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+        } else {
 
-//        Transaction tr =  makePurchase(sender, receiver, amount);
-//        return tr;
         topUpBalance(senderId, amount * -1);
-//
         topUpBalance(receiverId, amount);
 
-        return tranactionService.createTransaction(amount, receiverAccount, senderAccount);
+        tranactionService.createTransaction(amount, receiverAccount, senderAccount, 1);
 
+        return 1;
+        }
     }
 
 
 
-//    private Transaction makePurchase(UserProfile sender, UserProfile receiver, double amount){
-//
-//        Transaction transaction = Transaction.builder()
-//                .amount(amount)
-//                .transactionTime(LocalDateTime.now())
-//                .build();
-//
-//        Account senderAccount = topUpBalance(sender, amount);
-//        Account receiverAccount = getAccountDetails(receiver.getAccount().getId());
-//
-//        senderAccount.setBalance(senderAccount.getBalance() - amount);
-//        receiverAccount.setBalance(receiverAccount.getBalance() + amount);
-//
-//        transaction = transaction.toBuilder()
-//                .senderAccount(senderAccount)
-//                .senderAccountId(senderAccount.getId())
-//                .account(receiverAccount).build();
-//
-//        if (senderAccount.getTransactions() == null){
-//            List<Transaction> newList = new ArrayList<>();
-//            newList.add(transaction);
-//            senderAccount.setTransactions(newList);
-//        } else {
-//            senderAccount.getTransactions().add(transaction);
-//        }
-//
-//        Account acc =tranactionService.saveAccount(receiverAccount);
-//
-//        System.out.println("saved " + acc);
-//        return transaction;
-//
-//    }
+
+
 }

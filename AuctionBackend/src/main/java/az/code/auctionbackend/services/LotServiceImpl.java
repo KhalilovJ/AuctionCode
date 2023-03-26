@@ -2,10 +2,12 @@ package az.code.auctionbackend.services;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.LotFrontDto;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.entities.redis.RedisWaitingPayment;
 import az.code.auctionbackend.repositories.auctionRepositories.BidRepo;
 import az.code.auctionbackend.repositories.auctionRepositories.LotRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -110,7 +113,9 @@ public class LotServiceImpl implements LotService {
         log.info("IN closeLot v2");
 
         // 2 - auction finished
-        Lot lot = changeStatus(lotId, 2);
+//        Lot lot = changeStatus(lotId, 2); // we need to change status according to closing process
+        Lot lot = bidRepo.getLotById(lotId);
+        log.warn(lot.toString());
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
         List<BidDto> bidDtoList = redisLot.getBidHistory();
@@ -120,23 +125,22 @@ public class LotServiceImpl implements LotService {
         log.info("redisLot.getBidHistory() - done");
         log.info("bidList " + bidDtoList);
 
-        // nobody made bids
+        // nobody made bids ==============================================
         if (bidDtoList == null) {
             log.info("nobody made bids");
             bidDtoList = new ArrayList<>();
             lot.setBidHistory(bidList);
+            lot.setStatus(-2);
         }
 
-        // somebody made bids
+        // somebody made bids =============================================
         if (!bidDtoList.isEmpty()) {
             log.info("somebody made bids");
             log.info("Bids: " + bidDtoList);
 
-            Lot lot1 = bidRepo.getLotById(bidDtoList.get(0).getLotId());
-
             for (BidDto bidDto : bidDtoList) {
                 bidList.add(Bid.builder()
-                        .lot(lot1)
+                        .lot(lot)
                         .bid(bidDto.getBid())
                         .user(userService.findProfileById(bidDto.getUserId()).get())
                         .bidTime(bidDto.getBidTime())
@@ -147,24 +151,47 @@ public class LotServiceImpl implements LotService {
 
             Bid winnerBid = getWinnerBid(lot);
 
-            // TODO fix bug -.IndexOutOfBoundsException
-            if (winnerBid != null) {
+
+                int purchaseStatus;
                 long winnerAccId = winnerBid.getUser().getAccount().getId();
                 long sellerAccId = lot.getUser().getAccount().getId();
-                double winnerBid1 = winnerBid.getBid();
-                accountService.purchase(
+                double winnerBidAmount = winnerBid.getBid();
+                purchaseStatus = accountService.purchase(
                         winnerAccId,
                         sellerAccId,
-                        winnerBid1
+                        winnerBidAmount
                 );
-            }
 
-            lot.setLotWinner(winnerBid.getUser());
+                log.info("Purchase status is: " + purchaseStatus);
+
+                switch (purchaseStatus){
+                    case -1:
+                        lot.setStatus(-2);
+                        userService.blockUser(winnerBid.getUser().getId(), true);
+                        break;
+                    case 0:
+                            redisRepository.addWaitingPayment(
+                                    RedisWaitingPayment.builder()
+                                            .id(lot.getId())
+                                            .creationTime(LocalDateTime.now())
+                                            .receiverId(sellerAccId)
+                                            .senderId(winnerAccId)
+                                            .amount(winnerBidAmount)
+                                            .build()
+                            );
+                        lot.setStatus(2);
+                        userService.blockUser(winnerBid.getUser().getId(), true);
+                        break;
+                    case 1:
+                        lot.setStatus(3);
+                        break;}
+
+                lot.setLotWinner(winnerBid.getUser());
+
         }
+        //========================^ if someone made bids
 
         log.warn(lot.toString());
-//      save lot to DB
-//      lotRepository.save(lot);
         bidRepo.saveLot(lot);
 
         // как то отправляем клиенту добрую весть :)
@@ -176,10 +203,11 @@ public class LotServiceImpl implements LotService {
     private Bid getWinnerBid(Lot lot){
         Bid bid = lot.getBidHistory().get(0);
         for (Bid bid1: lot.getBidHistory()){
-            if (bid1.getBid() > bid.getBid()){
+            if (
+                    bid1.getBid() > bid.getBid() ||
+                    bid1.getBid() == bid.getBid() && bid.getBidTime().isAfter(bid1.getBidTime())
+            ){
                 bid = bid1;
-            } else if (bid1.getBid() == bid.getBid() && bid.getBidTime().isAfter(bid1.getBidTime())){
-
             }
         }
         log.info("Lot " + lot.getId() + " winner: " + bid.getUser().getUsername() + " Bid " + bid.getBid());
@@ -192,10 +220,10 @@ public class LotServiceImpl implements LotService {
     @PostConstruct
     private void lotsImport(){
 
-        if(redisRepository.getAllRedis().isEmpty()) {
-
             lotRepository.getAllNonFinishedLots()
-                    .forEach(l -> redisRepository.saveRedis(
+                    .forEach(l -> {
+                        if(redisRepository.getRedis(l.getId()) == null){
+                        redisRepository.saveRedis(
                             RedisLot.builder()
                                 .id(l.getId())
                                     .userId(l.getUser().getId())
@@ -208,9 +236,45 @@ public class LotServiceImpl implements LotService {
                                     .description(l.getDescription())
                                     .itemPictures(l.getItemPictures())
                                     .status(l.getStatus())
+                                    .imgs(l.getItemPictures())
                                 .endDate(l.getEndDate())
-                                .build()));
+                                .build());
+                        log.info("Lot added to redis " + l.getId());
+                        }
+        });
         }
 
+
+    public void closeLot(long lotId, UserProfile user){
+        Lot lot = bidRepo.getLotById(lotId);
+
+        lot.setLotWinner(user);
+        lot.setStatus(3);
+
+        log.warn("Lot closed: " + lot.getId());
+        bidRepo.saveLot(lot);
+    }
+
+    public void setLotStatus(long lotId, int status){
+
+        Lot lot = bidRepo.getLotById(lotId);
+
+        lot.setStatus(status);
+
+        log.info("Lot status changed: " + lot.getId());
+        bidRepo.saveLot(lot);
+    }
+
+    public List<LotFrontDto> getAllActiveLotsFront(){
+        List<LotFrontDto> listOut = new ArrayList<>();
+        Map<Long, RedisLot> allredis = redisRepository.getAllRedis();
+        if (allredis.size() >0){
+        allredis.values().forEach(
+                lot ->{
+                   listOut.add(LotFrontDto.getLotFrontDto(lot));
+                }
+        );
+        return listOut;}
+        else return null;
     }
 }

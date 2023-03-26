@@ -29,22 +29,14 @@ public class TranactionService {
     private TransactionRepository transactionRepository;
 
 
-    public Transaction createTransaction(double amount, Account sender, Account receiver){
-
-//        List<Long> ids = new ArrayList<>();
-//        ids.add(senderId);
-//        ids.add(receiverId);
-//
-//        List<UserProfile> users = userService.findByIds(ids);
-
-//        Account sender = accountService.getAccountDetails(senderId);
-//        Account receiver = accountService.getAccountDetails(receiverId);
+    public Transaction createTransaction(double amount, Account sender, Account receiver, int status){
 
         Transaction transaction = Transaction.builder()
                 .amount(amount)
                 .account(receiver)
                 .transactionTime(LocalDateTime.now())
                 .senderAccount(sender)
+                .status(status)
                 .build();
 
         log.info(transactionRepository.save(transaction));

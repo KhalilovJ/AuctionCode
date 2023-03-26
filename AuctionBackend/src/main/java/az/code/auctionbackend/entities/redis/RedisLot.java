@@ -50,6 +50,7 @@ public class RedisLot implements Serializable {
     private long lotWinnerId;
 
     private int status;
+    private String imgs;
 
 
 //    public void mapLot(Lot lot){

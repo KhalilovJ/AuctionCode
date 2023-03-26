@@ -2,6 +2,7 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.UserFrontDTO;
 import az.code.auctionbackend.deserializer.CustomMapper;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
@@ -47,6 +48,14 @@ public class FrontController {
     @GetMapping("/")
     public ModelAndView getIndex(){
         return new ModelAndView("redirect:/home");
+    }
+
+    @GetMapping("/profile")
+    public ModelAndView getProfile(@AuthenticationPrincipal UserDetails userIn){
+        ModelAndView model = new ModelAndView("profile");
+        UserFrontDTO user = userService.getUserToFront(userIn.getUsername());
+        model.addObject("user", user);
+        return model;
     }
 
     @GetMapping("/lots/{lotId}")

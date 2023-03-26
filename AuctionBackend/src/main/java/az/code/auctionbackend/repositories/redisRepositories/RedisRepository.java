@@ -4,6 +4,7 @@ import az.code.auctionbackend.deserializer.CustomMapper;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisUser;
+import az.code.auctionbackend.entities.redis.RedisWaitingPayment;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,16 @@ public class RedisRepository implements RedisInterface {
 
 
     private final String hashReference= "redis";
+
+    private final String getHashReferenceWaitings = "waitings";
     private final String hashReferenceUser= "users";
+    private final String hashReferenceWaitings= "waitings";
 
     @Resource(name = "template")
     private HashOperations<String, Long, RedisLot> hashOperations;
+
+    @Resource(name = "template")
+    private HashOperations<String, Long, RedisWaitingPayment> waitingsHash;
 
 //    @Resource(name = "template")
 //    private HashOperations<String, Long, RedisUser> hashOperationsUser;
@@ -73,33 +80,23 @@ public class RedisRepository implements RedisInterface {
         hashOperations.putAll(hashReference,map);
     }
 
-    // User TODO cut it off
-//    @Override
-//    public Map<Long, RedisUser> getAllRedisUser() {//Long,RedisLot
-//        return hashOperationsUser.entries(hashReferenceUser);
-//    }
 
-//    @Override
-//    public RedisUser saveRedisUser(RedisUser red) {
-//        users.put(red.getUsername(), red.getId());
-//        hashOperationsUser.putIfAbsent(hashReferenceUser, red.getId(), red);
-//        return red;
-//    }
+    // Waiting payments
 
-//    @Override
-//    public RedisUser getRedisUser(Long id) {
-//        log.error("getRedisUser " + id);
-//        return  hashOperationsUser.get(hashReferenceUser,id);
-//    }
+    @Override
+    public Map<Long, RedisWaitingPayment> getAllWaitingPayments() {
+        return waitingsHash.entries(hashReferenceWaitings);
+    }
 
-//    public RedisUser getRedisUserByUsername(String username) {
-//        log.info("getRedisUserByUsername username " + username);
-//        log.info("getRedisUserByUsername users.get(username) " + users.get(username));
-//        return  getRedisUser(users.get(username));
-//    }
+    @Override
+    public void addWaitingPayment(RedisWaitingPayment payment) {
+        waitingsHash.putIfAbsent(hashReferenceWaitings,payment.getId(),payment);
+    }
 
-//    public void importUser(UserProfile userProfile) {
-//
-//        saveRedisUser(mapper.mapperUserProfileToRedisUser(userProfile));
-//    }
+    @Override
+    public void removeWaitingPayment(Long id) {
+        waitingsHash.delete(hashReferenceWaitings,id);
+    }
+
+
 }

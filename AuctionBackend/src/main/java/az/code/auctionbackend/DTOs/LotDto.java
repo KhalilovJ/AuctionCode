@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -17,9 +18,7 @@ public class LotDto {
     private double reservePrice;
     private double startingPrice;
     private double bidStep;
-
     private LocalDateTime startDate;
-
     private LocalDateTime endDate;
 
     public Lot getLot(){

@@ -55,6 +55,7 @@ public class Lot {
     private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "lot", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Bid> bidHistory;
 
     @Column(name = "pictures")
@@ -72,13 +73,13 @@ public class Lot {
 
     /**
 
+       -3 - not payed (after sale)
        -2 - not sold
        -1 - not approved
         0 - not active
         1 - active
         2 - auction finished
-        3 - waiting to approve by second place
-        4 - paid
+        3 - paid
 
      */
     @Column(name = "status")

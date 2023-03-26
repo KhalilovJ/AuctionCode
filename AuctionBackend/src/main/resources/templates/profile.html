@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" th:href="@{/style/profileStyle.css}">
+    <title>Profile</title>
+</head>
+<body class="bg-light">
+
+<header class="d-flex flex-wrap bg-primary justify-content-center w-100 py-3 mb-4 border-bottom shadow">
+    <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none" style="margin-left: 15px;">
+        <img src="https://i.pinimg.com/originals/af/1d/25/af1d25b221d4c5a7231225f4b1566d1c.png" height="55" class="d-inline-block align-top" alt="">
+        <span class="fs-4 text-light">Auctioneer</span>
+    </a>
+
+    <ul class="nav nav-pills" style="margin-right: 30px;">
+        <li class="nav-item"><a href="/home" class="nav-link text-light" aria-current="page">HOME</a></li>
+        <li class="nav-item"><a disabled class="nav-link text-light">PROFILE</a></li>
+    </ul>
+</header>
+
+
+<section>
+    <div class="container pt-3 h-100" th:if="${user != null}">
+        <div class="row d-flex my-5 justify-content-center align-items-center h-100">
+
+            <div class="col col-lg-8 mb-4 mb-lg-0">
+                <div class="card mb-3 profilecard1 shadow-sm">
+                    <div class="row g-0 ">
+                        <div class="col-md-4 gradient-custom text-center ">
+                            <img src="https://i.pinimg.com/564x/e6/8c/6e/e68c6e22287fdd8e57c4043902507220.jpg"
+                                 alt="Avatar" class="img-fluid my-5 avatar"/>
+                            <h5 th:text="${user.name}"></h5>
+                            <br><br>
+                            <p class="mx-5 bg-warning" th:text="'Balans: ' + ${user.balance} + ' AZN'"></p>
+                            <i class="far fa-edit mb-5"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body p-4">
+                                <h6>İstifadəçi məlumatları</h6>
+                                <hr class="mt-0 mb-4">
+
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Adı</h6>
+                                        <p class="text-muted" th:text="${user.getName()}">info@example.com</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>İstifadəçi adı</h6>
+                                        <p class="text-muted" th:text="${user.getUsername()}">123 456 789</p>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Adresi</h6>
+                                        <p class="text-muted" th:text="${user.getAddress()}">info@example.com</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Qalib gəldiyim auksionlar sayı</h6>
+                                        <p class="text-muted" th:text="${user.getWonLotsCount()}">Dolor sit amet</p>
+                                    </div>
+                                </div>
+
+                                <h6>Satış profili</h6>
+                                <hr class="mt-0 mb-4">
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Reytinqi</h6>
+                                        <p class="text-muted" th:text="${user.getRating()}">Lorem ipsum</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Satılan əşyalar sayı</h6>
+                                        <p class="text-muted" th:text="${user.getSoldLotsCount()}">Dolor sit amet</p>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col col-lg-4 mb-4 mb-lg-0 text-center h-100">
+                <a href="#" class="card mb-3 linktextbutton link-dark profilecard1 shadow-sm justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
+                    Mənim tranzaksiyalarım
+                </a>
+                <a href="#" class="card mb-3 profilecard1 shadow-sm linktextbutton link-dark justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
+                    Qalib gəldiyim auksionlar
+                </a>
+                <a href="#" class="card mb-3 profilecard1 linktextbutton link-dark shadow-sm justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
+                    Mənim auksionlarım
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+<!-- <div class="container h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col col-lg-8 mb-4 mb-lg-0 row">
+
+      <div class=" col-6 mx-auto">
+        <div class="profilecard1">
+          <img class="imgbutton" src="https://i.pinimg.com/originals/af/1d/25/af1d25b221d4c5a7231225f4b1566d1c.png">
+        </div>
+
+      </div>
+
+      <div class=" col-6 mx-auto">
+
+        <div class="profilecard1">
+        <img class="imgbutton" src="https://i.pinimg.com/originals/af/1d/25/af1d25b221d4c5a7231225f4b1566d1c.png">
+
+      </div>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- <script src="/js/homescripts.js"></script> -->
+</body>
+</html>

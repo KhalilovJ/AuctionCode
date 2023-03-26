@@ -16,6 +16,6 @@ public interface AccountService {
     void topUpBalance(long accountId, double amount);
     List<Account> getAllAccounts();
 
-    Transaction purchase(long senderId, long receiverId, double amount);
+    int purchase(long senderId, long receiverId, double amount);
 
 }
