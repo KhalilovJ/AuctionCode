@@ -2,6 +2,7 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.LotDto;
+import az.code.auctionbackend.DTOs.LotFrontDto;
 import az.code.auctionbackend.DTOs.UserFrontDTO;
 import az.code.auctionbackend.deserializer.CustomMapper;
 import az.code.auctionbackend.entities.Bid;
@@ -26,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -62,53 +64,42 @@ public class FrontController {
     public ModelAndView getLot(@PathVariable Long lotId){
 
         ModelAndView model;
-
-        Lot lot;
+        LotFrontDto lotFront = null;
 
         RedisLot redisLot = redisRepository.getRedis(lotId);
 
         if (redisLot != null) {
             log.error("getLot " + redisLot);
-            lot = objectMapper.convertValue(redisLot, Lot.class);
-            lot.setUser(userService.findProfileById(redisLot.getUserId()).get());
+            lotFront = LotFrontDto.getLotFrontDto(redisLot);
+            UserFrontDTO userFrontDTO = UserFrontDTO.convertToUserFront(userService.findProfileById(lotFront.getUserId()).get());
+            lotFront.setUser(userFrontDTO);
 
             /**
-             *  Создание пустого списка бидов и заполноение в противном случае
+             *  Создание пустого списка бидов
              */
-
-            if (redisLot.getBidHistory() == null) {
-                lot.setBidHistory(new ArrayList<>());
-            } else {
-                List<Bid> bidList = new ArrayList<>();
-
-                for (BidDto bidDto : redisLot.getBidHistory()) {
-                    bidList.add(Bid.builder()
-                            .bidTime(bidDto.getBidTime())
-                            .lot(lot)
-                            .bid(bidDto.getBid())
-                            .user(userService.findProfileById(bidDto.getUserId()).get())
-                            .build());
-                }
-                lot.setBidHistory(bidList);
+            if (lotFront.getBids() == null) {
+                lotFront.setBids(new ArrayList<>());
             }
-        } else {
-            lot = lotService.findLotById(lotId).orElse(null);
+
+        } else { //redislot is null
+            Lot lot = lotService.findLotById(lotId).orElse(null);
+            if (lot != null){
+                lotFront = LotFrontDto.getLotFrontDto(lot);
+            } else { // there's no lot with this id
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
         }
+        log.info("lot " + lotFront);
 
-        if (lot == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        log.info("lot " + lot);
-
-       // TODO для if что-то еще надо делать? (нет)
-        if (lot.getStatus() < 0){
-            model = new ModelAndView("index");
+        if (lotFront.getStatus() == -1){
+            model = new ModelAndView("redirect:/home");
+            return model;
         }
         else {
             model = new ModelAndView("auction");
-            model.addObject("auction", lot);
-            model.addObject("user", lot.getUser());
+            Collections.reverse(lotFront.getBids());
+            model.addObject("auction", lotFront);
+            model.addObject("user", lotFront.getUser());
         }
 
         return model;

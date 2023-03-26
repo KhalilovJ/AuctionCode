@@ -16,7 +16,6 @@ public class BidDto implements Serializable {
     private long lotId;
     private long userId;
     private String username;
-
     private double bid;
     public LocalDateTime bidTime;
 }

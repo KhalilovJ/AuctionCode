@@ -4,6 +4,10 @@ let bidstepVal = parseFloat(document.getElementById("bid_step").innerText);
 // let bidButton = document.getElementById("bidButton")
 let bidplaced = true
 
+function pad(n) {
+    return (n < 10 ? "0" + n : n);
+}
+
 function updateBidBox(){
     let currentBid = parseFloat(document.getElementById("currentBid").innerText);
     i=1;
@@ -36,7 +40,7 @@ function subscribe(){
         var seconds = timestamp.getSeconds();
         var minutes = timestamp.getMinutes();
         var hour = timestamp.getHours();
-        let timetext = datetext.concat(" ").concat(hour).concat(":").concat(minutes).concat(":").concat(seconds)
+        let timetext = datetext+ " " + pad(hour) + ":" + pad(minutes)+":" + pad(seconds)
         bidtext = bidtext.concat('<span class="col-md-6">').concat(timetext).concat("</span>");
 
         const nodeDiv = document.createElement("div");
@@ -44,8 +48,8 @@ function subscribe(){
         nodeDiv.innerHTML = bidtext
 
         document.getElementById("currentBid").textContent=text;
-        bidsWrapper.appendChild(nodeDiv)
-        bidsWrapper.appendChild(document.createElement("br"));
+        bidsWrapper.prepend(document.createElement("br"));
+        bidsWrapper.prepend(nodeDiv)
         // console.log(event.data)
         updateBidBox();
     })
@@ -57,16 +61,16 @@ subscribe();
 function UserAction() {
 
     // console.log("Bid placed")
-        let url = new URL(window.location.href);
-        let lotId = url.pathname.split("/")[2];
+    let url = new URL(window.location.href);
+    let lotId = url.pathname.split("/")[2];
 
-        let input = "/open/api/bids/makeBid";
-        let bidout = parseFloat(document.getElementById("inc").value);
-        let currentBid = parseFloat(document.getElementById("currentBid").innerText);
+    let input = "/open/api/bids/makeBid";
+    let bidout = parseFloat(document.getElementById("inc").value);
+    let currentBid = parseFloat(document.getElementById("currentBid").innerText);
 
-        if (bidout >= currentBid + bidstepVal && bidplaced){
+    if (bidout >= currentBid + bidstepVal && bidplaced){
 
-            bidplaced = false
+        bidplaced = false
 
         fetch(input, {
             method: 'POST',
@@ -80,14 +84,14 @@ function UserAction() {
 
         })
             .then(response => {
-            // console.log(response);
-            bidplaced = true
-            updateBidBox();
+                // console.log(response);
+                bidplaced = true
+                updateBidBox();
             });
-        } else {
-            // bidplaced = true
-            // console.log(bidout); console.log(currentBid)
-            console.log("Bid error")}
+    } else {
+        // bidplaced = true
+        // console.log(bidout); console.log(currentBid)
+        console.log("Bid error")}
 
 }
 
@@ -118,35 +122,45 @@ var upgradeTime = 172801;
 
 var seconds = upgradeTime;
 function timer() {
-    var difference = date1.getTime() - Date.now();
-    // console.log(difference);
 
-    var daysDifference = Math.floor(difference/1000/60/60/24);
-    difference -= daysDifference*1000*60*60*24
+    if (date1 > Date.now()) {
+        var difference = date1.getTime() - Date.now();
+        // console.log(difference);
 
-    var hoursDifference = Math.floor(difference/1000/60/60);
-    difference -= hoursDifference*1000*60*60
+        var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+        difference -= daysDifference * 1000 * 60 * 60 * 24
 
-    var minutesDifference = Math.floor(difference/1000/60);
-    difference -= minutesDifference*1000*60
+        var hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+        difference -= hoursDifference * 1000 * 60 * 60
 
-    var secondsDifference = Math.floor(difference/1000);
+        var minutesDifference = Math.floor(difference / 1000 / 60);
+        difference -= minutesDifference * 1000 * 60
 
-    // console.log('difference = ' +
-    //   daysDifference + ' day/s ' +
-    //   hoursDifference + ' hour/s ' +
-    //   minutesDifference + ' minute/s ' +
-    //   secondsDifference + ' second/s ');
+        var secondsDifference = Math.floor(difference / 1000);
 
-    function pad(n) {
-        return (n < 10 ? "0" + n : n);
-    }
-    document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " +  pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
-    if (seconds == 0) {
-        clearInterval(countdownTimer);
-        document.getElementById('countdown').innerHTML = "Completed";
+        // console.log('difference = ' +
+        //   daysDifference + ' day/s ' +
+        //   hoursDifference + ' hour/s ' +
+        //   minutesDifference + ' minute/s ' +
+        //   secondsDifference + ' second/s ');
+
+
+
+        document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " + pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
+        if (seconds == 0) {
+            clearInterval(countdownTimer);
+            document.getElementById('countdown').innerHTML = "Completed";
+        } else {
+            seconds--;
+        }
     } else {
-        seconds--;
+
+        let bidarea = document.getElementById('bid_area')
+        bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
+            "                                <p >Auksion bağlıdır</p>"
+            "</div>";
+        console.log("stopped")
+        clearInterval(countdownTimer);
     }
 }
 var countdownTimer = setInterval('timer()', 1000);
@@ -160,10 +174,10 @@ function convertInnertextToDateTime(elementId){
     let seconds = datestamp.getSeconds();
     let minutes = datestamp.getMinutes();
     let hour = datestamp.getHours();
-    let timetext = datetext.concat(" ").concat(hour).concat(":").concat(minutes).concat(":").concat(seconds)
+    let timetext = datetext +" " + pad(hour) + ":"+ pad(minutes)+":"+ pad(seconds)
 
-    element.innerText = timetext;
-}
+    element.innerText = timetext;}
+
 
 function  init(){
     console.log("init")
