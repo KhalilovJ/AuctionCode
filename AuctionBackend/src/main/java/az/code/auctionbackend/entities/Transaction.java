@@ -29,11 +29,16 @@ public class Transaction {
     @ToString.Exclude
     @JsonIgnore
     private Account account;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accountId",insertable=false, updatable=false)
-    @ToString.Exclude
-    @JsonIgnore
-    private Account senderAccount;
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "accountId",insertable=false, updatable=false)
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Account senderAccount;
+
+
+    @Column(name = "sender_username")
+    private String senderUsername;
 
     @Column(name = "time")
     LocalDateTime transactionTime;

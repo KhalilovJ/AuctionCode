@@ -3,6 +3,7 @@ package az.code.auctionbackend.repositories.financeRepositories;
 import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.Transaction;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,4 +31,9 @@ public class AccountRepo {
 //                .setParameter(1, id).getSingleResult());
         return Optional.of(em.find(Account.class, id));
     };
+
+    public List<Transaction> getUserInvolvedTransactions(String username){
+        Query q = em.createQuery("select t from Transaction t where t.senderUsername = ?1 or t.account.user.username = ?1 order by t.transactionTime");
+        return q.setParameter(1, username).getResultList();
+    }
 }

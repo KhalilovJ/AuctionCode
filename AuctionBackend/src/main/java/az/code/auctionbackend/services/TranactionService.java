@@ -3,6 +3,7 @@ package az.code.auctionbackend.services;
 import az.code.auctionbackend.entities.Account;
 import az.code.auctionbackend.entities.Transaction;
 import az.code.auctionbackend.entities.UserProfile;
+import az.code.auctionbackend.repositories.financeRepositories.AccountRepo;
 import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
 import az.code.auctionbackend.services.interfaces.AccountService;
 import az.code.auctionbackend.services.interfaces.UserService;
@@ -27,6 +28,8 @@ public class TranactionService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private AccountRepo accountRepo;
 
 
     public Transaction createTransaction(double amount, Account sender, Account receiver, int status){
@@ -35,7 +38,7 @@ public class TranactionService {
                 .amount(amount)
                 .account(receiver)
                 .transactionTime(LocalDateTime.now())
-                .senderAccount(sender)
+                .senderUsername(sender.getUser().getUsername())
                 .status(status)
                 .build();
 
@@ -52,6 +55,10 @@ public class TranactionService {
     @Transactional
     public Account saveAccount(Account acc){
         return entityManager.merge(acc);
+    }
+
+    public List<Transaction> getUsersInvolvedTransactions(String username){
+        return accountRepo.getUserInvolvedTransactions(username);
     }
 
 }

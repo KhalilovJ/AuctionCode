@@ -1,16 +1,16 @@
 package az.code.auctionbackend.controllers;
 
-import az.code.auctionbackend.DTOs.BidDto;
-import az.code.auctionbackend.DTOs.LotDto;
-import az.code.auctionbackend.DTOs.LotFrontDto;
-import az.code.auctionbackend.DTOs.UserFrontDTO;
+import az.code.auctionbackend.DTOs.*;
 import az.code.auctionbackend.deserializer.CustomMapper;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
+import az.code.auctionbackend.entities.Transaction;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.repositories.financeRepositories.TransactionRepository;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.LotServiceImpl;
+import az.code.auctionbackend.services.TranactionService;
 import az.code.auctionbackend.services.interfaces.LotService;
 import az.code.auctionbackend.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,10 +42,7 @@ public class FrontController {
     @Autowired
     private LotService lotService;
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private CustomMapper mapper;
+    private TranactionService tranactionService;
 
     @GetMapping("/")
     public ModelAndView getIndex(){
@@ -131,6 +128,23 @@ public class FrontController {
             // if username is incorrect
             return new ModelAndView("redirect:/home");
         }
+    }
+
+    @GetMapping("/transactions")
+    public ModelAndView getTransactionsPage(@AuthenticationPrincipal UserDetails user){
+
+        List<Transaction> transactions = tranactionService.getUsersInvolvedTransactions(user.getUsername());
+        List<TransactionDTO> transactionDTOS = new ArrayList<>();
+
+        transactions.forEach(t->{
+            transactionDTOS.add(TransactionDTO.getTransactionDto(t));
+        });
+
+        ModelAndView model = new ModelAndView("transactions");
+
+        model.addObject("transactions", transactionDTOS);
+
+        return model;
     }
 
 }
