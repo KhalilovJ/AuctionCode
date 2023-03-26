@@ -21,8 +21,8 @@
   </a>
 
   <ul class="nav nav-pills" style="margin-right: 30px;">
-    <li class="nav-item"><a href="#" class="nav-link text-light" aria-current="page">HOME</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-white">PROFILE</a></li>
+    <li class="nav-item"><a href="/home" class="nav-link text-light" aria-current="page">HOME</a></li>
+    <li class="nav-item"><a href="/profile" class="nav-link text-white">PROFILE</a></li>
   </ul>
 </header>
 
@@ -46,29 +46,35 @@
             <div class="row h-100 d-inline-block" >
               <div id="carouselExampleIndicators" class="carousel slide h-100 d-flex align-content-center" data-bs-ride="carousel">
                 <div class="carousel-indicators" th:id="carousel-indicators">
-<!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active bg-secondary" aria-current="true" aria-label="Slide 1"></button>-->
-<!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="bg-secondary" aria-label="Slide 2"></button>-->
-<!--                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="bg-secondary" aria-label="Slide 3"></button>-->
+                  <div th:if="${auction.getIds().size() > 1}">
+                    <div th:class="carousel-indicators" >
+                      <button th:each="img,ids: ${auction.getIds()}" th:if="${ids.index == 0}" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${ids.index}" class="active bg-secondary" aria-current="true" th:aria-label="'Slide ' + ${ids.index+1}"></button>
+                      <button th:each="img,ids: ${auction.getIds()}" th:unless="${ids.index == 0}" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${ids.index}" class="bg-secondary" th:aria-label="'Slide ' + ${ids.index+1}"></button>
+                    </div>
+                  </div>
+
                 </div>
                 <div class="carousel-inner h-100 d-flex align-content-center align-items-center" th:id="157">
-<!--                  <div class="carousel-item active">-->
-<!--                    <img src="https://i.pinimg.com/736x/7a/47/e2/7a47e2f57b55fdb690d26d938033e1ad.jpg" class="mw-100" style="max-height:25rem;" >-->
-<!--                  </div>-->
-<!--                  <div class="carousel-item">-->
-<!--                    <img src="https://i.pinimg.com/564x/68/1b/43/681b43372eea8cb0bbc53cbf5b28140f.jpg" class="mw-100" style="max-height:25rem; max-width: 100%;">-->
-<!--                  </div>-->
-<!--                  <div class="carousel-item">-->
-<!--                    <img src="https://i.pinimg.com/736x/58/e2/0c/58e20c989314367930cdf06106dd3293.jpg" class="mw-100"  style="max-height:25rem;" >-->
-<!--                  </div>-->
+
+                  <div class="carousel-item active" th:each="img,ids: ${auction.getIds()}" th:if="${ids.index == 0}">
+                    <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:25rem; max-width: 100%;" >
+                  </div>
+                  <div class="carousel-item" th:each="img,ids: ${auction.getIds()}" th:unless="${ids.index == 0}">
+                    <img th:src="'https://ucarecdn.com/' + ${img}  + '/'" class="mw-100" style="max-height:25rem; max-width: 100%;">
+                  </div>
+
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
+                <div th:if="${auction.getIds().size() > 1}">
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+
               </div>
             </div>
 
@@ -97,18 +103,6 @@
               <span class="card-text" th:id="rating" th:text="${user.rating}">BidStep</span>
               <br>
             </div>
-
-            <!-- <div class="text-left">
-                Reserve price:
-                <span class="card-text" th:id="bid_step" th:text="${auction.reservePrice}">Reserve</span>
-                <br>
-            </div>
-
-            <div class="text-left">
-                Auction end time:
-                <span class="card-text" th:text="${auction.endDate}">endDate</span>
-                <br>
-            </div> -->
 
             <br>
           </div>
@@ -170,20 +164,20 @@
             <br>
           </div>
           <br class="mb-2">
-          <hr>
 
         </div>
+
+        <hr>
+
+        <div id="bid_area">
+
         <div class="d-flex mx-auto justify-content-center">
           <div id="app" hidden></div>
-
-
-
           <span id="countdown" class="timer h-100"></span>
-
         </div>
 
 
-        <div class="h-50">
+        <div class="h-50" >
 
 
           <br>
@@ -200,44 +194,31 @@
           </div>
         </div>
 
+        </div>
       </div>
     </div>
 
 
 
     <div class="col-md-3 bg-white border mx-2 rounded-3 shadow h-100" th:if="${auction != null}"> <!-- Column 3-->
+      <br>
+      <div class="bg-info py-2 rounded-3 text-white text-center">
+        Təkliflər
+      </div>
+      <br>
       <div class="scrollbox">
 
-          <br>
-          <div class="bg-info py-2 rounded-3 text-white text-center">
-              Təkliflər
-          </div>
-          <br>
+
 
         <div th:id="bids" class="row">
-            <tr th:each="bid: ${auction.bidHistory}">
+            <tr th:each="bid: ${auction.getBids()}">
               <div class="shadow-sm border d-flex justify-content-between rounded-3">
-                <span class="col-md-3" th:text="${bid.user.username}"></span>
+                <span class="col-md-3" th:text="${bid.username}"></span>
                 <span class="col-md-3" th:text="${bid.bid}"></span>
                 <span class="changeTime col-md-6"  th:id="${bid.bidTime}" th:text="${bid.bidTime}">bid time</span>
                 <br>
               </div>
             </tr>
-
-<!--          <div class="shadow-sm border d-flex justify-content-between rounded-3">-->
-<!--            <span>bid</span>-->
-<!--            <span>user</span>-->
-<!--            <span>bid time</span>-->
-<!--            <br>-->
-<!--          </div>-->
-<!--          <br>-->
-
-
-<!--          <tr th:each="bid: ${auction.bidHistory}">-->
-<!--            <br>-->
-<!--            <td th:text="${bid.user.username}" />-->
-<!--            <td th:text="${bid.bid}" />-->
-<!--          </tr>-->
 
         </div>
       </div>
@@ -257,47 +238,6 @@
 <script type="text/javascript" th:src="@{/js/auctionscripts.js}"></script>
 
 
-<script th:inline="javascript">
-  /*<![CDATA[*/
-
-  var imgsJson = /*[[${auction.itemPictures}]]*/ 'default';
-  let json = JSON.parse(imgsJson);
-  let url = "https://ucarecdn.com/".concat(json[0]).concat("/");
-  // console.log(url);
-  for (var key in json){
-    let url1 = "https://ucarecdn.com/".concat(json[key]).concat("/");
-
-    let keytemp = json[key]
-    let buttonsdiv = document.getElementById("carousel-indicators")
-    let imagesdiv = document.getElementById("157")
-    let button = document.createElement("button")
-    button.setAttribute("type", "button"); button.setAttribute("data-bs-target", "#carouselExampleIndicators")
-    button.setAttribute("data-bs-slide-to", key);
-    button.setAttribute("aria-label", key+1)
-
-    let imagediv = document.createElement("div")
-    let img = document.createElement("img")
-    img.setAttribute("src", url1); img.setAttribute("class", "mw-100"); img.setAttribute("style", "max-height:25rem;")
-    imagediv.appendChild(img)
-
-    if (key == 0){
-      button.setAttribute("class", "bg-secondary active")
-      imagediv.setAttribute("class", "carousel-item active")
-    } else {
-      button.setAttribute("class", "bg-secondary")
-      imagediv.setAttribute("class", "carousel-item")
-    }
-
-    imagesdiv.appendChild(imagediv)
-    buttonsdiv.appendChild(button)
-
-
-
-  }
-
-  document.getElementById("imgs1").setAttribute("src", url);
-  /*]]>*/
-</script>
 
 </body>
 </html>

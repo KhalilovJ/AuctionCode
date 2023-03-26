@@ -1,5 +1,6 @@
 package az.code.auctionbackend.DTOs;
 
+import az.code.auctionbackend.entities.Lot;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,11 @@ public class LotFrontDto {
     private double currentBid;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private long userId;
     List<String> ids;
+    List<BidDto> bids;
+    private int status;
+    private UserFrontDTO user;
 
     public static LotFrontDto getLotFrontDto(RedisLot redisLot){
 
@@ -47,6 +52,45 @@ public class LotFrontDto {
                 .startDate(redisLot.getStartDate())
                 .endDate(redisLot.getEndDate())
                 .ids(idsLocal)
+                .userId(redisLot.getUserId())
+                .bids(redisLot.getBidHistory())
+                .status(1)
+                .build();
+
+        return lot;
+    }
+
+    public static LotFrontDto getLotFrontDto(Lot lotIn){
+
+        List<String> idsLocal = new ArrayList<>();
+
+        if (lotIn.getItemPictures() != null){
+
+        JSONObject obj = new JSONObject(lotIn.getItemPictures());
+        Iterator<String> keys = obj.keys();
+
+        while(keys.hasNext()) {
+            String key = keys.next();
+            idsLocal.add(obj.get(key).toString());
+        }}
+
+        List<BidDto> bidsList = new ArrayList<>();
+
+        LotFrontDto lot = LotFrontDto.builder()
+                .id(lotIn.getId())
+                .lotName(lotIn.getLotName())
+                .description(lotIn.getDescription())
+                .reservePrice(lotIn.getReservePrice())
+                .startingPrice(lotIn.getStartingPrice())
+                .bidStep(lotIn.getBidStep())
+                .currentBid(lotIn.getCurrentBid())
+                .startDate(lotIn.getStartDate())
+                .endDate(lotIn.getEndDate())
+                .ids(idsLocal)
+                .userId(lotIn.getUser().getId())
+                .bids(bidsList)
+                .status(lotIn.getStatus())
+                .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
                 .build();
 
         return lot;
