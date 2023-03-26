@@ -24,4 +24,5 @@ public interface LotService {
     void closeLot(long lotId, UserProfile userId);
     void setLotStatus(long lotId, int status);
     List<LotFrontDto> getAllActiveLotsFront();
+    List<LotFrontDto> getWonAuctions(String username);
 }

@@ -151,6 +151,8 @@ public class LotServiceImpl implements LotService {
 
             Bid winnerBid = getWinnerBid(lot);
 
+            lot.setCurrentBid(winnerBid.getBid());
+
 
                 int purchaseStatus;
                 long winnerAccId = winnerBid.getUser().getAccount().getId();
@@ -276,5 +278,20 @@ public class LotServiceImpl implements LotService {
         );
         return listOut;}
         else return null;
+    }
+
+    @Override
+    public List<LotFrontDto> getWonAuctions(String username){
+
+        List<LotFrontDto> listOut = new ArrayList<>();
+
+        List<Lot> lots = bidRepo.getUsersWonLots(username);
+
+
+        lots.forEach(l->{
+            listOut.add(LotFrontDto.getLotFrontDtoWithoutBidsFirstImage(l));
+        });
+
+                return listOut;
     }
 }
