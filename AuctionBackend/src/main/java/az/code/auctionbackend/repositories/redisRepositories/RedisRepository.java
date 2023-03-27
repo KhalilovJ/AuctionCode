@@ -98,5 +98,10 @@ public class RedisRepository implements RedisInterface {
         waitingsHash.delete(hashReferenceWaitings,id);
     }
 
+    @Override
+    public RedisWaitingPayment getPayment(long id)  {
+        return  waitingsHash.get(hashReferenceWaitings,id);
+    }
+
 
 }

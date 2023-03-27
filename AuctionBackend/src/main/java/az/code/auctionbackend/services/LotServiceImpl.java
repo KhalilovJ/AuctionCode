@@ -39,9 +39,7 @@ public class LotServiceImpl implements LotService {
     private final RedisRepository redisRepository;
     private final UserServiceImpl userService;
     private final BidRepo bidRepo;
-
     private final ApplicationContext ax;
-
     private ObjectMapper objectMapper;
 
     @Override
@@ -293,5 +291,31 @@ public class LotServiceImpl implements LotService {
         });
 
                 return listOut;
+    }
+
+    public String closeOverduedLot(Long lotId, String username){
+
+        RedisWaitingPayment red = redisRepository.getPayment(lotId);
+
+        UserProfile user = userService.findByUsername(username).get();
+
+        if (red == null){
+            closeLot(lotId, user);
+            return "success";
+        }
+
+        int purchaseStatus = accountService.purchase(red.getSenderId(), red.getReceiverId(), red.getAmount());
+
+        redisRepository.removeWaitingPayment(lotId);
+
+        if (purchaseStatus <= 0){ //purchase not happened, blocking user
+            userService.blockUser(user.getId(), true);
+            setLotStatus(red.getId(), -3);
+            return "error";
+        } else {
+            closeLot(red.getId(), user);
+            return "success";
+        }
+
     }
 }

@@ -72,6 +72,8 @@
             <span class="col-md-2 text-center" th:text="${lot.getCurrentBid()}"> Uduşlu təklif: 65000 AZN</span>
             <div class="col-md-2 row align-items-center">
                 <a th:href="'/lots/'+${lot.getId()}" class="btn btn-success">Ətraflı məlumat</a>
+
+                <button th:onclick="'payAuction('+${lot.getId()}+')'" th:if="${lot.getStatus() == 2}" th:id="'paybutton'+${lot.getId()} " class="btn btn-danger">Auksionu ödə</button>
             </div>
         </div>
         <br>
@@ -149,5 +151,6 @@
 <!--</div>-->
 
 <script th:src="@{/js/transactions.js}"></script>
+<script th:src="@{/js/wonauctions.js}"></script>
 </body>
 </html>
