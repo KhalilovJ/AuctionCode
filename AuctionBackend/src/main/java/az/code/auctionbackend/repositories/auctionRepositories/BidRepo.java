@@ -45,9 +45,14 @@ public class BidRepo {
         }
 
         public List<Lot> getUsersWonLots(String username){
-            Query q = em.createQuery("SELECT l from Lot l where l.lotWinner.username = ?1").setParameter(1,username);
+            Query q = em.createQuery("SELECT l from Lot l where l.lotWinner.username = ?1 order by l.endDate").setParameter(1,username);
             return q.getResultList();
         }
+
+    public List<Lot> getUsersLots(String username){
+        Query q = em.createQuery("SELECT l from Lot l where l.user.username = ?1 order by l.endDate").setParameter(1,username);
+        return q.getResultList();
+    }
 
 
 }

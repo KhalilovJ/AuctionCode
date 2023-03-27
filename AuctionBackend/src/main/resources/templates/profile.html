@@ -21,8 +21,8 @@
     </a>
 
     <ul class="nav nav-pills" style="margin-right: 30px;">
-        <li class="nav-item"><a href="/home" class="nav-link text-light" aria-current="page">HOME</a></li>
-        <li class="nav-item"><a disabled class="nav-link text-light">PROFILE</a></li>
+        <li class="nav-item"><a href="/home" class="nav-link text-light" aria-current="page">Əsas səhifə</a></li>
+        <li class="nav-item"><a disabled class="nav-link text-light">Profil</a></li>
     </ul>
 </header>
 
@@ -38,9 +38,12 @@
                             <img src="https://i.pinimg.com/564x/e6/8c/6e/e68c6e22287fdd8e57c4043902507220.jpg"
                                  alt="Avatar" class="img-fluid my-5 avatar"/>
                             <h5 th:text="${user.name}"></h5>
-                            <br><br>
+                            <br>
                             <p class="mx-5 bg-warning" th:text="'Balans: ' + ${user.balance} + ' AZN'"></p>
                             <i class="far fa-edit mb-5"></i>
+                            <br>
+                            <a href="/logout" class="btn btn-danger">Çıxış et</a>
+                            <br><br>
                         </div>
                         <div class="col-md-8">
                             <div class="card-body p-4">
@@ -59,11 +62,11 @@
                                 </div>
                                 <div class="row pt-1">
                                     <div class="col-6 mb-3">
-                                        <h6>Adresi</h6>
+                                        <h6>Ünvan</h6>
                                         <p class="text-muted" th:text="${user.getAddress()}">info@example.com</p>
                                     </div>
                                     <div class="col-6 mb-3">
-                                        <h6>Qalib gəldiyim auksionlar sayı</h6>
+                                        <h6>Qalib gəldiyim hərracların sayı</h6>
                                         <p class="text-muted" th:text="${user.getWonLotsCount()}">Dolor sit amet</p>
                                     </div>
                                 </div>
@@ -93,10 +96,10 @@
                     Mənim tranzaksiyalarım
                 </a>
                 <a href="/won-auctions" class="card mb-3 profilecard1 shadow-sm linktextbutton link-dark justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
-                    Qalib gəldiyim auksionlar
+                    Qalib gəldiyim hərraclar
                 </a>
-                <a href="#" class="card mb-3 profilecard1 linktextbutton link-dark shadow-sm justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
-                    Mənim auksionlarım
+                <a href="/my-auctions" class="card mb-3 profilecard1 linktextbutton link-dark shadow-sm justify-content-center" onclick="window.location.href = 'https://ru-ru.facebook.com/';" style="min-height: 8rem">
+                    Mənim hərraclarım
                 </a>
             </div>
         </div>

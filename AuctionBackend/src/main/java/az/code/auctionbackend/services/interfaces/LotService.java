@@ -26,4 +26,6 @@ public interface LotService {
     List<LotFrontDto> getAllActiveLotsFront();
     List<LotFrontDto> getWonAuctions(String username);
     String closeOverduedLot(Long lotId, String username);
+
+    List<LotFrontDto> getMyAuctions(String username);
 }
