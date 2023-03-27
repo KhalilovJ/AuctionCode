@@ -3,6 +3,7 @@ package az.code.auctionbackend.repositories.auctionRepositories;
 import az.code.auctionbackend.entities.Bid;
 import az.code.auctionbackend.entities.Lot;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,11 @@ public class BidRepo {
         @Transactional
         public Lot saveLot(Lot lot){
             return em.merge(lot);
+        }
+
+        public List<Lot> getUsersWonLots(String username){
+            Query q = em.createQuery("SELECT l from Lot l where l.lotWinner.username = ?1").setParameter(1,username);
+            return q.getResultList();
         }
 
 

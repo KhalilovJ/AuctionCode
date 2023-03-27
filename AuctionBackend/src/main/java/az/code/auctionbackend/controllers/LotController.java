@@ -10,6 +10,7 @@ import az.code.auctionbackend.services.UploadcareService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +34,6 @@ public class LotController {
     private final LotServiceImpl lotService;
     private final RedisRepository redisRepository;
     private final ObjectMapper objectMapper;
-
     private final UploadcareService uploadcareService;
 
     //get all lots
@@ -141,5 +141,19 @@ public class LotController {
         }
 
         return convFile;
+    }
+
+    @PostMapping("/payauction")
+    public String payAuction(@AuthenticationPrincipal UserDetails user, @RequestBody JSONObject jsonRequest){
+
+        Long lotId = jsonRequest.getLong("id");
+
+        System.out.println("payment " + lotId + " user: " +user.getUsername());
+
+        String result = lotService.closeOverduedLot(lotId, user.getUsername());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("result", result);
+        jsonObject.put("id", lotId);
+        return jsonObject.toString();
     }
 }

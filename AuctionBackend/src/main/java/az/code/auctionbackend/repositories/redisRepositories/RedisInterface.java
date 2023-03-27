@@ -20,4 +20,5 @@ public interface RedisInterface {
         Map<Long, RedisWaitingPayment> getAllWaitingPayments();
         void addWaitingPayment( RedisWaitingPayment payment);
         void removeWaitingPayment(Long id);
+        RedisWaitingPayment getPayment(long id);
 }

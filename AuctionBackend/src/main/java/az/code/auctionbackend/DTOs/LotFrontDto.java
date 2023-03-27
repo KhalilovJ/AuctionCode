@@ -76,6 +76,10 @@ public class LotFrontDto {
 
         List<BidDto> bidsList = new ArrayList<>();
 
+        lotIn.getBidHistory().forEach(b->{
+            bidsList.add(BidDto.makeBidDto(b));
+        });
+
         LotFrontDto lot = LotFrontDto.builder()
                 .id(lotIn.getId())
                 .lotName(lotIn.getLotName())
@@ -89,6 +93,38 @@ public class LotFrontDto {
                 .ids(idsLocal)
                 .userId(lotIn.getUser().getId())
                 .bids(bidsList)
+                .status(lotIn.getStatus())
+                .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
+                .build();
+
+        return lot;
+    }
+
+    public static LotFrontDto getLotFrontDtoWithoutBidsFirstImage(Lot lotIn){
+
+        List<String> idsLocal = new ArrayList<>();
+
+        if (lotIn.getItemPictures() != null){
+
+            JSONObject obj = new JSONObject(lotIn.getItemPictures());
+
+            idsLocal.add(obj.get("0").toString());
+        }
+
+
+        LotFrontDto lot = LotFrontDto.builder()
+                .id(lotIn.getId())
+                .lotName(lotIn.getLotName())
+                .description(lotIn.getDescription())
+                .reservePrice(lotIn.getReservePrice())
+                .startingPrice(lotIn.getStartingPrice())
+                .bidStep(lotIn.getBidStep())
+                .currentBid(lotIn.getCurrentBid())
+                .startDate(lotIn.getStartDate())
+                .endDate(lotIn.getEndDate())
+                .ids(idsLocal)
+                .userId(lotIn.getUser().getId())
+                .bids(null)
                 .status(lotIn.getStatus())
                 .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
                 .build();

@@ -147,4 +147,16 @@ public class FrontController {
         return model;
     }
 
+    @GetMapping("/won-auctions")
+    public ModelAndView getWonAuctions(@AuthenticationPrincipal UserDetails user){
+
+        List<LotFrontDto> lots = lotService.getWonAuctions(user.getUsername());
+
+        ModelAndView model = new ModelAndView("wonauctions");
+
+        model.addObject("lots", lots);
+
+        return model;
+    }
+
 }
