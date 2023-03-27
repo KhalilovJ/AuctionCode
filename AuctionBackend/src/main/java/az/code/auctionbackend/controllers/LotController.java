@@ -156,4 +156,19 @@ public class LotController {
         jsonObject.put("id", lotId);
         return jsonObject.toString();
     }
+
+    @PostMapping("/approve-lot")
+    public String approveLot(@RequestBody JSONObject jsonRequest){
+
+        Long lotId = jsonRequest.getLong("id");
+        int status = jsonRequest.getInt("status");
+
+        lotService.approveLot(lotId, status);
+
+        JSONObject json = new JSONObject();
+        json.put("result", "success");
+        json.put("id", lotId);
+
+        return json.toString();
+    }
 }

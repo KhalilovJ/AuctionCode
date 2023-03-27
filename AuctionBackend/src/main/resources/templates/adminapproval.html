@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" th:href="@{/style/indexstyle.css}">
+    <title>Approval</title>
+</head>
+<body class="bg-light">
+
+<header class="d-flex flex-wrap bg-primary justify-content-center w-100 py-3 mb-4 border-bottom shadow">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none" style="margin-left: 15px;">
+        <img src="https://i.pinimg.com/originals/af/1d/25/af1d25b221d4c5a7231225f4b1566d1c.png" height="55" class="d-inline-block align-top" alt="">
+        <span class="fs-4 text-light">Auctioneer</span>
+    </a>
+
+    <ul class="nav nav-pills" style="margin-right: 30px;">
+        <li class="nav-item"><a href="/" class="nav-link text-light" aria-current="page">Əsas səhifə</a></li>
+        <li class="nav-item"><a href="/profile" class="nav-link text-white">Profil</a></li>
+    </ul>
+</header>
+
+<!-- main part of page -->
+<div class="col-md-11 mx-auto bg-white shadow-sm rounded-3" id="centerarea">
+    <br>
+    <div class="row justify-content-between">
+        <div class="col-6 bg-info py-2 rounded-3 text-white text-center mx-3 w-25">
+            Gözləmədə olan hərraclar
+        </div>
+        <a href="/" class="col-6 w-25 py-2 btn btn-primary">Hərraclar səhifəsi</a>
+        <!-- <div class="col-6 bg-warning py-2 rounded-3 text-center mx-3 w-25">
+            Balans: 1200 AZN
+        </div> -->
+
+    </div>
+
+    <hr class="mx-2">
+    <br>
+
+    <div >
+
+
+        <div class="border-bottom">
+
+            <li class=" mx-2 border-0 d-flex text-center flex-row justify-content-around align-items-center" style="font-weight: bold;">
+                <div class="col-md-2 text-center">Təsvir</div>
+                <div class="col-md-2 text-center">Hərracın adı</div>
+                <div class="col-md-2 text-center">Hərracı başlayan istifadəçi</div>
+                <div class="col-md-2 text-center" >Hərracın bitmə tarixi</div>
+                <div class="col-md-2 text-center">Başlanğıc məbləğ/artım məbləği</div>
+                <div class="col-md-2" ></div>
+            </li>
+
+        </div>
+        <br>
+
+        <div th:if="${lots.size()>0}" th:each="lot,ids: ${lots}" th:id="'lotdiv'+${lot.getId()}">
+
+            <!-- Modal -->
+            <div class="modal fade modal-xl" th:id="'staticBackdrop'+${ids.index}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" th:id="'staticBackdropLabel'+${ids.index}" th:text="${lot.getLotName()}">Lot title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="d-flex justify-content-center text-center col-md-6" style="height: 25rem;">
+                                    <div class="row h-100 d-inline-block" >
+                                        <div th:id="'carouselindicators' + ${ids.index}" class="carousel slide h-100 d-flex align-content-center" data-bs-ride="carousel">
+
+                                            <div th:if="${lot.getIds().size() > 1}">
+                                                <div th:class="carousel-indicators" >
+                                                    <button th:each="img,ids2: ${lot.getIds()}" th:if="${ids2.index == 0}" type="button" th:data-bs-target="'#carouselindicators' + ${ids.index}" th:data-bs-slide-to="${ids2.index}" class="active bg-secondary" aria-current="true" th:aria-label="'Slide ' + ${ids2.index+1}"></button>
+                                                    <button th:each="img,ids2: ${lot.getIds()}" th:unless="${ids2.index == 0}" type="button" th:data-bs-target="'#carouselindicators' + ${ids.index}" th:data-bs-slide-to="${ids2.index}" class="bg-secondary" th:aria-label="'Slide ' + ${ids2.index+1}"></button>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  onclick="window.location.href = 'https://ru-ru.facebook.com/';">
+
+                                                <div class="carousel-item active" th:each="img,ids2: ${lot.getIds()}" th:if="${ids2.index == 0}">
+                                                    <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;" >
+                                                </div>
+                                                <div class="carousel-item" th:each="img,ids2: ${lot.getIds()}" th:unless="${ids2.index == 0}">
+                                                    <img th:src="'https://ucarecdn.com/' + ${img}  + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;">
+                                                </div>
+
+                                            </div>
+
+                                            <div th:if="${lot.getIds().size() > 1}">
+                                                <button class="carousel-control-prev" type="button" th:data-bs-target="'#carouselindicators' + ${ids.index}" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" th:data-bs-target="'#carouselindicators' + ${ids.index}" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div >
+
+                                <div class="col-md-6 border-left">
+                                    <div class="row">
+                                        <h5 class="col-md-6">Id: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getId()}">  112.15.2026</span>
+                                    </div>
+                                    <h4>Məlumat:</h4>
+                                    <p th:text="${lot.getDescription()}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem obcaecati dignissimos modi quas. Sequi, rem distinctio doloremque ipsa quo hic non deserunt ab aspernatur dicta maiores esse architecto iusto rerum.</p>
+
+                                    <div class="row">
+                                        <h5 class="col-md-6">Başlama tarixi: </h5>
+                                        <span class="col-md-6 ml-3 timerDiv" th:id="'timerModal0'+${ids.index}" th:data-date="${lot.getEndDate()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">Bitmə tarixi: </h5>
+                                        <span class="col-md-6 ml-3 timerDiv" th:id="'timerModal1'+${ids.index}" th:data-date="${lot.getEndDate()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">Başlanğıc qiyməti: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getStartingPrice()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">Qiymət artımı addımı: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getBidStep()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">Rezerv qiyməti: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getReservePrice()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">Hərracı yaradan istifadəçi: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getUser().getUsername()}">  112.15.2026</span>
+                                    </div>
+                                    <div class="row">
+                                        <h5 class="col-md-6">İstifadəçinin reytinqi: </h5>
+                                        <span class="col-md-6 ml-3" th:text="${lot.getUser().rating}">  112.15.2026</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button th:onclick="'approval('+${lot.getId()}+', false)'" type="button"  class="btn btn-danger" data-bs-dismiss="modal">İmtina et</button>
+                            <button th:onclick="'approval('+${lot.getId()}+', true)'" type="button" class="btn btn-success" data-bs-dismiss="modal">Qəbul et</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--            =========== MODAL^-->
+
+        <div class="row border mx-2 justify-content-center align-items-center">
+
+            <div class="col-md-2 my-1 d-flex align-items-center justify-content-center" >
+                <img th:if="${lot.getIds().size()>0}" th:src="'https://ucarecdn.com/' + ${lot.getIds().get(0)} + '/'" style="max-height: 6rem;" alt="">
+            </div>
+            <div class="col-md-2 text-center">
+                <span class="mx-2" th:text="${lot.getLotName()}">Auksionun adı: Filan şey</span>
+            </div>
+            <span class="col-md-2 text-center" th:text="${lot.getUser().getName()}">Əşyanı satan: Filankəs</span>
+            <div class="col-md-2 text-center">
+                <div class="timerDiv" th:id="${ids.index}"
+                     th:data-date="${lot.getEndDate()}">2023-04-22 00:34:09
+                </div>
+            </div>
+            <span class="col-md-2 text-center text-danger infotext" th:text="${lot.getStartingPrice()+ '/' + lot.getBidStep()}"> Qəbul edilmədi</span>
+            <div class="col-md-2  row align-items-center">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#staticBackdrop'+${ids.index}">Ətraflı məlumat</button>
+            </div>
+        </div>
+
+        <br>
+
+        </div>
+
+
+
+
+    </div>
+    <br>
+
+</div>
+
+
+
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script th:src="@{/js/transactions.js}"></script>
+<script th:src="@{/js/admins.js}"></script>
+</body>
+</html>

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface LotRepository extends JpaRepository<Lot, Long> {
 
 //    @Query("SELECT l FROM Lot l WHERE l.status = 0 OR l.status = 1")
-    @Query(value = "SELECT * FROM lots AS l WHERE l.status = 0 or l.status =1", nativeQuery = true)
+    @Query(value = "SELECT * FROM lots AS l WHERE l.status =1", nativeQuery = true)
     List<Lot> getAllNonFinishedLots();
 
     @Query(value = "SELECT * FROM lots AS l WHERE l.id = :id", nativeQuery = true)

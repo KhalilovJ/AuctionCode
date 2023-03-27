@@ -48,10 +48,12 @@ public class SecurityController {
             nextPage = new ModelAndView("index");
             nextPage.addObject("lotList", lotList);
         } else {
-            nextPage = new ModelAndView("adminPanel");
+            List<LotFrontDto> lotList = lotService.getApprovalWaitingLotsFront();
+            nextPage = new ModelAndView("adminapproval");
+            nextPage.addObject("lots", lotList);
         }
 
-        nextPage.addObject("user", user);
+        nextPage.addObject("user", userProfile);
         return nextPage;
 
     }

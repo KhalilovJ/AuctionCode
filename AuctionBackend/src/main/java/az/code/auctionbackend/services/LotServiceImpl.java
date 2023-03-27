@@ -78,23 +78,26 @@ public class LotServiceImpl implements LotService {
         lot.setUser(user);
         lot.setStatus(0);
         // save(lot) - writes data to the database
+
         Lot tmpLot = save(lot);
 
         System.out.println("LOT ID " + tmpLot.getId());
 
 
-        RedisLot redisLot = objectMapper.convertValue(lotDto, RedisLot.class);
-        redisLot.setId(lot.getId());
-        redisLot.setItemPictures(images);
-        redisLot.setUserId(user.getId());
+//        RedisLot redisLot = objectMapper.convertValue(lotDto, RedisLot.class);
+//        redisLot.setId(lot.getId());
+//        redisLot.setItemPictures(images);
+//        redisLot.setUserId(user.getId());
 
 //        List<BidDto> bidList = new ArrayList<>();
 //        bidList.add(BidDto.builder().bid(5).bidTime(LocalDateTime.now()).lotId(lot.getId()).userId(user.getId()).build());
 //
 //        test.setBidHistory(bidList);
 
-        redisRepository.saveRedis(redisLot);
-        log.info("createLot DONE " + LocalDateTime.now());
+//        redisRepository.saveRedis(redisLot);
+
+        log.info("Lot created: " + LocalDateTime.now());
+
 //        auctionRealtimeRepo.addLot(tmpLot);
     }
 
@@ -333,4 +336,47 @@ public class LotServiceImpl implements LotService {
         }
 
     }
+
+
+    @Override
+    public List<LotFrontDto> getApprovalWaitingLotsFront(){
+    List<Lot> lots = bidRepo.getWaitingLots();
+    List<LotFrontDto> frontList = new ArrayList<>();
+
+    lots.forEach(l->{
+        frontList.add(LotFrontDto.getLotFrontDto(l));
+    });
+
+    return frontList;
+    }
+
+    @Override
+    public void approveLot(long lotId, int status){
+        if (status == 1){
+            setLotStatus(lotId, 1);
+
+            Lot l = findLotById(lotId).get();
+
+            redisRepository.saveRedis(
+                    RedisLot.builder()
+                            .id(l.getId())
+                            .userId(l.getUser().getId())
+                            .lotName(l.getLotName())
+                            .startDate(l.getStartDate())
+                            .endDate(l.getEndDate())
+                            .bidStep(l.getBidStep())
+                            .startingPrice(l.getStartingPrice())
+                            .reservePrice(l.getReservePrice())
+                            .description(l.getDescription())
+                            .itemPictures(l.getItemPictures())
+                            .status(1)
+                            .imgs(l.getItemPictures())
+                            .endDate(l.getEndDate())
+                            .build());
+
+        } else {
+            redisRepository.deleteRedis(lotId);
+            setLotStatus(lotId, -1);
+        }
+    };
 }

@@ -54,5 +54,10 @@ public class BidRepo {
         return q.getResultList();
     }
 
+    public List<Lot> getWaitingLots(){
+        Query q = em.createQuery("SELECT l from Lot l where l.status = 0 order by l.endDate");
+        return q.getResultList();
+    }
+
 
 }
