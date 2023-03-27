@@ -137,11 +137,11 @@ private ObjectMapper objectMapper;
 
 //    @PostConstruct
 //    private void makeBidsMock() throws InterruptedException {
-//        Thread.sleep(100);
-//        makeBid("malishov", 1l, 600);
-//        makeBid("Khalil", 1l, 700);
-//        makeBid("admin6", 1l, 800);
-//        makeBid("user8", 1l, 950000);
+//        Thread.sleep(500);
+//        makeBid("malishov", 15502l, 600);
+//        makeBid("Khalil", 15502l, 700);
+//        makeBid("admin6", 15502l, 800);
+//        makeBid("user8", 15502l, 950);
 //
 //    }
 
