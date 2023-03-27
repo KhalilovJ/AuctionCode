@@ -33,13 +33,14 @@ public class LotFrontDto {
 
         List<String> idsLocal = new ArrayList<>();
 
+        if (redisLot.getImgs() != null){
         JSONObject obj = new JSONObject(redisLot.getImgs());
         Iterator<String> keys = obj.keys();
 
         while(keys.hasNext()) {
             String key = keys.next();
                 idsLocal.add(obj.get(key).toString());
-        }
+        }}
 
         LotFrontDto lot = LotFrontDto.builder()
                 .id(redisLot.getId())

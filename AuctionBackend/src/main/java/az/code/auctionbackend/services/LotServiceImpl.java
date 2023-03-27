@@ -293,6 +293,21 @@ public class LotServiceImpl implements LotService {
                 return listOut;
     }
 
+    @Override
+    public List<LotFrontDto> getMyAuctions(String username){
+
+        List<LotFrontDto> listOut = new ArrayList<>();
+
+        List<Lot> lots = bidRepo.getUsersLots(username);
+
+
+        lots.forEach(l->{
+            listOut.add(LotFrontDto.getLotFrontDtoWithoutBidsFirstImage(l));
+        });
+
+        return listOut;
+    }
+
     public String closeOverduedLot(Long lotId, String username){
 
         RedisWaitingPayment red = redisRepository.getPayment(lotId);

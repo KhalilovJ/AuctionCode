@@ -159,4 +159,16 @@ public class FrontController {
         return model;
     }
 
+    @GetMapping("/my-auctions")
+    public ModelAndView getMyAuctions(@AuthenticationPrincipal UserDetails user){
+
+        List<LotFrontDto> lots = lotService.getMyAuctions(user.getUsername());
+
+        ModelAndView model = new ModelAndView("myauctions");
+
+        model.addObject("lots", lots);
+
+        return model;
+    }
+
 }

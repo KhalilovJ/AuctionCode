@@ -3,6 +3,7 @@ const bidsWrapper = document.getElementById("bids");
 let bidstepVal = parseFloat(document.getElementById("bid_step").innerText);
 // let bidButton = document.getElementById("bidButton")
 let bidplaced = true
+let startDate = new Date(document.getElementById("startDate").getAttribute("data"));
 
 function pad(n) {
     return (n < 10 ? "0" + n : n);
@@ -18,11 +19,7 @@ function subscribe(){
 
     let url = new URL(window.location.href);
 
-    console.log(url);
-
     let lotId = url.pathname.split("/")[2];
-
-    console.log(lotId)
 
     let urlEndpoint = `http://127.0.0.1:9090/open/api/bids/${lotId}`
     let eventSource = new EventSource(urlEndpoint)
@@ -36,7 +33,6 @@ function subscribe(){
 
         let timestamp= new Date(json.bidTime);
         let datetext = timestamp.toISOString().split('T')[0]
-        // console.log(datetext)
         var seconds = timestamp.getSeconds();
         var minutes = timestamp.getMinutes();
         var hour = timestamp.getHours();
@@ -50,7 +46,6 @@ function subscribe(){
         document.getElementById("currentBid").textContent=text;
         bidsWrapper.prepend(document.createElement("br"));
         bidsWrapper.prepend(nodeDiv)
-        // console.log(event.data)
         updateBidBox();
     })
 }
@@ -60,7 +55,6 @@ subscribe();
 
 function UserAction() {
 
-    // console.log("Bid placed")
     let url = new URL(window.location.href);
     let lotId = url.pathname.split("/")[2];
 
@@ -84,13 +78,11 @@ function UserAction() {
 
         })
             .then(response => {
-                // console.log(response);
                 bidplaced = true
                 updateBidBox();
             });
     } else {
         // bidplaced = true
-        // console.log(bidout); console.log(currentBid)
         console.log("Bid error")}
 
 }
@@ -99,7 +91,6 @@ function UserAction() {
 function buttonClickP() {
     let currentBid = parseFloat(document.getElementById("currentBid").innerText);
     document.getElementById('inc').value = ++i*bidstepVal+currentBid;
-    // console.log(document.getElementById("inc").value);
 }
 function buttonClickM() {
     i--
@@ -123,9 +114,8 @@ var upgradeTime = 172801;
 var seconds = upgradeTime;
 function timer() {
 
-    if (date1 > Date.now()) {
+    if (date1 > Date.now() && startDate<Date.now()) {
         var difference = date1.getTime() - Date.now();
-        // console.log(difference);
 
         var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
         difference -= daysDifference * 1000 * 60 * 60 * 24
@@ -138,12 +128,6 @@ function timer() {
 
         var secondsDifference = Math.floor(difference / 1000);
 
-        // console.log('difference = ' +
-        //   daysDifference + ' day/s ' +
-        //   hoursDifference + ' hour/s ' +
-        //   minutesDifference + ' minute/s ' +
-        //   secondsDifference + ' second/s ');
-
 
 
         document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " + pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
@@ -153,14 +137,21 @@ function timer() {
         } else {
             seconds--;
         }
-    } else {
+    } else if(startDate < Date.now()){
 
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
-            "                                <p >Auksion bağlıdır</p>"
+            "                                <p >Hərrac bağlıdır</p>"
             "</div>";
+        clearInterval(countdownTimer);
+    } else {
+        let bidarea = document.getElementById('bid_area')
+        bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
+            "                                <p >Hərrac başlamaq üzrədir</p>"
+        "</div>";
         console.log("stopped")
         clearInterval(countdownTimer);
+
     }
 }
 var countdownTimer = setInterval('timer()', 1000);
@@ -186,7 +177,7 @@ function  init(){
 
     var elements = document.getElementsByClassName("changeTime");
     for(var i = 0; i < elements.length; i++) {
-        console.log(elements[i])
+        // console.log(elements[i])
         convertInnertextToDateTime(elements[i].getAttribute("id"))
     }
 
