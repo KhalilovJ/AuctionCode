@@ -80,7 +80,7 @@ public class FrontController {
     }
 
     @GetMapping("/lots/{lotId}")
-    public ModelAndView getLot(@PathVariable Long lotId){
+    public ModelAndView getLot(@PathVariable Long lotId, @AuthenticationPrincipal UserDetails userDetails){
 
         ModelAndView model;
         LotFrontDto lotFront = null;
@@ -119,6 +119,7 @@ public class FrontController {
             Collections.reverse(lotFront.getBids());
             model.addObject("auction", lotFront);
             model.addObject("user", lotFront.getUser());
+            model.addObject("userMe", userDetails);
         }
 
         return model;

@@ -30,5 +30,8 @@ public class UserDto implements Serializable {
 
     @NotEmpty
     private String address;
+    private String email;
+    private String phoneNumber;
+    private String zipCode;
 
 }

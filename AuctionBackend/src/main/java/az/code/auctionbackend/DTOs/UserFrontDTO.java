@@ -23,6 +23,9 @@ public class UserFrontDTO {
     private double balance;
     private int wonLotsCount;
     private int soldLotsCount;
+    private String email;
+    private String phoneNumber;
+    private String zipCode;
 
     public static UserFrontDTO convertToUserFront(UserProfile userProfile){
         int soldLotsCount = userProfile.getLots().stream().filter(a->{
@@ -41,6 +44,9 @@ public class UserFrontDTO {
                 .balance(userProfile.getAccount().getBalance())
                 .wonLotsCount(userProfile.getWonLots().size())
                 .soldLotsCount(soldLotsCount)
+                .email(userProfile.getEmail())
+                .phoneNumber(userProfile.getPhoneNumber())
+                .zipCode(userProfile.getZipCode())
                 .build();
     }
 }

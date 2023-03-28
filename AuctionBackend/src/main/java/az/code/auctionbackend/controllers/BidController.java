@@ -78,7 +78,7 @@ public class BidController {
         BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
         if (bid == null){
-            log.error("Lot is not active");
+            log.error("Bid placement error, either lot is not active or this user is created selected lot");
             return "Error";
         } else {
             sendUpdates(bidService.bidDtoMapper(bid));

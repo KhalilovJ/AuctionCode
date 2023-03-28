@@ -68,4 +68,13 @@ public class UserProfile{
                 " Rating: " + rating + " )";
     }
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone")
+    private String phoneNumber;
+
+    @Column(name = "zip")
+    private String zipCode;
+
 }

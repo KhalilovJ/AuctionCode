@@ -19,8 +19,7 @@ public class RoleRepo {
     private EntityManager entityManager;
 
     public Role findById(Long id){
-//        return entityManager.find(Role.class, id);
-        return (Role)entityManager.createNativeQuery("SELECT * FROM roles where id = ?1").setParameter(1, id).getSingleResult();
+        return entityManager.find(Role.class, id);
     }
 
 }

@@ -29,6 +29,7 @@ public class SecurityConfig{
         http.authorizeHttpRequests()
                 .requestMatchers("/index").authenticated()
                 .requestMatchers("/login").permitAll()
+                .requestMatchers("/style/mainstyle.css").permitAll()
                 .requestMatchers(HttpMethod.POST,"/open", "/open/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/open", "/open/**").permitAll()
                 .requestMatchers("/static").permitAll()
