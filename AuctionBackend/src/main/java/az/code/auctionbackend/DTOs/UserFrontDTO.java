@@ -28,6 +28,10 @@ public class UserFrontDTO {
     private String zipCode;
 
     public static UserFrontDTO convertToUserFront(UserProfile userProfile){
+        if (userProfile == null){
+            return null;
+        }
+        
         int soldLotsCount = userProfile.getLots().stream().filter(a->{
             if (a.getStatus() == 3) {
                 return true;
