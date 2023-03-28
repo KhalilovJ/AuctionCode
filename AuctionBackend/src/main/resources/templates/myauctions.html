@@ -137,7 +137,7 @@
 
             <div class="col-md-2  row align-items-center">
                 <a th:href="'/lots/'+${lot.getId()}" class="my-1 btn btn-success">Ətraflı məlumat</a>
-                <button th:if="${lot.status == 3 && lot.getWinnerUser() != null}" type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#staticBackdrop'+${ids.index}">Qalib haqqında məlumat</button>
+                <button th:if="${lot.status == 3 && lot.getWinnerUser() != null}" type="button" class="my-1 btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#staticBackdrop'+${ids.index}">Qalib haqqında məlumat</button>
             </div>
         </div>
         <br>

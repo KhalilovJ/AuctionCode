@@ -70,7 +70,7 @@
             <div class="col-md-2 row align-items-center">
                 <a th:href="'/lots/'+${lot.getId()}" class="my-1 btn btn-success">Ətraflı məlumat</a>
 
-                <button th:onclick="'payAuction('+${lot.getId()}+')'" th:if="${lot.getStatus() == 2}" th:id="'paybutton'+${lot.getId()} " class="btn btn-danger">Auksionu ödə</button>
+                <button th:onclick="'payAuction('+${lot.getId()}+')'" th:if="${lot.getStatus() == 2}" th:id="'paybutton'+${lot.getId()} " class="my-1 btn btn-danger">Auksionu ödə</button>
             </div>
         </div>
         <br>
