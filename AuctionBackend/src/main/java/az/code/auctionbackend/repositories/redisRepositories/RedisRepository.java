@@ -71,6 +71,13 @@ public class RedisRepository implements RedisInterface {
     }
 
     @Override
+    public void updateStatus(long lotId, int status){
+        RedisLot lot = getRedis(lotId);
+        lot.setStatus(status);
+        saveRedis(lot);
+    }
+
+    @Override
     public void deleteRedis(Long id) {
         hashOperations.delete(hashReference,id);
     }

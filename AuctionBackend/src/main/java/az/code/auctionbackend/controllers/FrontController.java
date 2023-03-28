@@ -45,8 +45,30 @@ public class FrontController {
     private TranactionService tranactionService;
 
     @GetMapping("/")
-    public ModelAndView getIndex(){
-        return new ModelAndView("redirect:/home");
+    public ModelAndView getIndex(@AuthenticationPrincipal UserDetails user){
+        ModelAndView nextPage = new ModelAndView("index");
+        UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
+
+        List<LotFrontDto> lotList = lotService.getAllActiveLotsFront();
+
+        nextPage.addObject("lotList", lotList);
+        nextPage.addObject("user", userProfile);
+
+        return nextPage;
+    }
+
+    @GetMapping("/admin")
+    public ModelAndView getAdmin(@AuthenticationPrincipal UserDetails userIn){
+        ModelAndView nextPage = new ModelAndView("adminapproval");
+
+        UserProfile userProfile = userService.findByUsername(userIn.getUsername()).orElse(null);
+
+            List<LotFrontDto> lotList = lotService.getApprovalWaitingLotsFront();
+            nextPage.addObject("lots", lotList);
+            nextPage.addObject("user", userProfile);
+
+        return nextPage;
+
     }
 
     @GetMapping("/profile")

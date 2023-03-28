@@ -61,7 +61,7 @@ private ObjectMapper objectMapper;
         RedisLot redisLot = redisRepository.getRedis(lotId);
 
         if (redisLot != null && redisLot.getEndDate().isAfter(LocalDateTime.now())
-                && redisLot.getStartDate().isBefore(LocalDateTime.now())){ // if it's null lot is closed and we can't make bids
+                && redisLot.getStartDate().isBefore(LocalDateTime.now()) && redisLot.getStatus() == 1){ // if it's null lot is closed and we can't make bids
 
         log.info("Lot realtime found " + redisLot.getId());
 

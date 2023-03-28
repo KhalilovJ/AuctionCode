@@ -36,8 +36,7 @@
 
   <div class="d-flex flex-wrap">
 
-    <tr th:each="lot,lotloop: ${lotList}" th:if="${lot.getStartDate() != null && lot.getStartDate().isBefore(#temporals.createNow())}">
-
+    <tr th:each="lot,lotloop: ${lotList}" th:if="${lot.getStartDate() != null && lot.getStartDate().isBefore(#temporals.createNow()) && lot.getStatus() == 1}">
 
       <div class="item col-md-3 mx-auto" style="max-height: 25rem;">
         <div style="height: 65%;">

@@ -32,6 +32,8 @@ public class SecurityConfig{
                 .requestMatchers(HttpMethod.POST,"/open", "/open/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/open", "/open/**").permitAll()
                 .requestMatchers("/static").permitAll()
+                .requestMatchers(HttpMethod.GET, "/admin", "/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/admin", "/admin/**").hasRole("ADMIN")
                 .requestMatchers("/registration").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 .anyRequest().authenticated();
