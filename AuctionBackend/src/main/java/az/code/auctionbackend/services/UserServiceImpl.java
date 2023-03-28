@@ -65,7 +65,10 @@ public class UserServiceImpl implements UserService {
                 .name(userDto.getName())
                 .address(userDto.getAddress())
                 .isBlocked(false)
-                .sellerActive(false)
+                .sellerActive(true)
+                .email(userDto.getEmail())
+                .zipCode(userDto.getZipCode())
+                .phoneNumber(userDto.getPhoneNumber())
                 .rating(5)
                 .role(roleRepo.findById(3l)).build();
 

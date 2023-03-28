@@ -70,9 +70,12 @@ private ObjectMapper objectMapper;
         if (user.isBlocked()){
             log.error("Can't place bid. User locked. Username: " + username + " Lot id: " + lotId);
             return null;
+        } else if (redisLot.getUserId() == user.getId()) {
+            log.error("Can't place bid. User created this lot. Username: " + username + " Lot id: " + lotId);
+            return null;
         }
 
-        BidDto bidDto = BidDto.builder()
+            BidDto bidDto = BidDto.builder()
                 .userId(user.getId())
                 .username(username)
                 .bid(bidValue)

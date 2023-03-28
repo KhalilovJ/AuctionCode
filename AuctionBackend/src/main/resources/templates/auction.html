@@ -177,7 +177,7 @@
         </div>
 
 
-        <div class="h-50" th:if="${auction.getStatus() == 1}">
+        <div class="h-50" th:if="${auction.getStatus() == 1 && userMe.username != auction.getUser().username}">
 
           <br>
           <div class="d-flex mx-auto justify-content-center">
@@ -192,7 +192,7 @@
             <button class="w-25 btn btn-primary" th:onclick="buttonClickP()">+</button>
           </div>
         </div>
-          <div class="h-50" th:unless="${auction.getStatus() == 1}">
+          <div class="h-50" th:unless="${auction.getStatus() == 1 || userMe.username == auction.getUser().username}">
             Hərrac moderasiyadadır
           </div>
 
