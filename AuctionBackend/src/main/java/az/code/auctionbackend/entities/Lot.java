@@ -84,4 +84,11 @@ public class Lot {
      */
     @Column(name = "status")
     private int status;
+
+    /**
+     * 0 - Standart
+     * 1 - Blitz
+     */
+    @Column(name = "type")
+    private int type;
 }

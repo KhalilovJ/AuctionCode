@@ -31,8 +31,6 @@ public class BidController {
 
     @Autowired
     private BidServiceImpl bidService;
-//private final LotService lotService;
-//private final UserService userService;
     private final ObjectMapper objectMapper;
 
     HashMap<Long, List<SseEmitter>> subscribers = new HashMap<>();
@@ -72,7 +70,7 @@ public class BidController {
     public String makeBid(@AuthenticationPrincipal UserDetails userIn, @RequestBody JSONObject jsonRequest){
         log.info("New bid has been received " + jsonRequest);
         Long lotId = jsonRequest.getLong("lotId");
-        double bidValue = jsonRequest.getLong("bid");
+        double bidValue = jsonRequest.getDouble("bid");
 
 //        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
         BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);

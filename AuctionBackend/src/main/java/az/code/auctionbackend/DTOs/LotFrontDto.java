@@ -29,6 +29,7 @@ public class LotFrontDto {
     private int status;
     private UserFrontDTO user;
     private UserFrontDTO winnerUser;
+    private int type;
 
     public static LotFrontDto getLotFrontDto(RedisLot redisLot){
 
@@ -57,6 +58,7 @@ public class LotFrontDto {
                 .userId(redisLot.getUserId())
                 .bids(redisLot.getBidHistory())
                 .status(1)
+                .type(redisLot.getType())
                 .build();
 
         return lot;
@@ -98,6 +100,7 @@ public class LotFrontDto {
                 .status(lotIn.getStatus())
                 .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
                 .winnerUser(UserFrontDTO.convertToUserFront(lotIn.getLotWinner()))
+                .type(lotIn.getType())
                 .build();
 
         return lot;
@@ -131,6 +134,7 @@ public class LotFrontDto {
                 .status(lotIn.getStatus())
                 .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
                 .winnerUser(UserFrontDTO.convertToUserFront(lotIn.getLotWinner()))
+                .type(lotIn.getType())
                 .build();
 
         return lot;

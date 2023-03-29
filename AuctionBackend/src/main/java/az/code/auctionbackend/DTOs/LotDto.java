@@ -20,12 +20,13 @@ public class LotDto {
     private double bidStep;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private int type;
 
     public Lot getLot(){
         return Lot.builder()
                 .lotName(lotName)
                 .description(description).reservePrice(reservePrice).startingPrice(startingPrice)
-                .bidStep(bidStep).startDate(startDate).endDate(endDate)
+                .bidStep(bidStep).startDate(startDate).endDate(endDate).type(type)
         .build();
     }
 }

@@ -10,9 +10,9 @@ function pad(n) {
 }
 
 function updateBidBox(){
-    let currentBid = parseFloat(document.getElementById("currentBid").innerText);
+    let currentBid = document.getElementById("currentBid").innerText;
     i=1;
-    document.getElementById('inc').value = bidstepVal+parseFloat(currentBid);
+    document.getElementById('inc').value = (bidstepVal+parseFloat(currentBid)).toFixed(2);
 
 }
 function subscribe(){
@@ -27,9 +27,10 @@ function subscribe(){
     eventSource.addEventListener("bid", function(event){
 
         let json = JSON.parse(event.data);
+        console.log(json)
         let text = json.lotCurrentBidPrice;
         let bidtext = '<span class="col-md-3">'.concat(json.username).concat("</span>");
-        bidtext = bidtext.concat('<span class="col-md-3">').concat(json.bid).concat("</span>");
+        bidtext = bidtext.concat('<span class="col-md-3">').concat(parseFloat(json.bid).toFixed(2)).concat("</span>");
 
         let timestamp= new Date(json.bidTime);
         let datetext = timestamp.toISOString().split('T')[0]
@@ -59,8 +60,9 @@ function UserAction() {
     let lotId = url.pathname.split("/")[2];
 
     let input = "/open/api/bids/makeBid";
-    let bidout = parseFloat(document.getElementById("inc").value);
-    let currentBid = parseFloat(document.getElementById("currentBid").innerText);
+    let bidout = parseFloat(document.getElementById("inc").value).toFixed(2);
+    console.log("bidout placed " + bidout)
+    let currentBid = parseFloat(document.getElementById("currentBid").innerText).toFixed(2);
 
     if (bidout >= currentBid + bidstepVal && bidplaced){
 
@@ -102,7 +104,8 @@ function buttonClickM() {
 
 function updateBid(){
     let currentBid = parseFloat(document.getElementById("currentBid").innerText);
-    document.getElementById('inc').value = bidstepVal+currentBid;
+    if(document.getElementById('inc') != null){
+        document.getElementById('inc').value = bidstepVal+currentBid;}
 }
 
 updateBid();
@@ -167,7 +170,9 @@ function convertInnertextToDateTime(elementId){
     let hour = datestamp.getHours();
     let timetext = datetext +" " + pad(hour) + ":"+ pad(minutes)+":"+ pad(seconds)
 
-    element.innerText = timetext;}
+    element.innerText = timetext;
+
+}
 
 
 function  init(){
@@ -177,7 +182,6 @@ function  init(){
 
     var elements = document.getElementsByClassName("changeTime");
     for(var i = 0; i < elements.length; i++) {
-        // console.log(elements[i])
         convertInnertextToDateTime(elements[i].getAttribute("id"))
     }
 
