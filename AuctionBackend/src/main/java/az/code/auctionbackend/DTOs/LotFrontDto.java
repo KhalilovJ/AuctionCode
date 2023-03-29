@@ -28,6 +28,7 @@ public class LotFrontDto {
     List<BidDto> bids;
     private int status;
     private UserFrontDTO user;
+    private UserFrontDTO winnerUser;
 
     public static LotFrontDto getLotFrontDto(RedisLot redisLot){
 
@@ -96,6 +97,7 @@ public class LotFrontDto {
                 .bids(bidsList)
                 .status(lotIn.getStatus())
                 .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
+                .winnerUser(UserFrontDTO.convertToUserFront(lotIn.getLotWinner()))
                 .build();
 
         return lot;
@@ -128,6 +130,7 @@ public class LotFrontDto {
                 .bids(null)
                 .status(lotIn.getStatus())
                 .user(UserFrontDTO.convertToUserFront(lotIn.getUser()))
+                .winnerUser(UserFrontDTO.convertToUserFront(lotIn.getLotWinner()))
                 .build();
 
         return lot;
