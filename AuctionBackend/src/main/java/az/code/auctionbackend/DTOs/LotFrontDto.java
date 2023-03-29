@@ -33,6 +33,7 @@ public class LotFrontDto {
 
     public static LotFrontDto getLotFrontDto(RedisLot redisLot){
 
+        System.out.println(redisLot);
         List<String> idsLocal = new ArrayList<>();
 
         if (redisLot.getImgs() != null){

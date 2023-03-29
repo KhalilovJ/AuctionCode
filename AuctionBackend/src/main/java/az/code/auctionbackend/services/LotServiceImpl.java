@@ -240,6 +240,7 @@ public class LotServiceImpl implements LotService {
                                     .itemPictures(l.getItemPictures())
                                     .status(l.getStatus())
                                     .imgs(l.getItemPictures())
+                                    .type(l.getType())
                                 .endDate(l.getEndDate())
                                 .build());
                         log.info("Lot added to redis " + l.getId());

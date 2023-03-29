@@ -3,6 +3,7 @@ package az.code.auctionbackend.DTOs;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 
@@ -22,4 +23,16 @@ public class BidResponseDto {
 
     private double bid;
     private LocalDateTime bidTime;
+
+    public JSONObject getJson(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("lotCurrentBidPrice", lotCurrentBidPrice);
+        jsonObject.put("lotId", lotId);
+        jsonObject.put("userId", userId);
+        jsonObject.put("username", username);
+        jsonObject.put("bid", bid);
+        jsonObject.put("bidTime", bidTime);
+        return jsonObject;
+    }
 }

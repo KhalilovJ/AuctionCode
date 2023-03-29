@@ -2,6 +2,8 @@ package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.BidDto;
 import az.code.auctionbackend.DTOs.BidResponseDto;
+import az.code.auctionbackend.entities.redis.RedisLot;
+import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.BidServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,6 +35,7 @@ public class BidController {
     @Autowired
     private BidServiceImpl bidService;
     private final ObjectMapper objectMapper;
+    private final RedisRepository redisRepository;
 
     HashMap<Long, List<SseEmitter>> subscribers = new HashMap<>();
 
@@ -75,11 +79,26 @@ public class BidController {
 //        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
         BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
+
         if (bid == null){
             log.error("Bid placement error, either lot is not active or this user is created selected lot");
             return "Error";
         } else {
-            sendUpdates(bidService.bidDtoMapper(bid));
+            RedisLot lot = redisRepository.getRedis(lotId);
+            LocalDateTime updatedTime = null;
+
+            /**
+            Blitz minutes ==================================================
+             */
+            if (lot.getType() == 1 && lot.getEndDate().isBefore(LocalDateTime.now().minusMinutes(1))){
+                updatedTime = LocalDateTime.now().plusMinutes(1);
+                redisRepository.updateRedisLotEndTime(lotId, updatedTime);
+            }
+            /**
+             Blitz minutes ==================================================
+             */
+
+            sendUpdates(bidService.bidDtoMapper(bid), updatedTime);
 
             log.info("Bid placed; Lot Id is: " + lotId);
             return "success";
@@ -87,14 +106,18 @@ public class BidController {
     }
 
 
-    public void sendUpdates(BidResponseDto bid){
+    public void sendUpdates(BidResponseDto bid, LocalDateTime newLotTime){
 
         List<SseEmitter> emittersList = subscribers.get(bid.getLotId());
+
+        JSONObject json = new JSONObject();
+        json.put("bid", bid.getJson().toString());
+        json.put("time", newLotTime);
 
         for (SseEmitter emitter: emittersList){
             try {
 
-                emitter.send(SseEmitter.event().name("bid").data(bid));
+                emitter.send(SseEmitter.event().name("bid").data(json.toString()));
             } catch (IOException  e) {
                 emittersList.remove(emitter);
             }

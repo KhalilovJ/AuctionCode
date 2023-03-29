@@ -171,32 +171,54 @@
 
         <div id="bid_area">
 
+        </div>
+
         <div class="d-flex mx-auto justify-content-center">
-          <div id="app" hidden></div>
           <span id="countdown" class="timer h-100"></span>
         </div>
 
 
-        <div class="h-50" th:if="${auction.getStatus() == 1 && userMe.username != auction.getUser().username}">
+          <div class="h-50" th:if="${auction.getStatus() == 1 && userMe.username != auction.getUser().username}">
 
-          <br>
-          <div class="d-flex mx-auto justify-content-center">
-            <button class="w-50 btn btn-success" th:id="bidButton" th:onclick="UserAction()">Təklif et</button>
-          </div>
-          <br>
+            <div th:if="${auction.type == 0}">
+              <br>
+              <div class="d-flex mx-auto justify-content-center">
+                <button class="w-50 btn btn-success" th:id="bidButton" th:onclick="UserAction()">Təklif et</button>
+              </div>
+              <br>
 
-          <div class="d-flex mx-auto justify-content-between">
-            <button class="w-25 btn btn-primary" th:onclick="buttonClickM()">-</button>
-            <!--<input type="text" id="inc" value="0"></input>-->
-            <input class="text-center" type="number" step="0.01" id="inc" value="0"></input>
-            <button class="w-25 btn btn-primary" th:onclick="buttonClickP()">+</button>
+              <div class="d-flex mx-auto justify-content-between">
+                <button class="w-25 btn btn-primary" th:onclick="buttonClickM()">-</button>
+                <!--<input type="text" id="inc" value="0"></input>-->
+                <input class="text-center" type="number" step="0.01" id="inc" value="0"></input>
+                <button class="w-25 btn btn-primary" th:onclick="buttonClickP()">+</button>
+              </div>
+            </div>
+            <div th:if="${auction.type == 1}"  class="justify-content-around align-items-center d-flex">
+
+              <div class="w-50 my-4 align-items-center justify-content-around" style="display: none" id="appDiv">
+                <div id="app"></div>
+              </div>
+
+              <div class="h-50">
+                <br>
+                <div class="d-flex mx-auto justify-content-center">
+                  <button class="w-50 btn btn-success" onclick="UserAction()">Təklif et</button>
+                </div>
+                <br>
+
+                <div class="d-flex mx-auto justify-content-between">
+                  <button class="w-25 btn btn-primary" th:onclick="buttonClickM()">-</button>
+                  <input class="text-center w-50" type="number" step="0.01" id="inc" value="0"></input>
+                  <button class="w-25 btn btn-primary" th:onclick="buttonClickP()">+</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
           <div class="h-50" th:unless="${auction.getStatus() == 1 || userMe.username == auction.getUser().username}">
             Hərrac moderasiyadadır
           </div>
 
-        </div>
       </div>
     </div>
 

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class RedisRepository implements RedisInterface {
     public void updateStatus(long lotId, int status){
         RedisLot lot = getRedis(lotId);
         lot.setStatus(status);
-        saveRedis(lot);
+        updateRedis(lot);
     }
 
     @Override
@@ -85,6 +86,13 @@ public class RedisRepository implements RedisInterface {
     @Override
     public void saveAllRedis(Map<Long, RedisLot> map) {
         hashOperations.putAll(hashReference,map);
+    }
+
+    @Override
+    public void updateRedisLotEndTime(long lotId, LocalDateTime time){
+        RedisLot lot = getRedis(lotId);
+        lot.setEndDate(time);
+        saveRedis(lot);
     }
 
 
