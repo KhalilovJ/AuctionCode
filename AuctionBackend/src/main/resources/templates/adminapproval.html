@@ -84,7 +84,7 @@
                                                     <button th:each="img,ids2: ${lot.getIds()}" th:unless="${ids2.index == 0}" type="button" th:data-bs-target="'#carouselindicators' + ${ids.index}" th:data-bs-slide-to="${ids2.index}" class="bg-secondary" th:aria-label="'Slide ' + ${ids2.index+1}"></button>
                                                 </div>
                                             </div>
-                                            <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  onclick="window.location.href = 'https://ru-ru.facebook.com/';">
+                                            <div class="carousel-inner h-100 d-flex align-content-center align-items-center">
 
                                                 <div class="carousel-item active" th:each="img,ids2: ${lot.getIds()}" th:if="${ids2.index == 0}">
                                                     <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;" >

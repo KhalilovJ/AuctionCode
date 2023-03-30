@@ -161,6 +161,9 @@ function timer() {
             "</div>";
         clearInterval(countdownTimer);
         bidplaced = false;
+        document.getElementById("controlsArea").remove();
+        document.getElementById("countdown").style.display = 'none';
+
     } else {
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
@@ -274,9 +277,9 @@ function startTimer() {
     timerInterval = setInterval(() => {
         timePassed = timePassed += 1;
         timeLeft = TIME_LIMIT - timePassed;
-        document.getElementById("base-timer-label").innerHTML = formatTime(
-            timeLeft
-        );
+
+        let basetimer = document.getElementById("base-timer-label")
+        if(basetimer != null){basetimer.innerHTML = formatTime(timeLeft)};
 
         setCircleDasharray();
         setRemainingPathColor(timeLeft);
@@ -339,9 +342,8 @@ function setCircleDasharray() {
     const circleDasharray = `${(
         calculateTimeFraction() * FULL_DASH_ARRAY
     ).toFixed(0)} 283`;
-    document
-        .getElementById("base-timer-path-remaining")
-        .setAttribute("stroke-dasharray", circleDasharray);
+    let basetimerpath = document.getElementById("base-timer-path-remaining");
+    if (basetimerpath != null){basetimerpath.setAttribute("stroke-dasharray", circleDasharray);}
 }
 
 
