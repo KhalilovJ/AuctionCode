@@ -158,7 +158,12 @@
             <br>
           </div>
           <br>
-          <div class="row d-inline-block">
+          <div class="row d-inline-block" th:if="${auction.currentBid < auction.getStartingPrice()}">
+            Öndə olan təklif:
+            <span class="card-text" th:id="currentBid" th:text="${auction.startingPrice}">Current bid</span>
+            <br>
+          </div>
+          <div class="row d-inline-block" th:unless="${auction.currentBid < auction.getStartingPrice()}">
             Öndə olan təklif:
             <span class="card-text" th:id="currentBid" th:text="${auction.currentBid}">Current bid</span>
             <br>
