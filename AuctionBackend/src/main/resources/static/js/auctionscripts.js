@@ -75,8 +75,6 @@ function UserAction() {
     let bidout = parseFloat(document.getElementById("inc").value).toFixed(2);
     let currentBid = parseFloat(document.getElementById("currentBid").innerText).toFixed(2);
 
-    console.log("bid placing " + (bidout >= currentBid + bidstepVal) + " " + bidplaced);
-
     if (parseFloat(bidout) >= parseFloat(currentBid) + bidstepVal && bidplaced){
 
         bidplaced = false
@@ -147,9 +145,11 @@ function timer() {
 
 
         document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " + pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
-        if (seconds == 0) {
+        if (seconds <= 0) {
             clearInterval(countdownTimer);
             document.getElementById('countdown').innerHTML = "Completed";
+            document.getElementById("controlsArea").remove();
+
         } else {
             seconds--;
         }
@@ -160,6 +160,7 @@ function timer() {
             "                                <p >Hərrac bağlıdır</p>"
             "</div>";
         clearInterval(countdownTimer);
+        bidplaced = false;
     } else {
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
@@ -167,6 +168,7 @@ function timer() {
         "</div>";
 
         clearInterval(countdownTimer);
+        bidplaced = false;
 
     }
 }
@@ -188,7 +190,6 @@ function convertInnertextToDateTime(elementId){
 
 }
 function  init(){
-    console.log("init")
     convertInnertextToDateTime("endDate")
     convertInnertextToDateTime("startDate")
 
@@ -196,7 +197,6 @@ function  init(){
     for(var i = 0; i < elements.length; i++) {
         convertInnertextToDateTime(elements[i].getAttribute("id"))
     }
-
 }
 
 
@@ -287,7 +287,13 @@ function startTimer() {
         if (timeLeft > 600){
             document.getElementById("appDiv").style.display = 'none';
             document.getElementById("countdown").style.display = 'block';
-        } else {
+        }else if(timeLeft <= 0){
+            document.getElementById("appDiv").style.display = 'none';
+            document.getElementById("countdown").style.display = 'none';
+            document.getElementById("controlsArea").remove();
+
+        }
+        else {
             document.getElementById("appDiv").style.display = 'block';
             document.getElementById("countdown").style.display = 'none';
         }
