@@ -19,7 +19,7 @@
   <!--  class="registerForm"-->
 
   <div class="form-label-group">
-    <label>Item images</label>
+    <label>Əşyanın şəkilləri</label>
     <br><br>
     <input type="file" required multiple name="files" class="form-control" placeholder="Images"  >
   </div>
@@ -57,7 +57,7 @@
   </div>
 
   <div class="form-label-group">
-    <input type="datetime-local" id="startDate" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd''T''HH:mm:ss')}" oninput="minChanged()" required th:field="*{startDate}" class="form-control" >
+    <input type="datetime-local" id="startDate" required oninput="minChanged()" th:field="*{startDate}" class="form-control" >
     <label for="startDate">Hərracın başlama vaxtı</label>
   </div>
 
