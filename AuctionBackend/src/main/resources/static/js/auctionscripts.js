@@ -53,7 +53,7 @@ function subscribe(){
         bidsWrapper.prepend(nodeDiv)
         updateBidBox();
 
-        if (updatedDatetime != null){ // time must be changed
+        if (data.time !=  undefined){ // time must be changed
             document.getElementById("endDate").innerText = updatedDatetime;
             convertInnertextToDateTime("endDate");
             date1 = updatedDatetime
@@ -75,7 +75,9 @@ function UserAction() {
     let bidout = parseFloat(document.getElementById("inc").value).toFixed(2);
     let currentBid = parseFloat(document.getElementById("currentBid").innerText).toFixed(2);
 
-    if (bidout >= currentBid + bidstepVal && bidplaced){
+    console.log("bid placing " + (bidout >= currentBid + bidstepVal) + " " + bidplaced);
+
+    if (parseFloat(bidout) >= parseFloat(currentBid) + bidstepVal && bidplaced){
 
         bidplaced = false
 
@@ -235,7 +237,9 @@ function updateTimeCircle(){
     timePassed = 0;
 }
 
-document.getElementById("app").innerHTML = `
+let app = document.getElementById("app")
+    if(app != null) {
+    app.innerHTML = `
 <div class="base-timer my-auto mx-auto">
   <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <g class="base-timer__circle">
@@ -254,10 +258,11 @@ document.getElementById("app").innerHTML = `
     </g>
   </svg>
   <span id="base-timer-label" class="base-timer__label">${formatTime(
-    timeLeft
-)}</span>
+            timeLeft
+        )}</span>
 </div>
 `;
+    }
 
 startTimer();
 

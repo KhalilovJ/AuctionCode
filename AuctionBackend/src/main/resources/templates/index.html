@@ -59,7 +59,7 @@
                   </div>
                 </div>
 
-                <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  onclick="window.location.href = 'https://ru-ru.facebook.com/';">
+                <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  th:onclick="'window.location.href = ' + 'lots/' + ${lot.getId()}">
 
                   <div class="carousel-item active" th:each="img,ids: ${lot.getIds()}" th:if="${ids.index == 0}">
                     <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;" >
