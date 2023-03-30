@@ -284,21 +284,23 @@ function startTimer() {
         setCircleDasharray();
         setRemainingPathColor(timeLeft);
 
+        let appdiv = document.getElementById("appDiv");
+        let countdownDiv = document.getElementById("countdown");
+        let controlsareaDiv = document.getElementById("controlsArea");
+
         if (timeLeft === 0) {
             onTimesUp();
-        }
-        if (timeLeft > 600){
-            document.getElementById("appDiv").style.display = 'none';
-            document.getElementById("countdown").style.display = 'block';
+        } else if (timeLeft > 600){
+            if (appdiv != null){appdiv.style.display = 'none';}
+            if (countdownDiv != null){countdownDiv.style.display = 'block';}
         }else if(timeLeft <= 0){
-            document.getElementById("appDiv").style.display = 'none';
-            document.getElementById("countdown").style.display = 'none';
-            document.getElementById("controlsArea").remove();
-
+            if (appdiv != null){appdiv.style.display = 'none';}
+            if (countdownDiv != null){countdownDiv.style.display = 'none';}
+            if (controlsareaDiv != null){controlsareaDiv.remove();}
         }
         else {
-            document.getElementById("appDiv").style.display = 'block';
-            document.getElementById("countdown").style.display = 'none';
+            if (appdiv != null){appdiv.style.display = 'block';}
+            if (countdownDiv != null){countdownDiv.style.display = 'none';}
         }
     }, 1000);
 }
