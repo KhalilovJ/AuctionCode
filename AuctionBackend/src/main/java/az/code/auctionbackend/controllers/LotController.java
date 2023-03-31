@@ -47,6 +47,11 @@ public class LotController {
         return ResponseEntity.ok(lotService.getAllLots());
     }
 
+    @GetMapping("/clear_redis")
+    public void clear(){  // not working yet
+        redisRepository.clearRedis();
+    }
+
     /**
      * Get all active lots from Redis
      */

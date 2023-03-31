@@ -352,27 +352,33 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public void approveLot(long lotId, int status){
+
         if (status == 1){
             setLotStatus(lotId, 1);
 
             Lot l = findLotById(lotId).get();
 
-            redisRepository.saveRedis(
-                    RedisLot.builder()
-                            .id(l.getId())
-                            .userId(l.getUser().getId())
-                            .lotName(l.getLotName())
-                            .startDate(l.getStartDate())
-                            .endDate(l.getEndDate())
-                            .bidStep(l.getBidStep())
-                            .startingPrice(l.getStartingPrice())
-                            .reservePrice(l.getReservePrice())
-                            .description(l.getDescription())
-                            .itemPictures(l.getItemPictures())
-                            .status(1)
-                            .imgs(l.getItemPictures())
-                            .type(l.getType())
-                            .build());
+            RedisLot red = RedisLot.builder()
+                    .id(l.getId())
+                    .userId(l.getUser().getId())
+                    .lotName(l.getLotName())
+                    .startDate(l.getStartDate())
+                    .endDate(l.getEndDate())
+                    .bidStep(l.getBidStep())
+                    .startingPrice(l.getStartingPrice())
+                    .reservePrice(l.getReservePrice())
+                    .description(l.getDescription())
+                    .itemPictures(l.getItemPictures())
+                    .status(1)
+                    .imgs(l.getItemPictures())
+                    .type(l.getType())
+                    .build();
+
+            redisRepository.saveRedis(red);
+
+
+            log.info("approve lot" + LotFrontDto.getLotFrontDto(l));
+            log.info("approve lot RED" + red);
 
         } else {
             redisRepository.deleteRedis(lotId);

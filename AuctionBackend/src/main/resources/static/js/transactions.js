@@ -27,4 +27,4 @@ function convertInnertextToDateTime(elementId){
 }
 
 
-document.onreadystatechange(init())
+init()

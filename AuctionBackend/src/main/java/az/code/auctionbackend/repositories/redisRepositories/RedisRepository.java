@@ -5,6 +5,7 @@ import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.entities.redis.RedisWaitingPayment;
+import com.rabbitmq.client.ConnectionFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,10 @@ public class RedisRepository implements RedisInterface {
         RedisLot lot = getRedis(lotId);
         lot.setStatus(status);
         updateRedis(lot);
+    }
+    @Override
+    public void clearRedis(){
+
     }
 
     @Override

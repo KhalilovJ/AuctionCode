@@ -17,6 +17,7 @@ public interface RedisInterface {
         void deleteRedis(Long id);
         void updateStatus(long lotId, int status);
         void saveAllRedis(Map<Long, RedisLot> map);
+        void clearRedis();
 
         // Waiting payments
         Map<Long, RedisWaitingPayment> getAllWaitingPayments();

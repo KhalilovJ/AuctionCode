@@ -12,7 +12,6 @@ function updateBidBox(){
     let currentBid = document.getElementById("currentBid").innerText;
     i=1;
     document.getElementById('inc').value = (bidstepVal+parseFloat(currentBid)).toFixed(2);
-
 }
 function subscribe(){
 
@@ -20,7 +19,7 @@ function subscribe(){
 
     let lotId = url.pathname.split("/")[2];
 
-    let urlEndpoint = `http://127.0.0.1:9090/open/api/bids/${lotId}`
+    let urlEndpoint = "/open/api/bids/"+ lotId
     let eventSource = new EventSource(urlEndpoint)
 
     eventSource.addEventListener("bid", function(event){
@@ -145,21 +144,25 @@ function timer() {
 
         var secondsDifference = Math.floor(difference / 1000);
 
-
+        let countdown = document.getElementById('countdown')
+        let controlsArea = document.getElementById("controlsArea")
+        let bidArea = document.getElementById('bid_area')
 
         document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " + pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
         if (seconds <= 0) {
             clearInterval(countdownTimer);
-            document.getElementById('countdown').innerHTML = "Completed";
-            document.getElementById("controlsArea").remove();
+            countdown.innerHTML = "Completed";
+            controlsArea.remove();
 
         } else {
-            document.getElementById("controlsArea").style.display = "block";
-            document.getElementById('bid_area').style.display = "none";
+            if(controlsArea != null){controlsArea.style.display = "block";}
+            if (bidArea != null){bidArea.style.display = "none";}
             seconds--;
         }
     } else if(startDate < Date.now()){
-        document.getElementById('bid_area').style.display = "block";
+        let bidArea = document.getElementById('bid_area')
+
+        if (bidArea != null){bidArea.style.display = "block";}
 
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
