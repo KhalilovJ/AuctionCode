@@ -35,7 +35,7 @@ function subscribe(){
         bidtext = bidtext.concat('<span class="col-md-3">').concat(parseFloat(json.bid).toFixed(2)).concat("</span>");
 
         let timestamp= new Date(json.bidTime);
-        // let datetext = timestamp.toISOString().split('T')[0]
+
         let datetext = timestamp.getDate() + '.' + pad(timestamp.getMonth())+ '.' + pad(timestamp.getFullYear());
 
         var seconds = timestamp.getSeconds();
@@ -53,7 +53,10 @@ function subscribe(){
         bidsWrapper.prepend(nodeDiv)
         updateBidBox();
 
-        if (data.time !=  undefined){ // time must be changed
+        console.log(data.time)
+
+        if (data.time !=  undefined && data.time != null){ // time must be changed
+
             document.getElementById("endDate").innerText = updatedDatetime;
             convertInnertextToDateTime("endDate");
             date1 = updatedDatetime
@@ -151,9 +154,12 @@ function timer() {
             document.getElementById("controlsArea").remove();
 
         } else {
+            document.getElementById("controlsArea").style.display = "block";
+            document.getElementById('bid_area').style.display = "none";
             seconds--;
         }
     } else if(startDate < Date.now()){
+        document.getElementById('bid_area').style.display = "block";
 
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
@@ -166,12 +172,12 @@ function timer() {
 
     } else {
         let bidarea = document.getElementById('bid_area')
+        bidarea.style.display = "block"
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
             "                                <p >Hərrac başlamaq üzrədir</p>"
         "</div>";
 
-        clearInterval(countdownTimer);
-        bidplaced = false;
+        document.getElementById("controlsArea").style.display = "none";
 
     }
 }

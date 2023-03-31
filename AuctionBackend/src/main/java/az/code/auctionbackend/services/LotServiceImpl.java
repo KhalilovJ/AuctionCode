@@ -241,7 +241,6 @@ public class LotServiceImpl implements LotService {
                                     .status(l.getStatus())
                                     .imgs(l.getItemPictures())
                                     .type(l.getType())
-                                .endDate(l.getEndDate())
                                 .build());
                         log.info("Lot added to redis " + l.getId());
                         }
@@ -372,7 +371,7 @@ public class LotServiceImpl implements LotService {
                             .itemPictures(l.getItemPictures())
                             .status(1)
                             .imgs(l.getItemPictures())
-                            .endDate(l.getEndDate())
+                            .type(l.getType())
                             .build());
 
         } else {

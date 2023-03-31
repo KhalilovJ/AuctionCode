@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -76,7 +77,6 @@ public class BidController {
         Long lotId = jsonRequest.getLong("lotId");
         double bidValue = jsonRequest.getDouble("bid");
 
-//        Bid bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
         BidDto bid = bidService.makeBid(userIn.getUsername(), lotId, bidValue);
 
 
@@ -90,8 +90,17 @@ public class BidController {
             /**
             Blitz minutes ==================================================
              */
-            if (lot.getType() == 1 && lot.getEndDate().isBefore(LocalDateTime.now().minusMinutes(1))){
+            LocalDateTime truncatedNow = LocalDateTime.now().plusMinutes(1).truncatedTo(ChronoUnit.SECONDS);
+
+            LocalDateTime truncatedLotEnd = lot.getEndDate().truncatedTo(ChronoUnit.SECONDS);
+            truncatedLotEnd = truncatedLotEnd.plusSeconds(1);
+
+            System.out.println(truncatedNow + " " + truncatedLotEnd + " " + truncatedLotEnd.isBefore(truncatedNow));
+            if (lot.getType() == 1 && truncatedLotEnd.isBefore(truncatedNow)){
+
                 updatedTime = LocalDateTime.now().plusMinutes(1);
+                System.out.println(updatedTime);
+
                 redisRepository.updateRedisLotEndTime(lotId, updatedTime);
             }
             /**

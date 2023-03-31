@@ -92,7 +92,7 @@ public class RedisRepository implements RedisInterface {
     public void updateRedisLotEndTime(long lotId, LocalDateTime time){
         RedisLot lot = getRedis(lotId);
         lot.setEndDate(time);
-        saveRedis(lot);
+        updateRedis(lot);
     }
 
 
