@@ -1,6 +1,7 @@
 package az.code.auctionbackend.controllers;
 
 import az.code.auctionbackend.DTOs.LotFrontDto;
+import az.code.auctionbackend.DTOs.UserFrontDTO;
 import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.repositories.redisRepositories.RedisRepository;
 import az.code.auctionbackend.services.UserServiceImpl;
@@ -40,6 +41,14 @@ public class SecurityController {
     public ModelAndView getHome(@AuthenticationPrincipal UserDetails user){
 
         ModelAndView nextPage = null;
+
+        if (user == null){
+            List<LotFrontDto> lotList = lotService.getAllActiveLotsFront();
+            nextPage = new ModelAndView("index");
+            nextPage.addObject("lotList", lotList);
+            return nextPage;
+        }
+
         UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
 
         if (userProfile.getRole().getName().equals("USER")){
@@ -47,6 +56,7 @@ public class SecurityController {
             List<LotFrontDto> lotList = lotService.getAllActiveLotsFront();
             nextPage = new ModelAndView("index");
             nextPage.addObject("lotList", lotList);
+            nextPage.addObject("user", UserFrontDTO.convertToUserFront(userProfile));
         } else {
             List<LotFrontDto> lotList = lotService.getApprovalWaitingLotsFront();
             nextPage = new ModelAndView("adminapproval");

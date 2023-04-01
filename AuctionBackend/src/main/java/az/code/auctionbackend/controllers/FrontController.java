@@ -46,15 +46,16 @@ public class FrontController {
 
     @GetMapping("/")
     public ModelAndView getIndex(@AuthenticationPrincipal UserDetails user){
-        ModelAndView nextPage = new ModelAndView("index");
-        UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
-
-        List<LotFrontDto> lotList = lotService.getAllActiveLotsFront();
-
-        nextPage.addObject("lotList", lotList);
-        nextPage.addObject("user", userProfile);
-
-        return nextPage;
+//        ModelAndView nextPage = new ModelAndView("index");
+//        UserProfile userProfile = userService.findByUsername(user.getUsername()).orElse(null);
+//
+//        List<LotFrontDto> lotList = lotService.getAllActiveLotsFront();
+//
+//        nextPage.addObject("lotList", lotList);
+//        nextPage.addObject("user", userProfile);
+//
+//        return nextPage;
+        return new ModelAndView("redirect:/home");
     }
 
     @GetMapping("/admin")

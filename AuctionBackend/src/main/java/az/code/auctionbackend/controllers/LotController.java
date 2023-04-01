@@ -47,6 +47,11 @@ public class LotController {
         return ResponseEntity.ok(lotService.getAllLots());
     }
 
+    @GetMapping("/clear_redis")
+    public void clear(){  // not working yet
+        redisRepository.clearRedis();
+    }
+
     /**
      * Get all active lots from Redis
      */
@@ -101,9 +106,19 @@ public class LotController {
     @PostMapping("/save")
     public ModelAndView saveLot(@ModelAttribute LotDto lotDto, @RequestParam("files") MultipartFile[] files, @AuthenticationPrincipal UserDetails user){
 
+        if (lotDto.getStartDate().isAfter(lotDto.getEndDate())){
+            return new ModelAndView("redirect:/user/" + user.getUsername() + "/add_auction");
+        }
+
+        if (lotDto.getBidStep()<0.01){lotDto.setBidStep(0.01);}
+        if (lotDto.getReservePrice() <0){lotDto.setReservePrice(0);}
+        if (lotDto.getStartingPrice() <0){lotDto.setStartingPrice(0);}
+
         List<File> filesList = new ArrayList<>();
         List<String> fileIds = new ArrayList<>();
         StringBuilder imgs = new StringBuilder();
+
+        JSONObject jsonOut = new JSONObject();
 
         if (files != null){
         Arrays.stream(files).toList().forEach(a-> filesList.add(convert(a)));
@@ -112,16 +127,19 @@ public class LotController {
             fileIds.add(uploadcareService.sendFile(i));
         });
 
-        imgs.append("{");
-        for (int i = 0; i<fileIds.size(); i++){
-            if (i > 0){ imgs.append(",");}
-            imgs.append("\"" + i + "\":\"" + fileIds.get(i) + "\"");
-        }
-        imgs.append("}");
+//        imgs.append("{");
+//        for (int i = 0; i<fileIds.size(); i++){
+//            if (i > 0){ imgs.append(",");}
+//            imgs.append("\"" + i + "\":\"" + fileIds.get(i) + "\"");
+//        }
+//        imgs.append("}");
+            for (Integer i = 0; i<fileIds.size(); i++){
+                jsonOut.put(i.toString(), fileIds.get(i));
+            }
         }
 
         log.info("saveLot /save DONE " + LocalDateTime.now());
-        lotService.createLot(lotDto, imgs.toString(), user.getUsername());
+        lotService.createLot(lotDto, jsonOut.toString(), user.getUsername());
 
         log.info("Lot created: " + lotDto);
         filesList.forEach(File::delete); // deleting temp files

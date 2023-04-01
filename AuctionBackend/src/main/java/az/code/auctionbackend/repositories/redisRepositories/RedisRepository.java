@@ -5,6 +5,7 @@ import az.code.auctionbackend.entities.UserProfile;
 import az.code.auctionbackend.entities.redis.RedisLot;
 import az.code.auctionbackend.entities.redis.RedisUser;
 import az.code.auctionbackend.entities.redis.RedisWaitingPayment;
+import com.rabbitmq.client.ConnectionFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +76,11 @@ public class RedisRepository implements RedisInterface {
     public void updateStatus(long lotId, int status){
         RedisLot lot = getRedis(lotId);
         lot.setStatus(status);
-        saveRedis(lot);
+        updateRedis(lot);
+    }
+    @Override
+    public void clearRedis(){
+
     }
 
     @Override
@@ -85,6 +91,13 @@ public class RedisRepository implements RedisInterface {
     @Override
     public void saveAllRedis(Map<Long, RedisLot> map) {
         hashOperations.putAll(hashReference,map);
+    }
+
+    @Override
+    public void updateRedisLotEndTime(long lotId, LocalDateTime time){
+        RedisLot lot = getRedis(lotId);
+        lot.setEndDate(time);
+        updateRedis(lot);
     }
 
 

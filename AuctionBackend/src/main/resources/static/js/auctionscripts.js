@@ -1,19 +1,17 @@
 let i = 1;
 const bidsWrapper = document.getElementById("bids");
 let bidstepVal = parseFloat(document.getElementById("bid_step").innerText);
-// let bidButton = document.getElementById("bidButton")
+
 let bidplaced = true
 let startDate = new Date(document.getElementById("startDate").getAttribute("data"));
 
 function pad(n) {
     return (n < 10 ? "0" + n : n);
 }
-
 function updateBidBox(){
-    let currentBid = parseFloat(document.getElementById("currentBid").innerText);
+    let currentBid = document.getElementById("currentBid").innerText;
     i=1;
-    document.getElementById('inc').value = bidstepVal+parseFloat(currentBid);
-
+    document.getElementById('inc').value = (bidstepVal+parseFloat(currentBid)).toFixed(2);
 }
 function subscribe(){
 
@@ -21,18 +19,24 @@ function subscribe(){
 
     let lotId = url.pathname.split("/")[2];
 
-    let urlEndpoint = `http://127.0.0.1:9090/open/api/bids/${lotId}`
+    let urlEndpoint = "/open/api/bids/"+ lotId
     let eventSource = new EventSource(urlEndpoint)
 
     eventSource.addEventListener("bid", function(event){
 
-        let json = JSON.parse(event.data);
+        let data = JSON.parse(event.data);
+
+        let updatedDatetime = new Date(data.time);
+        let json =  JSON.parse(data.bid);
+
         let text = json.lotCurrentBidPrice;
         let bidtext = '<span class="col-md-3">'.concat(json.username).concat("</span>");
-        bidtext = bidtext.concat('<span class="col-md-3">').concat(json.bid).concat("</span>");
+        bidtext = bidtext.concat('<span class="col-md-3">').concat(parseFloat(json.bid).toFixed(2)).concat("</span>");
 
         let timestamp= new Date(json.bidTime);
-        let datetext = timestamp.toISOString().split('T')[0]
+
+        let datetext = timestamp.getDate() + '.' + pad(timestamp.getMonth())+ '.' + pad(timestamp.getFullYear());
+
         var seconds = timestamp.getSeconds();
         var minutes = timestamp.getMinutes();
         var hour = timestamp.getHours();
@@ -47,6 +51,17 @@ function subscribe(){
         bidsWrapper.prepend(document.createElement("br"));
         bidsWrapper.prepend(nodeDiv)
         updateBidBox();
+
+        console.log(data.time)
+
+        if (data.time !=  undefined && data.time != null){ // time must be changed
+
+            document.getElementById("endDate").innerText = updatedDatetime;
+            convertInnertextToDateTime("endDate");
+            date1 = updatedDatetime
+            updateTimeCircle()
+        }
+
     })
 }
 subscribe();
@@ -59,10 +74,10 @@ function UserAction() {
     let lotId = url.pathname.split("/")[2];
 
     let input = "/open/api/bids/makeBid";
-    let bidout = parseFloat(document.getElementById("inc").value);
-    let currentBid = parseFloat(document.getElementById("currentBid").innerText);
+    let bidout = parseFloat(document.getElementById("inc").value).toFixed(2);
+    let currentBid = parseFloat(document.getElementById("currentBid").innerText).toFixed(2);
 
-    if (bidout >= currentBid + bidstepVal && bidplaced){
+    if (parseFloat(bidout) >= parseFloat(currentBid) + bidstepVal && bidplaced){
 
         bidplaced = false
 
@@ -102,7 +117,8 @@ function buttonClickM() {
 
 function updateBid(){
     let currentBid = parseFloat(document.getElementById("currentBid").innerText);
-    document.getElementById('inc').value = bidstepVal+currentBid;
+    if(document.getElementById('inc') != null){
+        document.getElementById('inc').value = bidstepVal+currentBid;}
 }
 
 updateBid();
@@ -128,63 +144,218 @@ function timer() {
 
         var secondsDifference = Math.floor(difference / 1000);
 
-
+        let countdown = document.getElementById('countdown')
+        let controlsArea = document.getElementById("controlsArea")
+        let bidArea = document.getElementById('bid_area')
 
         document.getElementById('countdown').innerHTML = "Auksionun bitməsinə qalan vaxt: " + pad(daysDifference) + " gün " + pad(hoursDifference) + " saat " + pad(minutesDifference) + " dəqiqə " + pad(secondsDifference) + " saniyə";
-        if (seconds == 0) {
+        if (seconds <= 0) {
             clearInterval(countdownTimer);
-            document.getElementById('countdown').innerHTML = "Completed";
+            countdown.innerHTML = "Completed";
+            controlsArea.remove();
+
         } else {
+            if(controlsArea != null){controlsArea.style.display = "block";}
+            if (bidArea != null){bidArea.style.display = "none";}
             seconds--;
         }
     } else if(startDate < Date.now()){
+        let bidArea = document.getElementById('bid_area')
+
+        if (bidArea != null){bidArea.style.display = "block";}
 
         let bidarea = document.getElementById('bid_area')
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
             "                                <p >Hərrac bağlıdır</p>"
             "</div>";
         clearInterval(countdownTimer);
+        bidplaced = false;
+        document.getElementById("controlsArea").remove();
+        document.getElementById("countdown").style.display = 'none';
+
     } else {
         let bidarea = document.getElementById('bid_area')
+        bidarea.style.display = "block"
         bidarea.innerHTML = "                   <div class=\"justify-content-center d-flex\"><div>\n" +
             "                                <p >Hərrac başlamaq üzrədir</p>"
         "</div>";
-        console.log("stopped")
-        clearInterval(countdownTimer);
+
+        document.getElementById("controlsArea").style.display = "none";
 
     }
 }
 var countdownTimer = setInterval('timer()', 1000);
-
 function convertInnertextToDateTime(elementId){
     let element = document.getElementById(elementId)
     let innertext = element.innerText
     let datestamp = new Date(innertext)
 
-    let datetext = datestamp.toISOString().split('T')[0]
+    let datetext = datestamp.getDate() + '.' + pad(datestamp.getMonth())+ '.' + pad(datestamp.getFullYear());
+
+    // let datetext = datestamp.toISOString().split('T')[0]
     let seconds = datestamp.getSeconds();
     let minutes = datestamp.getMinutes();
     let hour = datestamp.getHours();
     let timetext = datetext +" " + pad(hour) + ":"+ pad(minutes)+":"+ pad(seconds)
 
-    element.innerText = timetext;}
+    element.innerText = timetext;
 
-
+}
 function  init(){
-    console.log("init")
     convertInnertextToDateTime("endDate")
     convertInnertextToDateTime("startDate")
 
     var elements = document.getElementsByClassName("changeTime");
     for(var i = 0; i < elements.length; i++) {
-        // console.log(elements[i])
         convertInnertextToDateTime(elements[i].getAttribute("id"))
     }
-
 }
 
-// function docReady(fn) {
-//     init()
-// }
 
-document.onreadystatechange(init())
+
+
+// Credit: Mateusz Rybczonec
+
+const FULL_DASH_ARRAY = 283;
+const WARNING_THRESHOLD = 10;
+const ALERT_THRESHOLD = 5;
+
+const COLOR_CODES = {
+    info: {
+        color: "green"
+    },
+    warning: {
+        color: "orange",
+        threshold: WARNING_THRESHOLD
+    },
+    alert: {
+        color: "red",
+        threshold: ALERT_THRESHOLD
+    }
+};
+
+// let seconds = Math.abs(x.getTime() - y.getTime())/1000;
+// let TIME_LIMIT = 400;
+let timenow = new Date(Date.now());
+let TIME_LIMIT = Math.abs(date1.getTime() - timenow.getTime())/1000;
+let timePassed = 0;
+let timeLeft = TIME_LIMIT;
+let timerInterval = null;
+let remainingPathColor = COLOR_CODES.info.color;
+
+function updateTimeCircle(){
+    timenow = new Date(Date.now());
+    TIME_LIMIT = Math.abs(date1.getTime() - timenow.getTime())/1000;
+    timePassed = 0;
+}
+
+let app = document.getElementById("app")
+    if(app != null) {
+    app.innerHTML = `
+<div class="base-timer my-auto mx-auto">
+  <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <g class="base-timer__circle">
+      <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+      <path
+        id="base-timer-path-remaining"
+        stroke-dasharray="283"
+        class="base-timer__path-remaining ${remainingPathColor}"
+        d="
+          M 50, 50
+          m -45, 0
+          a 45,45 0 1,0 90,0
+          a 45,45 0 1,0 -90,0
+        "
+      ></path>
+    </g>
+  </svg>
+  <span id="base-timer-label" class="base-timer__label">${formatTime(
+            timeLeft
+        )}</span>
+</div>
+`;
+    }
+
+startTimer();
+
+function onTimesUp() {
+    clearInterval(timerInterval);
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timePassed = timePassed += 1;
+        timeLeft = TIME_LIMIT - timePassed;
+
+        let basetimer = document.getElementById("base-timer-label")
+        if(basetimer != null){basetimer.innerHTML = formatTime(timeLeft)};
+
+        setCircleDasharray();
+        setRemainingPathColor(timeLeft);
+
+        let appdiv = document.getElementById("appDiv");
+        let countdownDiv = document.getElementById("countdown");
+        let controlsareaDiv = document.getElementById("controlsArea");
+
+        if (timeLeft === 0) {
+            onTimesUp();
+        } else if (timeLeft > 600){
+            if (appdiv != null){appdiv.style.display = 'none';}
+            if (countdownDiv != null){countdownDiv.style.display = 'block';}
+        }else if(timeLeft <= 0){
+            if (appdiv != null){appdiv.style.display = 'none';}
+            if (countdownDiv != null){countdownDiv.style.display = 'none';}
+            if (controlsareaDiv != null){controlsareaDiv.remove();}
+        }
+        else {
+            if (appdiv != null){appdiv.style.display = 'block';}
+            if (countdownDiv != null){countdownDiv.style.display = 'none';}
+        }
+    }, 1000);
+}
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    let seconds = Math.trunc(time % 60);
+
+    if (seconds < 10) {
+        seconds = `0${seconds}`;
+    }
+
+    return `${minutes}:${seconds}`;
+}
+
+function setRemainingPathColor(timeLeft) {
+    const { alert, warning, info } = COLOR_CODES;
+    if (timeLeft <= alert.threshold) {
+        document
+            .getElementById("base-timer-path-remaining")
+            .classList.remove(warning.color);
+        document
+            .getElementById("base-timer-path-remaining")
+            .classList.add(alert.color);
+    } else if (timeLeft <= warning.threshold) {
+        document
+            .getElementById("base-timer-path-remaining")
+            .classList.remove(info.color);
+        document
+            .getElementById("base-timer-path-remaining")
+            .classList.add(warning.color);
+    }
+}
+
+function calculateTimeFraction() {
+    const rawTimeFraction = timeLeft / TIME_LIMIT;
+    return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+}
+
+function setCircleDasharray() {
+    const circleDasharray = `${(
+        calculateTimeFraction() * FULL_DASH_ARRAY
+    ).toFixed(0)} 283`;
+    let basetimerpath = document.getElementById("base-timer-path-remaining");
+    if (basetimerpath != null){basetimerpath.setAttribute("stroke-dasharray", circleDasharray);}
+}
+
+
+init()

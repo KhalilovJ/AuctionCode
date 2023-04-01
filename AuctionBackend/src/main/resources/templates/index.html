@@ -28,15 +28,19 @@
 
 <div class="col-md-11 mx-auto bg-white shadow-sm rounded-3" id="centerarea">
   <br>
+  <div class="row justify-content-between">
   <div class="bg-info py-2 rounded-3 text-white text-center mx-3 w-25">
     Aktiv hərraclar
+  </div>
+  <a th:if="${user != null}" th:href="'/user/'+${user.getUsername()}+'/add_auction'" class="col-6 w-25 py-2 btn btn-primary">Yeni hərrac başla</a>
   </div>
   <hr class="mx-2">
   <br>
 
   <div class="d-flex flex-wrap">
 
-    <tr th:each="lot,lotloop: ${lotList}" th:if="${lot.getStartDate() != null && lot.getStartDate().isBefore(#temporals.createNow()) && lot.getStatus() == 1}">
+<!--    <tr th:each="lot,lotloop: ${lotList}" th:if="${lot.getStartDate() != null && lot.getStartDate().isBefore(#temporals.createNow()) && lot.getStatus() == 1}">-->
+    <tr th:each="lot,lotloop: ${lotList}" th:if="${lot.getStartDate() != null && lot.getStatus() == 1 && lot.getEndDate() != null && lot.getEndDate().isAfter(#temporals.createNow())}">
 
       <div class="item col-md-3 mx-auto" style="max-height: 25rem;">
         <div style="height: 65%;">
@@ -55,7 +59,7 @@
                   </div>
                 </div>
 
-                <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  onclick="window.location.href = 'https://ru-ru.facebook.com/';">
+                <div class="carousel-inner h-100 d-flex align-content-center align-items-center"  th:onclick="'window.location.href = ' + 'lots/' + ${lot.getId()}">
 
                   <div class="carousel-item active" th:each="img,ids: ${lot.getIds()}" th:if="${ids.index == 0}">
                     <img th:src="'https://ucarecdn.com/' + ${img} + '/'" class="mw-100" style="max-height:15rem; max-width: 100%;" >
